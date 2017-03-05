@@ -1,0 +1,11 @@
+Package: bgscripts
+Version: 1.2-3
+Section: utils
+Architecture: all
+Essential: no
+Priority: optional
+Description: bgscripts for debian
+Maintainer: B Stack <bgstack15@gmail.com>
+Homepage: https://bgstack15.wordpress.com/
+Depends: bgscripts-core
+Recommends: freerdp-x11, zenity

@@ -1,0 +1,16 @@
+# deb prerm 2017-01-25
+if test "$1" = "remove";
+then
+{
+   # total uninstall
+
+   # Remove mimetype definitions
+   for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
+   do
+      which xdg-mime && {
+         su "${user}" -c "xdg-mime uninstall /usr/share/bgscripts/inc/x-rdp.xml &"
+      }
+   done
+} 1>/dev/null 2>&1
+fi
+exit 0

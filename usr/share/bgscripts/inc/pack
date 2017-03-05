@@ -1,0 +1,130 @@
+#!/bin/bash
+
+# DETERMINE LOCATION OF FRAMEWORK
+while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+/usr/share/bgscripts/framework.sh
+../framework.sh
+usr/share/bgscripts/framework.sh
+~/rpmbuild/SOURCES/bgscripts-1.1-31/usr/share/bgscripts/framework.sh
+EOFLOCATIONS
+test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
+
+. ${frameworkscript} || echo "$0: framework did not run properly. Continuing..." 1>&2
+
+type="";
+
+case "${thisflavor}" in
+   redhat|rhel|centos|fedora|korora) type=rpm;;
+   debian|ubuntu) type=dpkg;;
+   *) type=targz;;
+esac
+
+echo " $@ " | grep -qiE -- "help|usage|\s-h\s|\s-\?" 1>/dev/null 2>&1 && {
+   # display help and exit
+   less -F <<EOF
+pack utility version 2017-01-25c-bgscripts
+usage: pack [ rpm | deb | tar | scrub ] [ --debug | -d {0-10} ]
+Provides a single command for building a package. This script is customized to each package.
+optional arguments:
+ [ rpm | deb | tar | scrub ]    Build that type of package. Scrub calls the scrub.py script.
+                                The default depends on the local os flavor. This system is "${thisflavor}"
+ [ --debug {0-10} | -d {0-10} ] Display package type to build and exit. Debuglev not implemented here.
+EOF
+exit 1
+}
+
+# Derive package name and version number, for my simple package versions only.
+fullname="$( pwd | sed -e 's/.*\(SOURCES\|deb\)\///;s/\/.*//;' )"
+version="$( echo "${fullname}" | grep -oiE -- "-[0-9]{0,3}\.[0-9a-zA-Z]{0,5}-[0-9]{0,4}" | sed -e 's/^-//;' )"
+shortversion="$( echo "${version}" | sed -e 's/-.*//;' )"
+package="$( echo "${fullname}" | sed -e "s/-${version}//;" )"
+
+echo " $@ " | grep -qiE -- "rpm|rhel|redhat|centos|fedora|korora" 1>/dev/null 2>&1 && type=rpm
+echo " $@ " | grep -qiE -- "debian|ubuntu|deb\s|dpkg" 1>/dev/null 2>&1 && type=dpkg
+echo " $@ " | grep -qiE -- "tar|tgz|gz" 1>/dev/null 2>&1 && type=targz
+echo " $@ " | grep -qiE -- "scrub" 1>/dev/null 2>&1 && type=scrub
+
+# Display information
+echo "packaging ${package}-${version} as ${type}"
+echo " $@ " | grep -qiE -- "debug|\s-d[ 0-9]{0,3}\s" 1>/dev/null 2>&1 && exit 0
+
+case "${type}" in
+   rpm)
+
+########## PACKAGING for rhel/centos
+# if you copy-paste this, be sure to define package, version, shortversion
+rpmbuilddir=~/rpmbuild/
+sub1="core"
+packagespecfile="${package}-${version}/usr/share/${package}/docs/${package}.spec"
+#sed -i -n '1,/^\%files$/p;' ${rpmbuilddir}/SOURCES/"${packagespecfile}"
+sed -n -e '1,/^\%files$/p;' "${rpmbuilddir}/SOURCES/${packagespecfile}" > "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp" # removes files and changelog
+cd ${rpmbuilddir}/SOURCES/"${package}-${version}"
+"${rpmbuilddir}/SOURCES/${package}-${version}/usr/share/${package}/inc/get-files" rpm >> "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp"
+{ printf "\n%%files ${sub1}\n" ; "${rpmbuilddir}/SOURCES/${package}-${version}/usr/share/${package}/inc/get-files-${sub1}" rpm ; } >> "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp"
+{ printf '\n'; sed -n -e '/^\%changelog/,$p' "${rpmbuilddir}/SOURCES/${packagespecfile}"; } >> "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp"
+mv -f "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp" "${rpmbuilddir}/SOURCES/${packagespecfile}"
+rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}"; cp -prf "${rpmbuilddir}/SOURCES/${package}-${version}" "${rpmbuilddir}/SOURCES/${package}-${shortversion}"
+rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/DEBIAN"
+cd "${rpmbuilddir}/SOURCES"
+rm -rf "${package}.tgz"; tar -zc --exclude='.git' --exclude='README.md' -f "${package}.tgz" "${package}-${shortversion}"
+cp -p "${rpmbuilddir}/SOURCES/${packagespecfile}" "${rpmbuilddir}/SPECS"
+cd "${rpmbuilddir}/RPMS/noarch"
+rpmbuild -bb "${rpmbuilddir}/SPECS/${package}.spec"
+rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/" "${rpmbuilddir}/SOURCES/${package}.tgz"
+
+      ;;
+   dpkg)
+
+########## PACKAGING for ubuntu
+# You need package dpkg-dev to build packages.
+# if you copy-paste this, be sure to define package, version
+debdir=~/deb
+sub1="core"
+debiandirmain="${package}-${version}/usr/share/${package}/docs/debian-${package}"
+debiandirsub1="${package}-${version}/usr/share/${package}/docs/debian-${package}-${sub1}"
+cd "${debdir}/${package}-${version}/usr/bin"
+for word in beep bup fl lecho newscript plecho rdp send treesize; do ln -sf ../share/bgscripts/${word}.sh ${word}; done
+for word in dli updateval; do ln -sf ../share/bgscripts/${word}.py ${word}; done
+ln -sf ../share/bgscripts/bgscripts.bashrc bp
+cd "${debdir}/${package}-${version}"
+"${debdir}/${package}-${version}/usr/share/${package}/inc/get-files" deb | xargs md5sum > "${debdir}/${debiandirmain}/md5sums"
+"${debdir}/${package}-${version}/usr/share/${package}/inc/get-files-${sub1}" deb | xargs md5sum > "${debdir}/${debiandirsub1}/md5sums"
+cd ~/deb
+mv "${debdir}/${package}-${version}/.git" "${debdir}/.git$$"
+
+# sub1
+rm -rf "${debdir}/${package}-${version}/DEBIAN/" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN/"
+cp -pf "${debdir}/${debiandirsub1}"/* "${debdir}/${package}-${version}/DEBIAN/"
+fakeroot dpkg-deb -b "${debdir}/${package}-${version}"
+mv -f "${debdir}/${package}-${version}.deb" "${debdir}/${package}-${sub1}-${version}.deb"
+
+# main
+rm -rf "${debdir}/${package}-${version}/DEBIAN/" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN/"
+cp -pf "${debdir}/${debiandirmain}"/* "${debdir}/${package}-${version}/DEBIAN/"
+fakeroot dpkg-deb -b "${debdir}/${package}-${version}"
+
+mv "${debdir}/.git$$" "${debdir}/${package}-${version}/.git"
+
+      ;;
+   targz)
+
+########## PACKAGING in a master.tgz
+# if you copy-paste this, be sure to define package, version
+cd ~/deb 2>/dev/null || cd ~/rpmbuild/SOURCES
+rm -rf ./"${package}-${version}".master.tgz
+tar -zcf "${package}-${version}".master.tgz "${package}-${version}"/
+
+      ;;
+   scrub)
+
+########## SCRUB for publication
+# if you copy-paste this, be sure to define package, version
+cd ~/deb 2>/dev/null || cd ~/rpmbuild/SOURCES
+cd "$( find . -name "*scrub.txt" | grep -iE "${package}-${version}\/" | xargs dirname )"
+/usr/share/bgscripts/scrub.py
+
+      ;;
+   unknown)
+      echo "error: check $0 for errors on type ${type}." 1>&2
+      ;;
+esac

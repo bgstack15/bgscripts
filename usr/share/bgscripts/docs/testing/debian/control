@@ -1,0 +1,18 @@
+Source: bgscripts
+Section: utils
+Priority: optional
+Maintainer: B Stack <bgstack15@gmail.com>
+Standards-Version: 3.9.4
+Build-Depends: debhelper, devscripts
+Homepage: https://bgstack15.wordpress.com/
+
+Package: bgscripts
+Version: 1.1-30
+Section: utils
+Architecture: all
+Essential: no
+Priority: optional
+Description: bgscripts for debian
+Homepage: https://bgstack15.wordpress.com/
+Depends: python3, bash-completion
+Recommends: mailutils, freerdp-x11, zenity

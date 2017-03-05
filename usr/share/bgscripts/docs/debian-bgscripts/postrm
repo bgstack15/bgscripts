@@ -1,0 +1,65 @@
+# deb postrm 2017-01-25
+if test "$1" = "remove";
+then
+{
+   # total uninstall
+
+   # Remove desktop file
+   rm -f /usr/share/applications/rdp.desktop
+   which update-desktop-database && update-desktop-database -q /usr/share/applications &
+
+   # Remove icons
+   which xdg-icon-resource && {
+
+      # Remove default application icons
+      for theme in hicolor locolor Numix-Circle Lubuntu;
+      do
+
+         # Remove scalable application icons
+         rm -f /usr/share/icons/${theme}/scalable/apps/rdp.svg
+
+         # Remove size application icons
+         for size in 16 24 32 48 64;
+         do
+            xdg-icon-resource uninstall --context apps --size "${size}" --theme "${theme}" --noupdate rdp &
+         done
+
+      done
+
+      # Remove custom application icons
+      # custom: Numix-Circle apps 48 uses svg
+      rm -f /usr/share/icons/Numix-Circle/48/apps/rdp.svg
+      # custom: Lubuntu
+      #for size in 16 24 32 48 64; do rm -f "%{_datarootdir}/icons/Lubuntu/apps/${size}/rdp.png"; done
+
+      # Remove default mimetype icons
+      for theme in hicolor Numix Lubuntu elementary-xfce;
+      do
+
+         # Remove scalable mimetype icons
+         rm -f /usr/share/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
+
+         # Remove size mimetype icons
+         for size in 16 24 32 48 64;
+         do
+            xdg-icon-resource uninstall --context mimetypes --size "${size}" --theme "${theme}" --noupdate application-x-rdp &
+         done
+
+      done
+
+      # Remove custom mimetype icons
+      # custom: Numix
+      rm -f /usr/share/icons/Numix/48/mimetypes/application-x-rdp.svg
+
+      # Update icon caches
+      xdg-icon-resource forceupdate &
+      for word in hicolor locolor Numix-Circle Numix Lubuntu elementary-xfce;
+      do
+         touch --no-create /usr/share/icons/${word}
+         gtk-update-icon-cache /usr/share/icons/${word} &
+      done
+
+   }
+} 1>/dev/null 2>&1
+fi
+exit 0

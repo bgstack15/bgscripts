@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+   <mime-type type="application/x-rdp">
+      <comment>RDP connection file</comment>
+      <alias type="application/x-rdp-file"/>
+      <generic-icon name="application-x-rdp"/>
+      <glob pattern="*.rdp"/>
+      <glob pattern="*.rdpx"/>
+      <glob pattern="*.RDP"/>
+   </mime-type>
+</mime-info>

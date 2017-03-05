@@ -1,0 +1,5 @@
+docs/README.txt
+docs/bgscripts.spec
+docs/debian-bgscripts/control
+docs/debian-bgscripts-core/control
+framework.sh

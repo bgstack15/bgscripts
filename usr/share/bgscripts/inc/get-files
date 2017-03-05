@@ -1,0 +1,49 @@
+#!/bin/sh
+# File: get-files
+case "${1}" in
+   rpm)
+
+### for rpm
+find * -type d \
+   -regex 'usr\/share\/bgscripts.*' \
+   -regex '.*icons.*' \
+   | sed -e 's/^/%dir \//;'
+find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
+   ! -type d \
+   ! -regex '.*.swp' \
+   ! -regex '.*?DEBIAN.*?' \
+   \( \
+      -regex '.*rdp.*' -o \
+      -regex '.*get-files$' -o \
+      -regex '.*icons.*' \
+   \) \
+   | sed -e '
+s/^/\//
+s/\(.*\.txt\)/%doc %attr(444, -, -) \1/
+s/\(.*bin.*\)/%verify(link) \1/
+s/\(.*\)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/
+s/\(.*\.conf\)/%config %attr(666, -, -) \1/
+'
+
+      ;;
+   deb)
+
+### for deb
+# will be redirected to md5sum
+find . -mindepth 1 \
+   ! -type d \
+   ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' \
+   ! -regex '.*?DEBIAN.*' ! -regex '.*?.swp' ! -regex '.*\.git.*' \
+   \( \
+      -regex '.*rdp.*' -o \
+      -regex '.*get-files$' -o \
+      -regex '.*icons.*' \
+   \) \
+   -printf '%P '
+
+      ;;
+   *)
+      echo "FATAL ERROR: check ./pack or get-files. Please use [ rpm | deb ] option. Aborted." 1>&2
+      exit 1
+      ;;
+esac

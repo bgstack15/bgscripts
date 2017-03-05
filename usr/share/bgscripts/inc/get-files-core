@@ -1,0 +1,43 @@
+#!/bin/sh
+# File: get-files-core
+case "${1}" in
+   rpm)
+
+### for rpm
+find * -type d \
+   -regex 'usr\/share\/bgscripts.*' \
+   ! -regex '.*icons.*' \
+   | sed -e 's/^/%dir \//;'
+find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
+   ! -type d \
+   ! -regex '.*.swp' \
+   ! -regex '.*?DEBIAN.*?' \
+   ! -regex '.*\/rdp.*' ! -regex '.*rdp\..*' \
+   ! -regex '.*get-files$' \
+   ! -regex '.*icons.*' \
+   | sed -e '
+s/^/\//
+s/\(.*\.txt\)/%doc %attr(444, -, -) \1/
+s/\(.*bin.*\)/%verify(link) \1/
+s/\(.*\)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/
+s/\(.*\.conf\)/%config %attr(666, -, -) \1/
+'
+
+      ;;
+   deb)
+
+### for deb
+find . -mindepth 1 ! -name "${package}.spec.$$.swp" \
+   ! -type d \
+   ! -regex '.*?DEBIAN.*' ! -regex '.*?.swp' ! -regex '.*\.git.*' \
+   ! -regex '.*\/rdp.*' ! -regex '.*rdp\..*' \
+   ! -regex '.*get-files$' \
+   ! -regex '.*icons.*' \
+   -printf '%P '
+
+      ;;
+   *)
+      echo "FATAL ERROR: check ./pack or get-files-core. Please use [ rpm | deb ] option. Aborted." 1>&2
+      exit 1
+      ;;
+esac
