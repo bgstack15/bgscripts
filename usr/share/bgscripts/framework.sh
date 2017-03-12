@@ -5,7 +5,7 @@
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
 # Package: bgscripts 1.2-4
-# History: fv2017-03-11a=fi2017-01-11a
+# History: fv2017-03-11b=fi2017-01-11a
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
 #    2016-07-12a fixed thisos and thisflavor; added thisflavorversion
@@ -14,13 +14,14 @@
 #    2016-11-30a fixed wc commands to use stdin so it does not print filename
 #    2017-01-11a Beefed up thisos/thisflavor. 
 #       Moved whole package to /usr/share/bgscripts.
-#    2017-03-11a cleaned up a few comments and swapped out [[ ]] brackets for test
+#    2017-03-11b cleaned up a few comments and swapped out [[ ]] brackets for test
 #       Removed mktmpfiles functions. Other miscellaneous fixes.
 #       Rewrote fwhich function to use readlink -f
+#       Fixed the parameter parsing where it uses echo. It was choking on "-n" because echo uses that.
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
 # Improve: 
-fversion="2017-03-11a"
+fversion="2017-03-11b"
 
 # DEFINE FUNCTIONS
 
@@ -36,7 +37,7 @@ isflag() {
 
 parseParam() {
    # determines if --longname or -shortflagS that need individual parsing
-   trimParam=$( echo $param | sed -n 's/--//p' )
+   trimParam=$( printf '%s' "${param}" | sed -n 's/--//p' )
    _rest=
    if test -n "$trimParam";
    then
@@ -49,8 +50,8 @@ parseParam() {
          _j=$( expr ${_i} + 1)
          #_char=$(expr substr "$param" $_i 1)
          #_rest=$(expr substr "$param" $_j 255)
-         _char=$( echo "${param}" | cut -c ${_i})
-         _rest=$( echo "${param}" | cut -c ${_j}-255)
+         _char=$( printf '%s' "${param}" | cut -c ${_i})
+         _rest=$( printf '%s' "${param}" | cut -c ${_j}-255)
          parseFlag $_char
          _i=$( expr ${_i} + 1)
       done
