@@ -104,6 +104,7 @@ function cx { chmod +x "$@"; }
 function now { date "+%Y-%m-%d %T"; }
 function vir { vi -R "$@"; }
 function own { sudo chown ${USER}:"$( id -ng $USER )" "$@"; }
+function sshp { ssh -o PreferredAuthentications=password,keyboard-interactive -o PubkeyAuthentication=no -o GSSAPIAuthentication=no "$@"; }
 
 # COMPLEX FUNCTIONS
 function cdmnt {

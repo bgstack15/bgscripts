@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	3
+Release:	4
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -20,7 +20,7 @@ Provides:	application(rdp.desktop)
 Provides:	mimehandler(application/x-rdp)
 
 %package core
-Summary:	bgscripts suite of scripts, including framework.sh
+Summary:	bgscripts core components
 Obsoletes:	%{name} < 1.1-31
 Recommends:	%{name}
 
@@ -303,6 +303,7 @@ exit 0
 %verify(link) /usr/bin/updateval
 %verify(link) /usr/bin/dli
 /usr/share/bgscripts/beep.sh
+/usr/share/bgscripts/foo.sh
 /usr/share/bgscripts/ftemplate.sh
 /usr/share/bgscripts/plecho.sh
 /usr/share/bgscripts/lecho.sh
@@ -364,6 +365,9 @@ exit 0
 /usr/share/bgscripts/treesize.sh
 
 %changelog
+* Sat Mar 11 2017 B Stack <bgstack15@gmail.com> 1.2-4
+- Updated content. See docs/README.txt
+
 * Sat Mar  4 2017 B Stack <bgstack15@gmail.com> 1.2-2
 - Updated content. See docs/README.txt
 

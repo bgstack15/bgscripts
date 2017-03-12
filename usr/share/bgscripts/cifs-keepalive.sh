@@ -7,6 +7,7 @@
 # Purpose: So your cifs shares do not time out
 # Package: 
 # History: 
+#    2017-03-11a fixed the mktemp process and cleanup
 # Usage: 
 #    Drop a cron entry similar to:
 #  */3 * * * *  root  /usr/share/bgscripts/cifs-keepalive.sh /path/to/keepalive
@@ -16,7 +17,7 @@
 # Documentation:
 #  This script will just touch a file on the filesystem. By default, .cifs-keepalive
 fiversion="2017-01-17a"
-cifskeepaliveversion="2017-03-02a"
+cifskeepaliveversion="2017-03-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -42,8 +43,8 @@ ENDUSAGE
 # DEFINE TRAPS
 
 clean_cifskeepalive() {
-   #rm -f ${logfile} > /dev/null 2>&1
-   [ ] #use at end of entire script if you need to clean up tmpfiles
+   rm -rf "${tmpfile}"
+   #use at end of entire script if you need to clean up tmpfiles
 }
 
 CTRLC() {
@@ -104,6 +105,7 @@ esac
 infile1=
 outfile1=
 logfile=${scriptdir}/${scripttrim}.${today}.out
+tmpfile="$( mktemp )"
 interestedparties="bgstack15@gmail.com"
 allmounts=0
 thesemounts= # will be constructed from the opt1 opt2 values or the -a flag
@@ -186,7 +188,7 @@ validateparams - "$@"
 # SET TRAPS
 #trap "CTRLC" 2
 #trap "CTRLZ" 18
-#trap "clean_cifskeepalive" 0
+trap "clean_cifskeepalive" 0
 
 # MAIN LOOP
 #{
@@ -194,8 +196,8 @@ validateparams - "$@"
    # get all mounts to keepalive
    case "${allmounts}" in
       1)
-         mount | awk '/cifs/{ print $3; }' > "/tmp/.tmp.$$"
-         IFS=$'\n' read -d '' -r -a thesemounts < "/tmp/.tmp.$$"
+         mount | awk '/cifs/{ print $3; }' > "${tmpfile}"
+         IFS=$'\n' read -d '' -r -a thesemounts < "${tmpfile}"
          ;;
       *)
          while test "${count}" -lt "${thiscount}";

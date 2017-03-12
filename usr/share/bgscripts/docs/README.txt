@@ -28,6 +28,9 @@ http://stackoverflow.com/questions/16679369/count-occurrences-of-char-in-string-
 function fisnum: Test variable is number
 http://stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 
+function isvalidip: Test string for valid IP address
+http://stackoverflow.com/questions/4890789/regex-for-an-ip-address/30023010#30023010
+
 ### CHANGELOG
 bgscripts 1.1-9
 bgscripts.bashrc includes ls --color=auto for all ls aliases.
@@ -194,3 +197,8 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 2017-03-05 B Stack <bgstack15@gmail.com> 1.2-3
 - Added comments to scrub.txt and localize_git.sh to indicate that they are now obsolete.
+
+2017-03-11 B Stack <bgstack15@gmail.com> 1.2-4
+- Added sshp function to bashrc.bgscripts
+- Rewrote treesize.sh to just use the equivalent du -xBM | sort -n command and issue a warning about its impending deletion.
+- Fixed up framework.sh with many small fixes

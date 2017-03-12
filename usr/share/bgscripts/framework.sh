@@ -4,8 +4,8 @@
 # Startdate: 2014-06-02 15:22
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
-# Package: bgscripts 1.2-3
-# History: fv2017-01-11a=fi2017-01-11a
+# Package: bgscripts 1.2-4
+# History: fv2017-03-11a=fi2017-01-11a
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
 #    2016-07-12a fixed thisos and thisflavor; added thisflavorversion
@@ -14,10 +14,13 @@
 #    2016-11-30a fixed wc commands to use stdin so it does not print filename
 #    2017-01-11a Beefed up thisos/thisflavor. 
 #       Moved whole package to /usr/share/bgscripts.
+#    2017-03-11a cleaned up a few comments and swapped out [[ ]] brackets for test
+#       Removed mktmpfiles functions. Other miscellaneous fixes.
+#       Rewrote fwhich function to use readlink -f
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
 # Improve: 
-fversion="2017-01-17a"
+fversion="2017-03-11a"
 
 # DEFINE FUNCTIONS
 
@@ -29,14 +32,13 @@ isflag() {
       *) retval=0;;
    esac
    echo $retval
-   #echo "${1:-0}" | tr -dc '-' | wc -c #on hold; this counts only the dashes, which means "/etc/sysconfig/puppet-log.2016-03-01.out" becomes "---" which is obviously invalid.
 }
 
 parseParam() {
    # determines if --longname or -shortflagS that need individual parsing
    trimParam=$( echo $param | sed -n 's/--//p' )
    _rest=
-   if [ -n "$trimParam" ];
+   if test -n "$trimParam";
    then
       parseFlag $trimParam
    else
@@ -62,7 +64,7 @@ getval() {
       tempval="${_rest}"
       hasval=1
       _i=255   # skip rest of splitShortStrings because found the value!
-   elif [ -n "$nextparam" ] && test $(isflag "$nextparam") -eq 0;
+   elif test -n "$nextparam" && test $(isflag "$nextparam") -eq 0;
    then
       tempval="$nextparam"
       hasval=1 #DNE; is affected by ftemplate!
@@ -212,9 +214,11 @@ EOFSUDO
 fwhich() {
    #call: fwhich $infile1
    #upgraded 2014-06-27
-   fwhichfile=$( { which "$@" "./$@"; find . -name "$@"; } 2>/dev/null | head -n 1 | sed "s!\.\/!!g;s!\/\/!\/!g;" )
-   fwhichdir=$( cd $( dirname $fwhichfile 2>/dev/null ); pwd )
-   test -n "$fwhichfile" && printf "%s/%s" "$fwhichdir" "$( basename "$fwhichfile" 2>/dev/null )"
+   # attempted replacement with readlink -f for version 2017-03-11a
+   #fwhichfile=$( { which "$@" "./$@"; find . -name "$@"; } 2>/dev/null | head -n 1 | sed "s!\.\/!!g;s!\/\/!\/!g;" )
+   #fwhichdir=$( cd $( dirname $fwhichfile 2>/dev/null ); pwd )
+   #test -n "$fwhichfile" && printf "%s/%s" "$fwhichdir" "$( basename "$fwhichfile" 2>/dev/null )"
+   readlink -f "$@"
 }
 
 ferror() {
@@ -250,37 +254,6 @@ ${scriptdir}/send.sh -hs
 EOFSENDSH
 }
 
-mktmpfiles() {
-   #call: mktmpfiles [number]
-   #ex: mktmpfiles "${scripttrim}.$$.$(
-   #deprecated: mktmpfiles
-   tmploopmax=$1
-   case $tmploopmax in
-      ''|*[!0-9]*) tmploopmax=50 ;; #invalid
-      *) [ ] ;; #valid number-only
-   esac
-   tmploop=0
-   while test $tmploop -lt $tmploopmax;
-   do
-      tmploop=$( expr ${tmploop} + 1 )
-      #[[ "$debug" = "1" ]] && eval echo tmpfile${tmploop}=~/.${scripttrim}.$$.$( date "+%Y-%m-%d-%H%M%S" ).${tmploop}.out
-      eval tmpfile${tmploop}=~/.${scripttrim}.$$.$( date "+%Y-%m-%d-%H%M%S" ).${tmploop}.out
-   done
-}
-
-clean_mktmpfiles() {
-   # assume that tmploopmax is valid.
-   # deprecated: clean_mktmpfiles
-   echo "tmploopmax=\"$tmploopmax\""
-   tmploop=0
-   while test $tmploop -lt $tmploopmax;
-   do
-      tmploop=$( expr ${tmploop} + 1 )
-      #[[ "$debug" = "1" ]] && eval eval echo rm -f \$tmpfile$tmploop
-      eval eval rm -f \$tmpfile$tmploop > /dev/null 2>&1
-   done
-}
-
 setdebug() {
    # call: setdebug
    debug=10
@@ -291,7 +264,7 @@ setdebug() {
       then
          debug=${tempval}
       else
-         #[[ paramnum -le paramcount ]] && paramnum=$( expr ${paramnum} - 1 )
+         #test paramnum -le paramcount && paramnum=$( expr ${paramnum} - 1 )
          hasval=0
       fi
    elif fisnum ${_rest};
@@ -304,7 +277,7 @@ setdebug() {
 }
 
 isvalidip() {
-   # call: if [[ isvalidip "${input}" ]]; then echo yes; fi
+   # call: if isvalidip "${input}"; then echo yes; fi
    #   or: isvalidip $input && echo yes
    iptotest="${1}"
    echo "${iptotest}" | grep -qoE "^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$"
@@ -342,12 +315,12 @@ case "${thisos}" in FreeBSD) sed=gsed;; *) sed=sed;; esac
 # if framework is dot sourced then $0 will be "-bash" and screw things up
 case ${0} in
    "-bash")
-      scriptdir=$( pwd )
+      scriptdir="$( pwd )"
       scriptfile="dot-sourced";;
    *)
-      scriptdir=$( cd $( dirname ${0} ); pwd )
-      scriptfile=$( basename ${0} | sed 's!/./!/!g;s!\./!!g' )
-      scripttrim=${scriptfile%%.sh}
+      scriptdir="$( cd $( dirname ${0} ); pwd )"
+      scriptfile="$( basename ${0} | sed 's!/./!/!g;s!\./!!g' )"
+      scripttrim="${scriptfile%%.sh}"
       ;;
 esac
 
