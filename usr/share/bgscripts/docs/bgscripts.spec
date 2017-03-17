@@ -293,6 +293,7 @@ exit 0
 %verify(link) /usr/bin/beep
 %verify(link) /usr/bin/treesize
 %verify(link) /usr/bin/lecho
+%verify(link) /usr/bin/ctee
 %verify(link) /usr/bin/send
 %verify(link) /usr/bin/newscript
 %verify(link) /usr/bin/plecho
@@ -360,8 +361,8 @@ exit 0
 /usr/share/bgscripts/updateval.py
 /usr/share/bgscripts/updateval.pyc
 /usr/share/bgscripts/updateval.pyo
+/usr/share/bgscripts/ctee.sh
 /usr/share/bgscripts/bup.sh
-/usr/share/bgscripts/treesize.sh
 
 %changelog
 * Sat Mar 16 2017 B Stack <bgstack15@gmail.com> 1.2-5
