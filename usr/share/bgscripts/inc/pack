@@ -83,7 +83,7 @@ sub1="core"
 debiandirmain="${package}-${version}/usr/share/${package}/docs/debian-${package}"
 debiandirsub1="${package}-${version}/usr/share/${package}/docs/debian-${package}-${sub1}"
 cd "${debdir}/${package}-${version}/usr/bin"
-for word in beep bup fl lecho newscript plecho rdp send treesize; do ln -sf ../share/bgscripts/${word}.sh ${word}; done
+for word in beep bup fl lecho newscript plecho rdp send; do ln -sf ../share/bgscripts/${word}.sh ${word}; done
 for word in dli updateval; do ln -sf ../share/bgscripts/${word}.py ${word}; done
 ln -sf ../share/bgscripts/bgscripts.bashrc bp
 cd "${debdir}/${package}-${version}"

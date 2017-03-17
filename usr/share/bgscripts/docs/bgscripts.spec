@@ -27,7 +27,7 @@ Recommends:	%{name}, expect
 bgscripts-core is is the cli components of the bgscripts suite.
 Bgscripts provides helpful scripts that sysadmins could find useful.
 The most important ones include:
-lecho plecho send newscript framework bup updateval
+bup ctee dli lecho newscript updateval framework
 
 Also included is "bp" which is a symlink to bgscripts.bashrc
 
@@ -364,6 +364,11 @@ exit 0
 /usr/share/bgscripts/treesize.sh
 
 %changelog
+* Sat Mar 16 2017 B Stack <bgstack15@gmail.com> 1.2-5
+- Updated package requirements and dependencies for the right subpackages.
+- Updated description of which scripts are the most important.
+- Updated content. See docs/README.txt
+
 * Sat Mar 11 2017 B Stack <bgstack15@gmail.com> 1.2-4
 - Updated content. See docs/README.txt
 

@@ -204,5 +204,8 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Fixed up framework.sh with many small fixes
 
 2017-03-16 B Stack <bgstack15@gmail.com> 1.2-5
-- Added ctee.sh
+- Updated package requirements and dependencies for the right subpackages.
+- Updated description of which scripts are the most important.
 - Rearranged rpm and deb requirements and recommendations
+- Added ctee.sh
+- Removed treesize.sh
