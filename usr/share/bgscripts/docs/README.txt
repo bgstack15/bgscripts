@@ -202,3 +202,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Added sshp function to bashrc.bgscripts
 - Rewrote treesize.sh to just use the equivalent du -xBM | sort -n command and issue a warning about its impending deletion.
 - Fixed up framework.sh with many small fixes
+
+2017-03-16 B Stack <bgstack15@gmail.com> 1.2-5
+- Added ctee.sh
+- Rearranged rpm and deb requirements and recommendations

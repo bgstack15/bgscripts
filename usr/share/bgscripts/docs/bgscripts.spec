@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	4
+Release:	5
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -10,19 +10,18 @@ URL:		https://bgstack15.wordpress.com/
 #Distribution:
 #Vendor:
 Packager:	B Stack <bgstack15@gmail.com>
-Requires(pre):	/usr/bin/python3
-Requires:	bash-completion
 Requires:	%{name}-core >= %{version}-%{release}
-Recommends:	freerdp
-Recommends:	zenity
+Recommends:	freerdp, zenity
 Buildarch:	noarch
 Provides:	application(rdp.desktop)
 Provides:	mimehandler(application/x-rdp)
 
 %package core
 Summary:	bgscripts core components
+Requires(pre):	/usr/bin/python3
+Requires:	bash-completion
 Obsoletes:	%{name} < 1.1-31
-Recommends:	%{name}
+Recommends:	%{name}, expect
 
 %description core
 bgscripts-core is is the cli components of the bgscripts suite.

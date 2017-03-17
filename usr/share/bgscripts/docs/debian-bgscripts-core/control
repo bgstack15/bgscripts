@@ -1,5 +1,5 @@
 Package: bgscripts-core
-Version: 1.2-4
+Version: 1.2-5
 Section: utils
 Architecture: all
 Essential: no
@@ -9,4 +9,4 @@ Maintainer: B Stack <bgstack15@gmail.com>
 Homepage: https://bgstack15.wordpress.com/
 Replaces: bgscripts (<< 1.1-31)
 Depends: python3, bash-completion
-Recommends: mailutils
+Recommends: mailutils, expect-dev
