@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	5
+Release:	6
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -365,7 +365,7 @@ exit 0
 /usr/share/bgscripts/bup.sh
 
 %changelog
-* Sat Mar 16 2017 B Stack <bgstack15@gmail.com> 1.2-5
+* Thu Mar 16 2017 B Stack <bgstack15@gmail.com> 1.2-5
 - Updated package requirements and dependencies for the right subpackages.
 - Updated description of which scripts are the most important.
 - Updated content. See docs/README.txt

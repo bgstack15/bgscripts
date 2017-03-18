@@ -209,3 +209,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Rearranged rpm and deb requirements and recommendations
 - Added ctee.sh
 - Removed treesize.sh
+
+2017-03-18 B Stack <bgstack15@gmail.com> 1.2-6
+- Trimmed ctee.sh to smallest it can be.
