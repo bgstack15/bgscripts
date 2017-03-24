@@ -212,3 +212,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 2017-03-18 B Stack <bgstack15@gmail.com> 1.2-6
 - Trimmed ctee.sh to smallest it can be.
+
+2017-03-24 B Stack <bgstack15@gmail.com> 1.2-7
+- Added autoresize.sh
+- Redesigned package to put bgscripts-gui elements in /usr/share/bgscripts/gui/
