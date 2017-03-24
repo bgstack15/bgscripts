@@ -4,18 +4,17 @@ case "${1}" in
    rpm)
 
 ### for rpm
-find * -type d \
+find * -type d -regextype grep \
    -regex 'usr\/share\/bgscripts.*' \
-   -regex '.*icons.*' \
+   -regex '.*gui.*' \
    | sed -e 's/^/%dir \//;'
 find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
-   ! -type d \
+   ! -type d -regextype grep \
    ! -regex '.*.swp' \
    ! -regex '.*?DEBIAN.*?' \
    \( \
-      -regex '.*rdp.*' -o \
-      -regex '.*get-files$' -o \
-      -regex '.*icons.*' \
+      -regex '.*gui.*' -o \
+      -regex '.*get-files$' \
    \) \
    | sed -e '
 s/^/\//
@@ -31,13 +30,12 @@ s/\(.*\.conf\)/%config %attr(666, -, -) \1/
 ### for deb
 # will be redirected to md5sum
 find . -mindepth 1 \
-   ! -type d \
+   ! -type d -regextype grep \
    ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' \
-   ! -regex '.*?DEBIAN.*' ! -regex '.*?.swp' ! -regex '.*\.git.*' \
+   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
    \( \
-      -regex '.*rdp.*' -o \
-      -regex '.*get-files$' -o \
-      -regex '.*icons.*' \
+      -regex '.*gui.*' -o \
+      -regex '.*get-files$' \
    \) \
    -printf '%P '
 

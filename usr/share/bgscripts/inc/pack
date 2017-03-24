@@ -22,7 +22,7 @@ esac
 echo " $@ " | grep -qiE -- "help|usage|\s-h\s|\s-\?" 1>/dev/null 2>&1 && {
    # display help and exit
    less -F <<EOF
-pack utility version 2017-01-25c-bgscripts
+pack utility version 2017-03-24a-bgscripts
 usage: pack [ rpm | deb | tar | scrub ] [ --debug | -d {0-10} ]
 Provides a single command for building a package. This script is customized to each package.
 optional arguments:
@@ -56,7 +56,6 @@ case "${type}" in
 rpmbuilddir=~/rpmbuild/
 sub1="core"
 packagespecfile="${package}-${version}/usr/share/${package}/docs/${package}.spec"
-#sed -i -n '1,/^\%files$/p;' ${rpmbuilddir}/SOURCES/"${packagespecfile}"
 sed -n -e '1,/^\%files$/p;' "${rpmbuilddir}/SOURCES/${packagespecfile}" > "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp" # removes files and changelog
 cd ${rpmbuilddir}/SOURCES/"${package}-${version}"
 "${rpmbuilddir}/SOURCES/${package}-${version}/usr/share/${package}/inc/get-files" rpm >> "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp"
@@ -68,7 +67,7 @@ rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/DEBIAN"
 cd "${rpmbuilddir}/SOURCES"
 rm -rf "${package}.tgz"; tar -zc --exclude='.git' --exclude='README.md' -f "${package}.tgz" "${package}-${shortversion}"
 cp -p "${rpmbuilddir}/SOURCES/${packagespecfile}" "${rpmbuilddir}/SPECS"
-cd "${rpmbuilddir}/RPMS/noarch"
+mkdir -p "${rpmbuilddir}/RPMS/noarch" cd "${rpmbuilddir}/RPMS/noarch"
 rpmbuild -bb "${rpmbuilddir}/SPECS/${package}.spec"
 rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/" "${rpmbuilddir}/SOURCES/${package}.tgz"
 
@@ -89,8 +88,8 @@ ln -sf ../share/bgscripts/bgscripts.bashrc bp
 cd "${debdir}/${package}-${version}"
 "${debdir}/${package}-${version}/usr/share/${package}/inc/get-files" deb | xargs md5sum > "${debdir}/${debiandirmain}/md5sums"
 "${debdir}/${package}-${version}/usr/share/${package}/inc/get-files-${sub1}" deb | xargs md5sum > "${debdir}/${debiandirsub1}/md5sums"
-cd ~/deb
 mv "${debdir}/${package}-${version}/.git" "${debdir}/.git$$"
+cd "${debdir}"
 
 # sub1
 rm -rf "${debdir}/${package}-${version}/DEBIAN/" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN/"

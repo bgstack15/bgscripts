@@ -4,17 +4,16 @@ case "${1}" in
    rpm)
 
 ### for rpm
-find * -type d \
+find * -type d -regextype grep \
    -regex 'usr\/share\/bgscripts.*' \
-   ! -regex '.*icons.*' \
+   ! -regex '.*gui.*' \
    | sed -e 's/^/%dir \//;'
 find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
-   ! -type d \
+   ! -type d -regextype grep \
    ! -regex '.*.swp' \
-   ! -regex '.*?DEBIAN.*?' \
-   ! -regex '.*\/rdp.*' ! -regex '.*rdp\..*' \
+   ! -regex '.*DEBIAN.*' \
+   ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
-   ! -regex '.*icons.*' \
    | sed -e '
 s/^/\//
 s/\(.*\.txt\)/%doc %attr(444, -, -) \1/
@@ -27,12 +26,11 @@ s/\(.*\.conf\)/%config %attr(666, -, -) \1/
    deb)
 
 ### for deb
-find . -mindepth 1 ! -name "${package}.spec.$$.swp" \
-   ! -type d \
-   ! -regex '.*?DEBIAN.*' ! -regex '.*?.swp' ! -regex '.*\.git.*' \
-   ! -regex '.*\/rdp.*' ! -regex '.*rdp\..*' \
+find * -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
+   ! -type d -regextype grep \
+   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
+   ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
-   ! -regex '.*icons.*' \
    -printf '%P '
 
       ;;

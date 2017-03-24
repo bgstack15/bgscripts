@@ -220,64 +220,65 @@ fi
 exit 0
 
 %files
-%dir /usr/share/bgscripts/inc/icons
-%dir /usr/share/bgscripts/inc/icons/apps
-%dir /usr/share/bgscripts/inc/icons/mimetypes
-%config %attr(666, -, -) /etc/bgscripts/rdp.conf
-%verify(link) /usr/bin/rdp
-/usr/share/bgscripts/inc/x-rdp.xml
-/usr/share/bgscripts/inc/icons/generate-icons.sh
-/usr/share/bgscripts/inc/icons/apps/rdp-square-24.png
-/usr/share/bgscripts/inc/icons/apps/rdp-circle.svg
-/usr/share/bgscripts/inc/icons/apps/rdp-Lubuntu-16.png
-/usr/share/bgscripts/inc/icons/apps/rdp-square-64.png
-/usr/share/bgscripts/inc/icons/apps/rdp-square.svg
-/usr/share/bgscripts/inc/icons/apps/rdp-clear-16.png
-/usr/share/bgscripts/inc/icons/apps/rdp-clear-24.png
-/usr/share/bgscripts/inc/icons/apps/rdp-circle-24.png
-/usr/share/bgscripts/inc/icons/apps/rdp-clear-48.png
-/usr/share/bgscripts/inc/icons/apps/rdp-circle-16.png
-/usr/share/bgscripts/inc/icons/apps/rdp-Lubuntu-64.png
-/usr/share/bgscripts/inc/icons/apps/rdp-Lubuntu-24.png
-/usr/share/bgscripts/inc/icons/apps/rdp-Lubuntu-48.png
-/usr/share/bgscripts/inc/icons/apps/rdp-circle-48.png
-/usr/share/bgscripts/inc/icons/apps/rdp-clear-32.png
-/usr/share/bgscripts/inc/icons/apps/rdp-circle-32.png
-/usr/share/bgscripts/inc/icons/apps/rdp-Lubuntu-32.png
-/usr/share/bgscripts/inc/icons/apps/rdp-square-48.png
-/usr/share/bgscripts/inc/icons/apps/rdp-square-32.png
-/usr/share/bgscripts/inc/icons/apps/rdp-Lubuntu.svg
-/usr/share/bgscripts/inc/icons/apps/rdp-circle-64.png
-/usr/share/bgscripts/inc/icons/apps/rdp-clear.svg
-/usr/share/bgscripts/inc/icons/apps/rdp-square-16.png
-/usr/share/bgscripts/inc/icons/apps/rdp-clear-64.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-hicolor-24.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Lubuntu.svg
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-hicolor-32.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Lubuntu-32.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-elementary-xfce-16.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Lubuntu-16.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Lubuntu-24.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-elementary-xfce-48.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Numix-32.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Numix-24.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Numix-16.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Lubuntu-64.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-elementary-xfce-32.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Numix-64.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-elementary-xfce-24.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Numix.svg
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-hicolor-16.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Lubuntu-48.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-hicolor-48.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-hicolor-64.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-elementary-xfce.svg
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Numix-48.png
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-hicolor.svg
-/usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-elementary-xfce-64.png
+%dir /usr/share/bgscripts/gui
+%dir /usr/share/bgscripts/gui/icons
+%dir /usr/share/bgscripts/gui/icons/apps
+%dir /usr/share/bgscripts/gui/icons/mimetypes
+/usr/share/bgscripts/gui/resize.desktop
+/usr/share/bgscripts/gui/x-rdp.xml
+/usr/share/bgscripts/gui/resize.sh
+/usr/share/bgscripts/gui/icons/generate-icons.sh
+/usr/share/bgscripts/gui/icons/apps/rdp-square-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle.svg
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square-64.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square.svg
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-64.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu.svg
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-64.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear.svg
+/usr/share/bgscripts/gui/icons/apps/rdp-square-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-32.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-32.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-32.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-32.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-64.png
+/usr/share/bgscripts/gui/rdp.sh
+/usr/share/bgscripts/gui/rdp.desktop
 /usr/share/bgscripts/inc/get-files
-/usr/share/bgscripts/inc/rdp.desktop
-/usr/share/bgscripts/rdp.sh
 
 %files core
 %dir /usr/share/bgscripts
@@ -290,6 +291,7 @@ exit 0
 %dir /usr/share/bgscripts/docs/testing/debian
 %dir /usr/share/bgscripts/docs/debian-bgscripts-core
 /etc/sudoers.d/10_bgstack15
+%config %attr(666, -, -) /etc/bgscripts/rdp.conf
 %verify(link) /usr/bin/beep
 %verify(link) /usr/bin/treesize
 %verify(link) /usr/bin/lecho
@@ -300,6 +302,7 @@ exit 0
 %verify(link) /usr/bin/bup
 %verify(link) /usr/bin/bp
 %verify(link) /usr/bin/fl
+%verify(link) /usr/bin/rdp
 %verify(link) /usr/bin/updateval
 %verify(link) /usr/bin/dli
 /usr/share/bgscripts/beep.sh
@@ -365,10 +368,11 @@ exit 0
 /usr/share/bgscripts/bup.sh
 
 %changelog
-% Fri Mar 24 2017 B Stack <bgstack15@gmail.com> 1.2-7
+* Fri Mar 24 2017 B Stack <bgstack15@gmail.com> 1.2-7
 - Redesigned package to put bgscripts-gui elements in /usr/share/bgscripts/gui/
+- Updated content. See docs/README.txt
 
-* Sat mar 18 2017 B Stack <bgstack15@gmail.com> 1.2-6
+* Sat Mar 18 2017 B Stack <bgstack15@gmail.com> 1.2-6
 - Updated content. See docs/README.txt
 
 * Thu Mar 16 2017 B Stack <bgstack15@gmail.com> 1.2-5
