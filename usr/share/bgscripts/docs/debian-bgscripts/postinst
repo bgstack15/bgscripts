@@ -1,4 +1,4 @@
-# deb postinst 2017-01-17
+# deb postinst 2017-03-24
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -9,39 +9,39 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       case "${theme}" in Numix-Circle) shape=circle;; Lubuntu) shape=Lubuntu;; esac
 
       # Deploy scalable application icons
-      cp -p /usr/share/bgscripts/inc/icons/apps/rdp-${shape}.svg /usr/share/icons/${theme}/scalable/apps/rdp.svg
+      cp -p /usr/share/bgscripts/gui/icons/apps/rdp-${shape}.svg /usr/share/icons/${theme}/scalable/apps/rdp.svg
 
       # Deploy size application icons
       for size in 16 24 32 48 64;
       do
-         xdg-icon-resource install --context apps --size "${size}" --theme "${theme}" --novendor --noupdate /usr/share/bgscripts/inc/icons/apps/rdp-${shape}-${size}.png rdp &
+         xdg-icon-resource install --context apps --size "${size}" --theme "${theme}" --novendor --noupdate /usr/share/bgscripts/gui/icons/apps/rdp-${shape}-${size}.png rdp &
       done
    done
 
    # Deploy custom application icons
    # custom: Numix-Circle apps 48 uses svg
-   cp -p /usr/share/bgscripts/inc/icons/apps/rdp-circle.svg /usr/share/icons/Numix-Circle/48/apps/rdp.svg
+   cp -p /usr/share/bgscripts/gui/icons/apps/rdp-circle.svg /usr/share/icons/Numix-Circle/48/apps/rdp.svg
    ## custom: Lubuntu has a different directory structure and may not work in the normal way.
-   #for size in 16 24 32 48 64; do cp -p "/usr/share/bgscripts/inc/icons/apps/rdp-Lubuntu-${size}.png" "/usr/share/icons/Lubuntu/apps/${size}/rdp.png"; done
+   #for size in 16 24 32 48 64; do cp -p "/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-${size}.png" "/usr/share/icons/Lubuntu/apps/${size}/rdp.png"; done
 
    # Deploy default mimetype icons
    for them in hicolor Numix Lubuntu elementary-xfce;
    do
 
       # Deploy scalable mimetype icons
-      cp -p /usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-${theme}.svg /usr/share/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
+      cp -p /usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-${theme}.svg /usr/share/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
 
       # Deploy size mimetype icons
       for size in 16 24 32 48 64;
       do
-         xdg-icon-resource install --context mimetypes --size "${size}" --theme "${theme}" --novendor --noupdate /usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-${theme}-${size}.png application-x-rdp &
+         xdg-icon-resource install --context mimetypes --size "${size}" --theme "${theme}" --novendor --noupdate /usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-${theme}-${size}.png application-x-rdp &
       done
       
    done
 
    # Deploy custom mimetype icons
    # custom: Numix
-   cp -p /usr/share/bgscripts/inc/icons/mimetypes/application-x-rdp-Numix.svg /usr/share/icons/Numix/48/mimetypes/application-x-rdp.svg
+   cp -p /usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix.svg /usr/share/icons/Numix/48/mimetypes/application-x-rdp.svg
 
    # Update icon caches
    xdg-icon-resource forceupdate &
@@ -52,8 +52,18 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
    done
 } 1>/dev/null 2>&1
 
-# Deploy desktop file
-desktop-file-install --rebuild-mime-info-cache /usr/share/bgscripts/inc/rdp.desktop 1>/dev/null 2>&1
+# Deploy desktop files
+{
+
+   # rdp application
+   desktop-file-install --rebuild-mime-info-cache /usr/share/bgscripts/gui/rdp.desktop
+
+   # resize utility
+   which virt-what && virt-what && {
+      desktop-file-install /usr/share/bgscripts/gui/resize.desktop
+   }
+
+} 1>/dev/null 2>&1
 
 # Add mimetype and set default application
 for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
@@ -63,7 +73,7 @@ do
    while read line;
    do
       which xdg-mime && {
-         su "${user}" -c "xdg-mime install /usr/share/bgscripts/inc/x-rdp.xml"
+         su "${user}" -c "xdg-mime install /usr/share/bgscripts/gui/x-rdp.xml"
          su "${user}" -c "xdg-mime default rdp.desktop ${line}"
       }
       which gio && {

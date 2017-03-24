@@ -49,7 +49,7 @@ rsync -a . %{buildroot}/ --exclude='**/.*.swp' --exclude='**/.git'
 rm -rf %{buildroot}
 
 %post
-# rpm post 2017-01-17
+# rpm post 2017-03-24
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -60,39 +60,39 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       case "${theme}" in Numix-Circle) shape=circle;; Lubuntu) shape=Lubuntu;; esac
 
       # Deploy scalable application icons
-      cp -p %{_datarootdir}/%{name}/inc/icons/apps/rdp-${shape}.svg %{_datarootdir}/icons/${theme}/scalable/apps/rdp.svg
+      cp -p %{_datarootdir}/%{name}/gui/icons/apps/rdp-${shape}.svg %{_datarootdir}/icons/${theme}/scalable/apps/rdp.svg
 
       # Deploy size application icons
       for size in 16 24 32 48 64;
       do
-         xdg-icon-resource install --context apps --size "${size}" --theme "${theme}" --novendor --noupdate %{_datarootdir}/%{name}/inc/icons/apps/rdp-${shape}-${size}.png rdp &
+         xdg-icon-resource install --context apps --size "${size}" --theme "${theme}" --novendor --noupdate %{_datarootdir}/%{name}/gui/icons/apps/rdp-${shape}-${size}.png rdp &
       done
    done
 
    # Deploy custom application icons
    # custom: Numix-Circle apps 48 uses svg
-   cp -p %{_datarootdir}/%{name}/inc/icons/apps/rdp-circle.svg %{_datarootdir}/icons/Numix-Circle/48/apps/rdp.svg
+   cp -p %{_datarootdir}/%{name}/gui/icons/apps/rdp-circle.svg %{_datarootdir}/icons/Numix-Circle/48/apps/rdp.svg
    ## custom: Lubuntu has a different directory structure and may not work in the normal way.
-   #for size in 16 24 32 48 64; do cp -p "%{_datarootdir}/%{name}/inc/icons/apps/rdp-Lubuntu-${size}.png" "${_datarootdir}/icons/Lubuntu/apps/${size}/rdp.png"; done
+   #for size in 16 24 32 48 64; do cp -p "%{_datarootdir}/%{name}/gui/icons/apps/rdp-Lubuntu-${size}.png" "${_datarootdir}/icons/Lubuntu/apps/${size}/rdp.png"; done
 
    # Deploy default mimetype icons
    for theme in hicolor Numix Lubuntu elementary-xfce;
    do
 
       # Deploy scalable mimetype icons
-      cp -p %{_datarootdir}/%{name}/inc/icons/mimetypes/application-x-rdp-${theme}.svg %{_datarootdir}/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
+      cp -p %{_datarootdir}/%{name}/gui/icons/mimetypes/application-x-rdp-${theme}.svg %{_datarootdir}/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
 
       # Deploy size mimetype icons
       for size in 16 24 32 48 64;
       do
-         xdg-icon-resource install --context mimetypes --size "${size}" --theme "${theme}" --novendor --noupdate %{_datarootdir}/%{name}/inc/icons/mimetypes/application-x-rdp-${theme}-${size}.png application-x-rdp &
+         xdg-icon-resource install --context mimetypes --size "${size}" --theme "${theme}" --novendor --noupdate %{_datarootdir}/%{name}/gui/icons/mimetypes/application-x-rdp-${theme}-${size}.png application-x-rdp &
       done
 
    done
 
    # Deploy custom mimetype icons
    # custom: Numix
-   cp -p %{_datarootdir}/%{name}/inc/icons/mimetypes/application-x-rdp-Numix.svg %{_datarootdir}/icons/Numix/48/mimetypes/application-x-rdp.svg
+   cp -p %{_datarootdir}/%{name}/gui/icons/mimetypes/application-x-rdp-Numix.svg %{_datarootdir}/icons/Numix/48/mimetypes/application-x-rdp.svg
 
    # Update icon caches
    xdg-icon-resource forceupdate &
@@ -104,8 +104,18 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
 
 } 1>/dev/null 2>&1
 
-# Deploy desktop file
-desktop-file-install --rebuild-mime-info-cache %{_datarootdir}/%{name}/inc/rdp.desktop 1>/dev/null 2>&1
+# Deploy desktop files
+{
+
+   # rdp application
+   desktop-file-install --rebuild-mime-info-cache %{_datarootdir}/%{name}/gui/rdp.desktop
+
+   # resize utility
+   which virt-what && virt-what && {
+      desktop-file-install %{_datarootdir}/%{name}/gui/resize.desktop
+   }
+
+} 1>/dev/null 2>&1
 
 # Add mimetype and set default application
 for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
@@ -115,7 +125,7 @@ do
    while read line;
    do
       which xdg-mime && {
-         su "${user}" -c "xdg-mime install %{_datarootdir}/%{name}/inc/x-rdp.xml &"
+         su "${user}" -c "xdg-mime install %{_datarootdir}/%{name}/gui/x-rdp.xml &"
          su "${user}" -c "xdg-mime default rdp.desktop ${line} &"
       }
       which gio && {
@@ -135,7 +145,7 @@ done
 exit 0
 
 %preun
-# rpm preun 2017-01-25
+# rpm preun 2017-03-24
 if test "$1" = "0";
 then
 {
@@ -145,7 +155,7 @@ then
    for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
    do
       getent passwd "${user}" && which xdg-mime && {
-         su "${user}" -c "xdg-mime uninstall %{_datarootdir}/%{name}/inc/x-rdp.xml &"
+         su "${user}" -c "xdg-mime uninstall %{_datarootdir}/%{name}/gui/x-rdp.xml &"
       }
    done
 } 1>/dev/null 2>&1
@@ -153,14 +163,14 @@ fi
 exit 0
 
 %postun
-# rpm postun 2017-01-25
+# rpm postun 2017-03-24
 if test "$1" = "0";
 then
 {
    # total uninstall
 
-   # Remove desktop file
-   rm -f %{_datarootdir}/applications/rdp.desktop
+   # Remove desktop files
+   rm -f %{_datarootdir}/applications/rdp.desktop %{_datarootdir}/applications/resize.desktop
    which update-desktop-database && update-desktop-database -q %{_datarootdir}/applications &
    
    # Remove icons

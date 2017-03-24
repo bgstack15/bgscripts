@@ -1,11 +1,11 @@
-# deb postrm 2017-01-25
+# deb postrm 2017-03-24
 if test "$1" = "remove";
 then
 {
    # total uninstall
 
-   # Remove desktop file
-   rm -f /usr/share/applications/rdp.desktop
+   # Remove desktop files
+   rm -f /usr/share/applications/rdp.desktop /usr/share/applications/resize.desktop
    which update-desktop-database && update-desktop-database -q /usr/share/applications &
 
    # Remove icons
