@@ -1,6 +1,6 @@
 #!/bin/sh
 # Filename: rdp.sh
-# Location:
+# Location: /usr/share/bgscripts/gui/
 # Author: bgstack15@gmail.com
 # Startdate: 2016-02-08 11:55:31
 # Title: Script that Opens RDP Connections Based on RDP Files
