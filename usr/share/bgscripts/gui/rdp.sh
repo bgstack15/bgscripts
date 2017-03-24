@@ -12,6 +12,7 @@
 #    2017-01-19 added rdp.conf options
 #    2017-01-25 Changed the notification if no file was specified.
 #    2017-02-02 Added file selection if called form gui without a file.
+#    2017-03-24 Updated rdp file filter patterns.
 # Usage:
 #    Warning: Some systems don't like the clipboard sharing.
 #    This script uses /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.conf for extra settings.
@@ -272,7 +273,7 @@ then
    case "${usinggui}" in
       1) # gui
          # get a file, and continue from there.
-         infile1="$( zenity --title="Open RDP File" --window-icon='/usr/share/icons/hicolor/scalable/apps/rdp.svg' --file-selection --file-filter="Remote desktop files | *.rdp *.rdpx" --file-filter="All files | *.* *" 2>/dev/null )"
+         infile1="$( zenity --title="Open RDP File" --window-icon='/usr/share/icons/hicolor/scalable/apps/rdp.svg' --file-selection --file-filter="Remote desktop files | *.[rR][dD][pP][xX] *.[Rr][Dd][Pp]" --file-filter="All files | *.* *" 2>/dev/null )"
          ;;
       *) # cli or other non-gui somehow
          displaymessage error "Please provide a file to use. There is nothing to do right now."
@@ -410,6 +411,9 @@ alloptions="${alloptions# }" # to trim leading space just to look nicer
       case "${result}" in
          131) # invalid credentials
             displaymessage error "Invalid credentials. Check file ${userfile}."
+            ;;
+         12)
+            displaymessage info "Remote system initiated a shutdown."
             ;;
          *)
             displaymessage info "Result ${result}."
