@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	7
+Release:	8
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -111,7 +111,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
    desktop-file-install --rebuild-mime-info-cache %{_datarootdir}/%{name}/gui/rdp.desktop
 
    # resize utility
-   which virt-what && virt-what && {
+   which virt-what && test -n "$( virt-what )" && {
       desktop-file-install %{_datarootdir}/%{name}/gui/resize.desktop
    }
 
@@ -378,6 +378,9 @@ exit 0
 /usr/share/bgscripts/bup.sh
 
 %changelog
+* Mon Apr  3 2017 B Stack <bgstack15@gmail.com> 1.2-8
+- Updated content. See docs/README.txt
+
 * Fri Mar 24 2017 B Stack <bgstack15@gmail.com> 1.2-7
 - Redesigned package to put bgscripts-gui elements in /usr/share/bgscripts/gui/
 - Updated content. See docs/README.txt

@@ -216,3 +216,8 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 2017-03-24 B Stack <bgstack15@gmail.com> 1.2-7
 - Added autoresize.sh
 - Redesigned package to put bgscripts-gui elements in /usr/share/bgscripts/gui/
+
+2017-04-03 B Stack <bgstack15@gmail.com> 1.2-8
+- Fixed rdp symlink in /usr/bin/
+- Fixed resize.sh to be executable
+- Fixed virt-what check to depend on any output instead of exit code
