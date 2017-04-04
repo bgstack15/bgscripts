@@ -221,3 +221,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Fixed rdp symlink in /usr/bin/
 - Fixed resize.sh to be executable
 - Fixed virt-what check to depend on any output instead of exit code
+- Replaced cifs-keepalive with shares.sh which does remounting and keepalive.

@@ -1,4 +1,4 @@
-# deb postinst 2017-03-24
+# deb postinst 2017-04-04
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -59,7 +59,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
    desktop-file-install --rebuild-mime-info-cache /usr/share/bgscripts/gui/rdp.desktop
 
    # resize utility
-   which virt-what && virt-what && {
+   which virt-what && test -n "$( virt-what )" && {
       desktop-file-install /usr/share/bgscripts/gui/resize.desktop
    }
 

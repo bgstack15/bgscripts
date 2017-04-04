@@ -49,7 +49,7 @@ rsync -a . %{buildroot}/ --exclude='**/.*.swp' --exclude='**/.git'
 rm -rf %{buildroot}
 
 %post
-# rpm post 2017-03-24
+# rpm post 2017-04-04
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -302,8 +302,8 @@ exit 0
 %dir /usr/share/bgscripts/docs/debian-bgscripts-core
 /etc/sudoers.d/10_bgstack15
 %config %attr(666, -, -) /etc/bgscripts/rdp.conf
+%verify(link) /usr/bin/shares
 %verify(link) /usr/bin/beep
-%verify(link) /usr/bin/treesize
 %verify(link) /usr/bin/lecho
 %verify(link) /usr/bin/ctee
 %verify(link) /usr/bin/send
@@ -324,7 +324,6 @@ exit 0
 /usr/share/bgscripts/inc/localize_git.sh
 %doc %attr(444, -, -) /usr/share/bgscripts/inc/scrub.txt
 /usr/share/bgscripts/inc/get-files-core
-/usr/share/bgscripts/cifs-keepalive.sh
 /usr/share/bgscripts/scrub.py
 /usr/share/bgscripts/scrub.pyc
 /usr/share/bgscripts/scrub.pyo
@@ -340,7 +339,7 @@ exit 0
 /usr/share/bgscripts/dli.py
 /usr/share/bgscripts/dli.pyc
 /usr/share/bgscripts/dli.pyo
-/usr/share/bgscripts/examples/cifs-keepalive.cron
+/usr/share/bgscripts/examples/shares-keepalive.cron
 /usr/share/bgscripts/fl.sh
 /usr/share/bgscripts/changelog.sh
 /usr/share/bgscripts/framework.sh
@@ -375,6 +374,7 @@ exit 0
 /usr/share/bgscripts/updateval.pyc
 /usr/share/bgscripts/updateval.pyo
 /usr/share/bgscripts/ctee.sh
+/usr/share/bgscripts/shares.sh
 /usr/share/bgscripts/bup.sh
 
 %changelog
