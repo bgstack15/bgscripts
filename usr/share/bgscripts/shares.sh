@@ -1,6 +1,5 @@
 #!/bin/sh
-# Filename: shares.sh
-# Location: ~/bgv/ideas/shares/
+# File: /usr/share/bgscripts/shares.sh
 # Author: bgstack15@gmail.com
 # Startdate: 2017-04-03 10:29:32
 # Title: Script that Remounts Network Mounts
@@ -8,11 +7,10 @@
 # Package: 
 # History: 
 # Usage: 
-#    You should also investigate mount-keepalive.sh
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 # Improve:
 fiversion="2017-01-17a"
-sharesversion="2017-04-03b"
+sharesversion="2017-04-04a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -23,8 +21,8 @@ version ${sharesversion}
  -V version Show script version number.
  -r remount Remount shares
  -k keepalive Touch shares to keep them from timing out
- -a all     All shares ( can be limited with -t). Default behavior if no directories provided.
- -t type    Only this type of share
+ -a all     All shares. Can be limited with -t. Default behavior if no directories provided.
+ -t <type>  Only this type of share. Needs -a flag.
 Return values:
 0 Normal
 1 Help or version info displayed
@@ -109,6 +107,9 @@ interestedparties="bgstack15@gmail.com"
 allshares=0
 tempfile1="$( mktemp )"
 action=none
+validtypes="cifs nfs nfs4 nfs3" # space delimited
+type="" # will be defined by parameter
+excludes="/proc"
 
 ## REACT TO ROOT STATUS
 #case ${is_root} in
@@ -149,6 +150,11 @@ case "${action}" in
    keepalive|remount) :;;
    *) ferror "Please provide a valid action: remount or keepalive. Aborted." && exit 2;;
 esac
+
+if test -n "${type}" && allshares=0;
+then
+   ferror "Ignoring -t ${type} because -a was not used."
+fi
 
 ## START READ CONFIG FILE TEMPLATE
 #oIFS="${IFS}"; IFS=$'\n'
@@ -198,26 +204,44 @@ trap "clean_shares" 0
 # MAIN LOOP
 #{
    # PREPARE LIST OF SHARES
+   cat /dev/null > "${tempfile1}"
    case "${allshares}" in
       0)
-         _x=0; cat /dev/null > "${tempfile1}"
+         # just the ones on the command line
+         _x=0
          while test $_x -lt $thiscount;
          do
             _x=$(( _x + 1 ))
             eval _ti="\${opt${_x}}"
-            debuglev 8 && ferror "understood ${_ti}"
+            debuglev 5 && ferror "understood ${_ti}"
             echo "${_ti}" >> "${tempfile1}"
          done
          ;;
       1)
-         echo "stub ALL"
+         # all currently mounted filesystems of the requested type
+         # get type, if requested
+         alltypes="$( echo "${validtypes}" | tr ' ' '|' )"
+         case "${type}" in
+            "")
+               searchstring="(${alltypes})"
+               ;;
+            *)
+               if echo "${validtypes}" | grep -qiE "${type}" 1>/dev/null 2>&1;
+               then
+                  searchstring="${type}"
+               else
+                  searchstring="."
+               fi
+         esac
+
+         # exclude the items in "exclude"
+         excludes="($( echo "${excludes}" | tr ' ' '|' ))"
+         test -z "${excludes}" && excludes="KFNOWOKJGOWF8ILJ" # random string
+
+         # prepare actual list of mounts
+         mount | grep -viE "${excludes}" | awk "/type ${searchstring}/{print \$3;}" >> "${tempfile1}"
          ;;
    esac
-
-   # WORKHERE; check cifs-keepalive for its "ALL" mechanism.
-   echo "action=${action}"
-   cat "${tempfile1}"
-   exit 55 
 
    case "${action}" in
       remount)
@@ -225,14 +249,13 @@ trap "clean_shares" 0
          # umount shares
          while read word;
          do
-            debuglev 5 && echo "remounting ${word}";
+            debuglev 1 && echo "remounting ${word}";
             fsudo umount -l "${word}" &
          done < "${tempfile1}"
 
          # mount shares
          while read word;
          do
-            debuglev 5 && echo "remounting ${word}";
             fsudo mount "${word}" &
          done < "${tempfile1}"
 
@@ -241,8 +264,8 @@ trap "clean_shares" 0
 
          while read word;
          do
-            debuglev 5 && echo "touching ${word}";
-            touch --no-create "${word}/.cifskeepalive" 1>/dev/null 2>&1
+            debuglev 1 && echo "touching ${word}";
+            touch --no-create "${word}/.fskeepalive" 1>/dev/null 2>&1
          done < "${tempfile1}"
 
          ;;
