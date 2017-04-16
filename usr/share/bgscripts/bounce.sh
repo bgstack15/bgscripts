@@ -1,33 +1,30 @@
 #!/bin/sh
-# File: /usr/share/bgscripts/shares.sh
+# Filename: bounce.sh
+# Location: 
 # Author: bgstack15@gmail.com
-# Startdate: 2017-04-03 10:29:32
-# Title: Script that Remounts Network Mounts
-# Purpose: To revitalize network shares that might have gone stale
-# Package: 
+# Startdate: 2017-04-16 15:39:59
+# Title: Script that Bounces Objects
+# Purpose: 
+# Package: bgscripts
 # History: 
-#    2017-04-16 Added >/dev/null to umount and mount commands. Added SECONDS for delay for remounting.
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 # Improve:
 fiversion="2017-01-17a"
-sharesversion="2017-04-04a"
+bounceversion="2017-04-16a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
-usage: shares.sh [-duV] [-r|-k] [-a] [-t <type>] [/mounted/directory [ ... ]]
-version ${sharesversion}
+usage: bounce.sh [-duV] [-i infile1]
+version ${bounceversion}
  -d debug   Show debugging info, including parsed variables.
  -u usage   Show this usage block.
  -V version Show script version number.
- -r remount Remount shares
- -k keepalive Touch shares to keep them from timing out
- -a all     All shares. Can be limited with -t. Default behavior if no directories provided.
- -t <type>  Only this type of share. Needs -a flag.
+ -i infile  Overrides default infile value. Default is none.
 Return values:
 0 Normal
 1 Help or version info displayed
-2 Invalid input options
+2 Count or type of flaglessvals is incorrect
 3 Incorrect OS type
 4 Unable to find dependency
 5 Not run as root or sudo
@@ -36,17 +33,33 @@ ENDUSAGE
 
 # DEFINE FUNCTIONS
 
+bounce_nics() {
+   for _word in $@;
+   do
+      fsudo ifdown "${_word}"
+   done
+   sleep "${SECONDS}"
+   for _word in $@;
+   do
+      fsudo ifup "${_word}"
+   done
+}
+
+bounce_dirs() {
+   # network shares
+   /usr/share/bgscripts/shares.sh -s "${SECONDS}" -r $@
+}
+
 # DEFINE TRAPS
 
-clean_shares() {
-   rm -f ${tempfile1} > /dev/null 2>&1
-   #use at end of entire script if you need to clean up tmpfiles
+clean_bounce() {
+   #rm -f ${logfile} > /dev/null 2>&1
+   [ ] #use at end of entire script if you need to clean up tmpfiles
 }
 
 CTRLC() {
    #trap "CTRLC" 2
-   #useful for controlling the ctrl+c keystroke
-   clean_shares
+   [ ] #useful for controlling the ctrl+c keystroke
 }
 
 CTRLZ() {
@@ -61,13 +74,9 @@ parseFlag() {
       # INSERT FLAGS HERE
       "d" | "debug" | "DEBUG" | "dd" ) setdebug; ferror "debug level ${debug}";;
       "u" | "usage" | "help" | "h" ) usage; exit 1;;
-      "V" | "fcheck" | "version" ) ferror "${scriptfile} version ${sharesversion}"; exit 1;;
+      "V" | "fcheck" | "version" ) ferror "${scriptfile} version ${bounceversion}"; exit 1;;
+      "s" | "sec" | "second" | "seconds" ) getval; SECONDS="${tempval}";;
       #"i" | "infile" | "inputfile" ) getval;infile1=${tempval};;
-      "r" | "remount" ) action=remount;;
-      "k" | "keepalive" ) action=keepalive;;
-      "a" | "all" ) allshares=1;;
-      "t" | "type" ) getval; type="${tempval}";;
-      "s" | "seconds" | "sec" ) getval; SECONDS="${tempval}";;
    esac
    
    debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: ${flag} = ${tempval}" || ferror "flag: ${flag}"; }
@@ -106,13 +115,8 @@ infile1=
 outfile1=
 logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="bgstack15@gmail.com"
-allshares=0
-tempfile1="$( mktemp )"
-action=none
-validtypes="cifs nfs nfs4 nfs3" # space delimited
-type="" # will be defined by parameter
-excludes="/proc"
 SECONDS=2
+BOUNCE_TYPE=
 
 ## REACT TO ROOT STATUS
 #case ${is_root} in
@@ -148,16 +152,6 @@ validateparams - "$@"
 #fi
 
 # CONFIGURE VARIABLES AFTER PARAMETERS
-action="$( echo "${action}" | tr '[:upper:]' '[:lower:]' )"
-case "${action}" in
-   keepalive|remount) :;;
-   *) ferror "Please provide a valid action: remount or keepalive. Aborted." && exit 2;;
-esac
-
-if test -n "${type}" && allshares=0;
-then
-   ferror "Ignoring -t ${type} because -a was not used."
-fi
 
 ## START READ CONFIG FILE TEMPLATE
 #oIFS="${IFS}"; IFS=$'\n'
@@ -200,82 +194,26 @@ fi
 #fi
 
 # SET TRAPS
-trap "CTRLC" 2
+#trap "CTRLC" 2
 #trap "CTRLZ" 18
-trap "clean_shares" 0
+#trap "clean_bounce" 0
+
+# Determine type of bounce
+if echo "${fallopts}" | grep -qiE "(eth|ens|enp)[0-9]";
+then
+   debuglev 5 && ferror "Found network cards";
+   bounce_nics ${fallopts}
+elif echo "${fallopts}" | grep -qiE "\/";
+then
+   debuglev 5 && "Found directory paths!";
+   bounce_dirs ${fallopts}
+else
+   echo "not supported yet: ${fallopts}"
+fi
 
 # MAIN LOOP
 #{
-   # PREPARE LIST OF SHARES
-   cat /dev/null > "${tempfile1}"
-   case "${allshares}" in
-      0)
-         # just the ones on the command line
-         _x=0
-         while test $_x -lt $thiscount;
-         do
-            _x=$(( _x + 1 ))
-            eval _ti="\${opt${_x}}"
-            debuglev 5 && ferror "understood ${_ti}"
-            echo "${_ti}" >> "${tempfile1}"
-         done
-         ;;
-      1)
-         # all currently mounted filesystems of the requested type
-         # get type, if requested
-         alltypes="$( echo "${validtypes}" | tr ' ' '|' )"
-         case "${type}" in
-            "")
-               searchstring="(${alltypes})"
-               ;;
-            *)
-               if echo "${validtypes}" | grep -qiE "${type}" 1>/dev/null 2>&1;
-               then
-                  searchstring="${type}"
-               else
-                  searchstring="."
-               fi
-         esac
-
-         # exclude the items in "exclude"
-         excludes="($( echo "${excludes}" | tr ' ' '|' ))"
-         test -z "${excludes}" && excludes="KFNOWOKJGOWF8ILJ" # random string
-
-         # prepare actual list of mounts
-         mount | grep -viE "${excludes}" | awk "/type ${searchstring}/{print \$3;}" >> "${tempfile1}"
-         ;;
-   esac
-
-   case "${action}" in
-      remount)
-
-         # umount shares
-         while read word;
-         do
-            debuglev 1 && echo "remounting ${word}";
-            fsudo umount -l "${word}" & 1>/dev/null 2>&1
-         done < "${tempfile1}"
-
-  
-
-         # mount shares
-         while read word;
-         do
-            fsudo mount "${word}" & 1>/dev/null 2>&1
-         done < "${tempfile1}"
-
-         ;;
-      keepalive)
-
-         while read word;
-         do
-            debuglev 1 && echo "touching ${word}";
-            touch --no-create "${word}/.fskeepalive" 1>/dev/null 2>&1
-         done < "${tempfile1}"
-
-         ;;
-   esac
-
+   [ ]
 #} | tee -a ${logfile}
 
 # EMAIL LOGFILE
