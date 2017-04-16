@@ -6,6 +6,7 @@
 # Purpose: To revitalize network shares that might have gone stale
 # Package: 
 # History: 
+#    2017-04-16 Added >/dev/null to umount and mount commands
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 # Improve:
@@ -250,13 +251,13 @@ trap "clean_shares" 0
          while read word;
          do
             debuglev 1 && echo "remounting ${word}";
-            fsudo umount -l "${word}" &
+            fsudo umount -l "${word}" & 1>/dev/null 2>&1
          done < "${tempfile1}"
 
          # mount shares
          while read word;
          do
-            fsudo mount "${word}" &
+            fsudo mount "${word}" & 1>/dev/null 2>&1
          done < "${tempfile1}"
 
          ;;

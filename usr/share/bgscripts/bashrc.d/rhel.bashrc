@@ -4,7 +4,8 @@ _command_dnf=yum
 which dnf 1>/dev/null 2>&1 && _command_dnf="$( which dnf 2>/dev/null )"
 
 # update-repo command for dnf update just one repository
-update-repo() {
+alias update-repo=_update_repo
+_update_repo() {
    case "${_command_dnf}" in
       *dnf)
          for source in "$@"; do
@@ -29,7 +30,8 @@ _repo_lists() {
 complete -F _repo_lists -o filenames update-repo
 
 # Reference: https://github.com/folkswithhats/fedy/issues/167
-clean-oldkernel() {
+alias clean-oldkernel=_clean_oldkernel
+_clean_oldkernel() {
    case "${_command_dnf}" in
       *yum)
          package-cleanup --oldkernel --count="${1}"

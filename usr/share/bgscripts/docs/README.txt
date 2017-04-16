@@ -222,3 +222,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Fixed resize.sh to be executable
 - Fixed virt-what check to depend on any output instead of exit code
 - Replaced cifs-keepalive with shares.sh which does remounting and keepalive.
+
+2017-04-15 B Stack <bgstack15@gmail.com> 1.2-9
+- Rewrote send.sh to be more modular for future send mechanisms
+- 
