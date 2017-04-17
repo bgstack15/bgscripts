@@ -49,7 +49,9 @@ function get_conf {
 }
 
 function dnsisgood() {
-   _result="$( $( which dig ) @${ns} +time=3 +tries=1 +short "${domain} 2>/dev/null")"
+   local _ns="${1}"
+   local _domain="${2}"
+   local _result="$( $( which dig ) @${_ns} +time=3 +tries=1 +short "${_domain} 2>/dev/null")"
    test -n "${_result}"; return $?
 }
 
@@ -180,9 +182,38 @@ test -f "${default_conffile}" && get_conf "${default_conffile}"
 
 # MAIN LOOP
 #{
-   [ ]
-   echo "---------- final values"
-   set | grep -iE "DELAY|HAVE|FOOBAR"
+   echo "${scripttrim} started"
+   debuglev 5 && {
+      ferror "using values"
+      set | grep -iE "DNSK_(DELAY|RESOLVCONF|ENABLED)" 1>&2
+   }
+   # WORKHERE: get istruthy from bgconf?
+   while test -n "${DNSK_ENABLED}" && test "${DNSK_ENABLED}" = "yes";
+   do
+      bupfile="$( /usr/bin/bup -d "${DNSK_RESOLVCONF}" | cut -d' ' -f4 )"
+
+      # collect nameservers
+      # WORKHERE: discover how to parse nameservers in a real resolv.conf
+      ns1="$( cat "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f2 )"
+      ns2="$( cat "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f3 )"
+      ns3="$( cat "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f4 )"
+      ns4="$( cat "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f5 )"
+
+      x=0
+      while test ${x} -lt 4;
+      do
+         x=$(( x + 1 ))
+         eval "thisns=\"\${ns${x}}\""
+         #echo "thisns=${thisns}"
+         if test -n "${thisns}";
+         then
+            dnsisgood "${thisns}" "${DNSK_TESTDOMAIN}"
+         fi
+      done
+
+      break
+      sleep "${DNSK_DELAY}"
+   done
 #} | tee -a ${logfile}
 
 # EMAIL LOGFILE
