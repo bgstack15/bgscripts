@@ -139,8 +139,7 @@ esac
 . ${frameworkscript} || { echo "$0: framework did not run properly. Aborted." 1>&2; exit 4; }
 infile1=
 outfile1=
-# WORKHERE: change default_conffile to the proper etc location
-default_conffile=/home/bgirton-local/rpmbuild/SOURCES/bgscripts-1.2-9/etc/bgscripts/dnskeepalive.conf
+default_conffile=/etc/bgscripts/dnskeepalive.conf
 conffile="${default_conffile}"
 logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="bgstack15@gmail.com"
