@@ -8,9 +8,9 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
+# Reference: ftemplate.sh 2017-04-17a; framework.sh 2017-04-17a
 # Improve:
-fiversion="2017-01-17a"
+fiversion="2017-04-17a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
@@ -81,13 +81,6 @@ ${scriptdir}/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
 
-# REACT TO OPERATING SYSTEM TYPE
-case $( uname -s ) in
-   Linux) [ ];;
-   FreeBSD) [ ];;
-   *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
-esac
-
 # INITIALIZE VARIABLES
 # variables set in framework:
 # today server thistty scriptdir scriptfile scripttrim
@@ -97,6 +90,13 @@ infile1=
 outfile1=
 logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="bgstack15@gmail.com"
+
+# REACT TO OPERATING SYSTEM TYPE
+case $( uname -s ) in
+   Linux) [ ];;
+   FreeBSD) [ ];;
+   *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
+esac
 
 ## REACT TO ROOT STATUS
 #case ${is_root} in

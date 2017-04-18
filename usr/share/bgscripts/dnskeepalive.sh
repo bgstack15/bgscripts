@@ -67,6 +67,7 @@ function dnsisgood() {
 }
 
 function log {
+   # send to stdout because journald will log it.
    echo "$@"
 }
 
@@ -110,17 +111,6 @@ parseFlag() {
 
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
-./framework.sh
-${scriptdir}/framework.sh
-~/bin/bgscripts/framework.sh
-~/bin/framework.sh
-~/bgscripts/framework.sh
-~/framework.sh
-/usr/local/bin/bgscripts/framework.sh
-/usr/local/bin/framework.sh
-/usr/bin/bgscripts/framework.sh
-/usr/bin/framework.sh
-/bin/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
@@ -230,8 +220,7 @@ fi
       #set | grep -iE "DNSK_(DELAY|RESOLVCONF|ENABLED|TESTDOMAIN)" 1>&2
       set | grep -iE "DNSK_" 1>&2
    }
-   # WORKHERE: get istruthy from bgconf?
-   while test -n "${DNSK_ENABLED}" && test "${DNSK_ENABLED}" = "yes";
+   while test -n "${DNSK_ENABLED}" && fistruthy "${DNSK_ENABLED}";
    do
       bupfile="$( /usr/bin/bup -d "${DNSK_RESOLVCONF}" | cut -d' ' -f4 )"
       goodorder=

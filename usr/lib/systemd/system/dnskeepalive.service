@@ -12,7 +12,8 @@ ConditionPathExists=/usr/bin/dnskeepalive
 [Service]
 Type=simple
 User=root
-ExecStart=DNSK_DELAY=60 DNSK_RESOLVCONF=/etc/resolv.conf /usr/share/bgscripts/dnskeepalive.sh
+Environment=DNSK_DELAY=60 DNSK_RESOLVCONF=/etc/resolv.conf
+ExecStart=/usr/share/bgscripts/dnskeepalive.sh
 Restart=on-abort
 StandardOutput=syslog
 StandardError=syslog

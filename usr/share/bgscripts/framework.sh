@@ -5,7 +5,7 @@
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
 # Package: bgscripts 1.2-9
-# History: fv2017-03-11b=fi2017-01-11a
+# History: fv2017-04-17a=fi2017-04-17a
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
 #    2016-07-12a fixed thisos and thisflavor; added thisflavorversion
@@ -18,10 +18,11 @@
 #       Removed mktmpfiles functions. Other miscellaneous fixes.
 #       Rewrote fwhich function to use readlink -f
 #       Fixed the parameter parsing where it uses echo. It was choking on "-n" because echo uses that.
+#    2017-04-17a Cleaned up fwhich. General cleanup of functions
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
 # Improve: 
-fversion="2017-03-11b"
+fversion="2017-04-17a"
 
 # DEFINE FUNCTIONS
 
@@ -90,6 +91,16 @@ fisnum() {
       *) fisnum=0;; # valid number
    esac
    return ${fisnum}
+}
+
+fistruthy() {
+   # call: if fistruthy "$val"; then
+   # WORKHERE: check against the bgconf one
+   local _return=
+   case "$( echo "${1}" | tr '[:upper:]' '[:lower:]' )" in
+      yes|1|y|true) _return=true;;
+   esac
+   test -n "${_return}"; return $?
 }
 
 setval() {
@@ -213,28 +224,24 @@ EOFSUDO
 }
 
 fwhich() {
-   #call: fwhich $infile1
-   #upgraded 2014-06-27
-   # attempted replacement with readlink -f for version 2017-03-11a
-   #fwhichfile=$( { which "$@" "./$@"; find . -name "$@"; } 2>/dev/null | head -n 1 | sed "s!\.\/!!g;s!\/\/!\/!g;" )
-   #fwhichdir=$( cd $( dirname $fwhichfile 2>/dev/null ); pwd )
-   #test -n "$fwhichfile" && printf "%s/%s" "$fwhichdir" "$( basename "$fwhichfile" 2>/dev/null )"
+   # call: fwhich $infile1
+   # returns the fqdn of files
    readlink -f "$@"
 }
 
 ferror() {
-   #call: ferror "$scriptfile: 2. Something bad happened-- error message 2."
+   # call: ferror "$scriptfile: 2. Something bad happened-- error message 2."
    echo "$@" 1>&2
 }
 
 linecat() {
-   #call: linecat "foo" "bar"
-   #output: foobar
+   # call: linecat "foo" "bar"
+   # output: foobar
    printf "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"
 }
 
-prepend() { while read prependinput; do linecat "$@" "$prependinput"; done }
-append()  { while read appendinput;  do linecat "$appendinput"  "$@"; done }
+prepend() { while read prependinput; do linecat "$@" "$prependinput"; done; }
+append()  { while read appendinput;  do linecat "$appendinput"  "$@"; done; }
 
 setmailopts() {
    setval 0 sendsh sendopts<<EOFSENDSH
@@ -327,7 +334,7 @@ esac
 
 # SPECIAL RUNTIME-RELATED VARIABLES
 thisppid=$( ps -p $$ -o ppid | awk 'NR>1' | tr -d ' ' )
-cronpid=$( ps -ef | grep -E "/cron" | grep -vE "grep -E /cron|det_cron|[0-9]\s*vi " | awk '{print $2}' )
+cronpid=$( ps -ef | grep -E "/c[r]on" | grep -vE "grep.*-E.*cron|[0-9]\s*vi " | awk '{print $2}' )
 test "$cronpid" = "$thisppid" && is_cronjob=1
 test ! -t 0 && stdin_piped=1
 test ! -t 1 && stdout_piped=1
