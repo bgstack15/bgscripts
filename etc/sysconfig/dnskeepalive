@@ -1,0 +1,2 @@
+DNSK_DELAY=60
+DNSK_RESOLVCONF=/etc/resolv.conf

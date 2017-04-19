@@ -98,7 +98,7 @@ fistruthy() {
    # WORKHERE: check against the bgconf one
    local _return=
    case "$( echo "${1}" | tr '[:upper:]' '[:lower:]' )" in
-      yes|1|y|true) _return=true;;
+      yes|1|y|true|always) _return=true;;
    esac
    test -n "${_return}"; return $?
 }

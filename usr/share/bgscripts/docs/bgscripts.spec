@@ -20,6 +20,7 @@ Provides:	mimehandler(application/x-rdp)
 Summary:	bgscripts core components
 Requires(pre):	/usr/bin/python3
 Requires:	bash-completion
+Requires(build): systemd
 Obsoletes:	%{name} < 1.1-31
 Recommends:	%{name}, expect
 
@@ -230,10 +231,32 @@ fi
 exit 0
 
 %post core
-# post core 2017-04-17
-systemctl daemon-reload 1>/dev/null 2>&1
-systemctl enable dnskeepalive.service 1>/dev/null 2>&1
-# WORKHERE if last removal of bgscripts-core, then disable and stop dnskeepalive.service
+# post core 2017-04-19
+# References:
+#    https://fedoraproject.org/wiki/Packaging:Scriptlets
+#    https://fedoraproject.org/wiki/Changes/systemd_file_triggers
+#    rpmrebuild -e ntp
+if test "$1" -eq 1;
+then
+   # Initial installation
+   systemctl --no-reload preset dnskeepalive.service 1>/dev/null 2>&1 || :
+fi
+
+%preun core
+# preun core 2017-04-19
+if test "$1" -eq 0;
+then
+   # Package removal, not upgrade
+   systemctl --no-reload disable --now dnskeepalive.service 1>/dev/null 2>&1 || :
+fi
+
+%postun core
+# postun core 2017-04-19
+if test "$1" -ge 1;
+then
+   # Package upgrade, not uninstall
+   systemctl try-restart dnskeepalive.service 1>/dev/null 2>&1 || :
+fi
 
 %files
 %dir /usr/share/bgscripts/gui
