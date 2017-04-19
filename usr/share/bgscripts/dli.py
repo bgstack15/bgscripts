@@ -104,6 +104,5 @@ if len(searchstring) > 0:
          if regex.match(line):
             print(line.rstrip())
 else:
-   # WORKHERE execute vi on the file
    subprocess.call(["vi",thisfile])
    pass

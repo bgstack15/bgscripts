@@ -40,8 +40,7 @@ ENDUSAGE
 function get_conf {
    local _infile="$1"
    local _tmpfile1="$( mktemp )"
-   # WORKHERE: get string from my blog
-   grep -viE "^$|^#" "${_infile}" | while read _line;
+   grep -viE '^\s*((#).*)?$' "${_infile}" | while read _line;
    do
       local _left="$( echo "${_line}" | cut -d'=' -f1 )"
       eval "_thisval=\"\${${_left}}\""
@@ -54,16 +53,29 @@ function get_conf {
 function dnsisgood() {
    local _ns="${1}"
    local _domain="${2}"
-   local _result="$( $( which dig ) @${_ns} +time=3 +tries=1 +short "${_domain}" 2>/dev/null)"
+   local _result="$( $( which dig ) @${_ns} +time=3 +tries=1 +short "${_domain}" 2>/dev/null | head -n1 )"
+   local _exit="$?"
+   debuglev 8 && ferror "ns=${_ns}   result=${_result}   exit=${_exit}"
 
-   #test -n "${_result}"; return $?
-   # test zone. this is not for production.
-   case "${_ns}" in
-      *111*) _result="foo";;
-      *) _result= ;;
+   ## test zone. this is not for production.
+   #case "${_ns}" in
+   #   *111*) _result="foo";;
+   #   *) _result= ;;
+   #esac
+
+
+   case "${_result}" in
+      *'connection timed'*) return 1;;
+      *) 
+         if test -z "${_result}" || test "${_exit}" -ne 0;
+         then
+            return 1 # this dns server is not working
+         else
+            return 0 # all is fine
+         fi
+         ;;
    esac
 
-   test -n "${_result}"; return $?
 }
 
 function log {
@@ -76,7 +88,7 @@ function log {
 clean_dnskeepalive() {
    #rm -f ${logfile} > /dev/null 2>&1
    [ ] #use at end of entire script if you need to clean up tmpfiles
-   rm -f "${lockfile}"
+   rm -f "${lockfile}" "${tmpfile1}"
 }
 
 CTRLC() {
@@ -111,6 +123,7 @@ parseFlag() {
 
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+/home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-9/usr/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
@@ -134,6 +147,7 @@ conffile="${default_conffile}"
 logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="bgstack15@gmail.com"
 lockfile="/tmp/.dnskeepalive.lock"
+tmpfile1="$( mktemp )"
 
 # REACT TO ROOT STATUS
 case ${is_root} in
@@ -146,14 +160,6 @@ case ${is_root} in
       exit 5
       ;;
 esac
-
-# SET CUSTOM SCRIPT AND VALUES
-#setval 1 sendsh sendopts<<EOFSENDSH      # if $1="1" then setvalout="critical-fail" on failure
-#/usr/share/bgscripts/send.sh -hs     #                setvalout maybe be "fail" otherwise
-#/usr/local/bin/send.sh -hs               # on success, setvalout="valid-sendsh"
-#/usr/bin/mail -s
-#EOFSENDSH
-#test "${setvalout}" = "critical-fail" && ferror "${scriptfile}: 4. mailer not found. Aborted." && exit 4
 
 # VALIDATE PARAMETERS
 # objects before the dash are options, which get filled with the optvals
@@ -174,7 +180,7 @@ if test -f "${conffile}";
 then
    get_conf "${conffile}"
 else
-   ferror "${scriptfile}: Ignoring conf file which is not found: ${conffile}."
+   test "${conffile}" = "${default_conffile}" || ferror "${scriptfile}: Ignoring conf file which is not found: ${conffile}."
 fi
 test -f "${default_conffile}" && get_conf "${default_conffile}"
 
@@ -194,7 +200,7 @@ then
       log "Already running (pid $( cat "${lockfile}" ). Aborted."
       exit 6
    else
-      log "Previous instance did not exit cleanly. Cleaning up."
+      log "Previous instance did not exit cleanly."
    fi
 fi
 
@@ -217,7 +223,7 @@ fi
    log "${scripttrim} started"
    debuglev 5 && {
       ferror "using values"
-      #set | grep -iE "DNSK_(DELAY|RESOLVCONF|ENABLED|TESTDOMAIN)" 1>&2
+      # used values: "DNSK_(DELAY|RESOLVCONF|ENABLED|TESTDOMAIN|ONESHOT)" 1>&2
       set | grep -iE "DNSK_" 1>&2
    }
    while test -n "${DNSK_ENABLED}" && fistruthy "${DNSK_ENABLED}";
@@ -227,12 +233,12 @@ fi
       badorder=
 
       # collect nameservers
-      # WORKHERE: discover how to parse nameservers in a real resolv.conf
-      ns1="$( grep -iE "nameserver" "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f2 )"
-      ns2="$( grep -iE "nameserver" "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f3 )"
-      ns3="$( grep -iE "nameserver" "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f4 )"
-      ns4="$( grep -iE "nameserver" "${DNSK_RESOLVCONF}" 2>/dev/null | cut -d' ' -f5 )"
-      oldorder="$( grep -iE "nameserver" "${DNSK_RESOLVCONF}" )"
+      grep -iE "nameserver" "${DNSK_RESOLVCONF}" 2>/dev/null | sed -r -e 's/nameserver\s*//g;' | xargs > "${tmpfile1}"
+      oldorder="$( cat "${tmpfile1}" )"
+      ns1="$( cut -d' ' -f1 "${tmpfile1}" )"
+      ns2="$( cut -d' ' -f2 "${tmpfile1}" )"
+      ns3="$( cut -d' ' -f3 "${tmpfile1}" )"
+      ns4="$( cut -d' ' -f4 "${tmpfile1}" )"
 
       x=0
       while test ${x} -lt 4;
@@ -249,14 +255,20 @@ fi
             fi
          fi
       done
-      neworder="$( echo "nameserver ${goodorder} ${badorder}" | sed -r -e 's/^ +//g;s/ +$//g;s/ +/ /g;' )"
+      neworder="$( echo "${goodorder} ${badorder}" | sed -r -e 's/^ +//g;s/ +$//g;s/ +/ /g;' )"
       if test "${neworder}" = "${oldorder}";
       then
          debuglev 1 && log "no changes required"
       else
          log "changed nameserver priority to: ${neworder}"
          /usr/bin/bup "${DNSK_RESOLVCONF}"
-         sed -i -r -e "s/^nameserver.*/${neworder}/;" "${DNSK_RESOLVCONF}"
+         {
+            grep -viE "^nameserver " "${DNSK_RESOLVCONF}"
+            for word in ${neworder};
+            do
+               printf "nameserver %s\n" "${word}"
+            done
+         } > "${tmpfile1}"; cat "${tmpfile1}" > "${DNSK_RESOLVCONF}"
       fi
 
       if test "${DNSK_ONESHOT}" = "yes" || test -n "${DNSK_ONESHOT}";

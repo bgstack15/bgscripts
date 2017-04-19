@@ -95,7 +95,6 @@ fisnum() {
 
 fistruthy() {
    # call: if fistruthy "$val"; then
-   # WORKHERE: check against the bgconf one
    local _return=
    case "$( echo "${1}" | tr '[:upper:]' '[:lower:]' )" in
       yes|1|y|true|always) _return=true;;
