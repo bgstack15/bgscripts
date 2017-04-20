@@ -263,156 +263,156 @@ fi
 %dir /usr/share/bgscripts/gui/icons
 %dir /usr/share/bgscripts/gui/icons/apps
 %dir /usr/share/bgscripts/gui/icons/mimetypes
+/usr/share/bgscripts/gui/rdp.sh
+/usr/share/bgscripts/gui/icons/generate-icons.sh
+/usr/share/bgscripts/gui/icons/apps/rdp-circle.svg
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-64.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu.svg
+/usr/share/bgscripts/gui/icons/apps/rdp-square-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-64.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-32.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square-64.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear.svg
+/usr/share/bgscripts/gui/icons/apps/rdp-circle-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-48.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-16.png
+/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-64.png
+/usr/share/bgscripts/gui/icons/apps/rdp-clear-24.png
+/usr/share/bgscripts/gui/icons/apps/rdp-square.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-32.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-32.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-48.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-32.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-16.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-64.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor.svg
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-24.png
+/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-32.png
 /usr/share/bgscripts/gui/resize.desktop
 /usr/share/bgscripts/gui/x-rdp.xml
 /usr/share/bgscripts/gui/resize.sh
-/usr/share/bgscripts/gui/icons/generate-icons.sh
-/usr/share/bgscripts/gui/icons/apps/rdp-square-24.png
-/usr/share/bgscripts/gui/icons/apps/rdp-circle.svg
-/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-16.png
-/usr/share/bgscripts/gui/icons/apps/rdp-square-64.png
-/usr/share/bgscripts/gui/icons/apps/rdp-square.svg
-/usr/share/bgscripts/gui/icons/apps/rdp-clear-16.png
-/usr/share/bgscripts/gui/icons/apps/rdp-clear-24.png
-/usr/share/bgscripts/gui/icons/apps/rdp-circle-24.png
-/usr/share/bgscripts/gui/icons/apps/rdp-clear-48.png
-/usr/share/bgscripts/gui/icons/apps/rdp-circle-16.png
-/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-64.png
-/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-24.png
-/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-48.png
-/usr/share/bgscripts/gui/icons/apps/rdp-circle-48.png
-/usr/share/bgscripts/gui/icons/apps/rdp-clear-32.png
-/usr/share/bgscripts/gui/icons/apps/rdp-circle-32.png
-/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu-32.png
-/usr/share/bgscripts/gui/icons/apps/rdp-square-48.png
-/usr/share/bgscripts/gui/icons/apps/rdp-square-32.png
-/usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu.svg
-/usr/share/bgscripts/gui/icons/apps/rdp-circle-64.png
-/usr/share/bgscripts/gui/icons/apps/rdp-clear.svg
-/usr/share/bgscripts/gui/icons/apps/rdp-square-16.png
-/usr/share/bgscripts/gui/icons/apps/rdp-clear-64.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-24.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu.svg
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-32.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-32.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-16.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-16.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-24.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-48.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-32.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-24.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-16.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-64.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-32.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-64.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-24.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix.svg
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-16.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Lubuntu-48.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-48.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor-64.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce.svg
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-48.png
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-hicolor.svg
-/usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-64.png
-/usr/share/bgscripts/gui/rdp.sh
 /usr/share/bgscripts/gui/rdp.desktop
 /usr/share/bgscripts/inc/get-files
 
 %files core
 %dir /etc/bgscripts
 %dir /usr/share/bgscripts
-%dir /usr/share/bgscripts/inc
-%dir /usr/share/bgscripts/bashrc.d
 %dir /usr/share/bgscripts/examples
 %dir /usr/share/bgscripts/docs
-%dir /usr/share/bgscripts/docs/debian-bgscripts
 %dir /usr/share/bgscripts/docs/testing
 %dir /usr/share/bgscripts/docs/testing/debian
+%dir /usr/share/bgscripts/docs/debian-bgscripts
 %dir /usr/share/bgscripts/docs/debian-bgscripts-core
-/etc/sudoers.d/10_bgstack15
-%config %attr(666, -, -) /etc/bgscripts/dnskeepalive.conf
+%dir /usr/share/bgscripts/inc
+%dir /usr/share/bgscripts/bashrc.d
 %config %attr(666, -, -) /etc/bgscripts/rdp.conf
+%config %attr(666, -, -) /etc/bgscripts/dnskeepalive.conf
 /etc/sysconfig/dnskeepalive
-%verify(link) /usr/bin/shares
-%verify(link) /usr/bin/beep
-%verify(link) /usr/bin/lecho
-%verify(link) /usr/bin/ctee
-%verify(link) /usr/bin/send
-%verify(link) /usr/bin/newscript
-%verify(link) /usr/bin/dnskeepalive
-%verify(link) /usr/bin/plecho
-%verify(link) /usr/bin/bup
-%verify(link) /usr/bin/bp
-%verify(link) /usr/bin/fl
-%verify(link) /usr/bin/rdp
-%verify(link) /usr/bin/updateval
-%verify(link) /usr/bin/dli
-/usr/share/bgscripts/beep.sh
-/usr/share/bgscripts/ftemplate.sh
-/usr/share/bgscripts/dnskeepalive.sh
+/etc/sudoers.d/10_bgstack15
+/usr/share/bgscripts/examples/shares-keepalive.cron
+/usr/share/bgscripts/scrub.py
+/usr/share/bgscripts/scrub.pyc
+/usr/share/bgscripts/scrub.pyo
+/usr/share/bgscripts/orig-send.sh
+/usr/share/bgscripts/framework.sh
+/usr/share/bgscripts/bgscripts.bashrc
+/usr/share/bgscripts/changelog.sh
+/usr/share/bgscripts/dli.py
+/usr/share/bgscripts/dli.pyc
+/usr/share/bgscripts/dli.pyo
 /usr/share/bgscripts/plecho.sh
-/usr/share/bgscripts/lecho.sh
+/usr/share/bgscripts/bounce.sh
+/usr/share/bgscripts/send.sh
+/usr/share/bgscripts/docs/testing/debian/control
+%doc %attr(444, -, -) /usr/share/bgscripts/docs/testing/debian/debian.txt
+%doc %attr(444, -, -) /usr/share/bgscripts/docs/packaging.txt
+/usr/share/bgscripts/docs/debian-bgscripts/preinst
+/usr/share/bgscripts/docs/debian-bgscripts/md5sums
+/usr/share/bgscripts/docs/debian-bgscripts/changelog
+/usr/share/bgscripts/docs/debian-bgscripts/prerm
+/usr/share/bgscripts/docs/debian-bgscripts/postinst
+/usr/share/bgscripts/docs/debian-bgscripts/compat
+/usr/share/bgscripts/docs/debian-bgscripts/postrm
+/usr/share/bgscripts/docs/debian-bgscripts/rules
+/usr/share/bgscripts/docs/debian-bgscripts/control
+/usr/share/bgscripts/docs/debian-bgscripts/conffiles
+%doc %attr(444, -, -) /usr/share/bgscripts/docs/files-for-versioning.txt
+/usr/share/bgscripts/docs/bgscripts.spec
+%doc %attr(444, -, -) /usr/share/bgscripts/docs/README.txt
+/usr/share/bgscripts/docs/debian-bgscripts-core/preinst
+/usr/share/bgscripts/docs/debian-bgscripts-core/md5sums
+/usr/share/bgscripts/docs/debian-bgscripts-core/changelog
+/usr/share/bgscripts/docs/debian-bgscripts-core/prerm
+/usr/share/bgscripts/docs/debian-bgscripts-core/postinst
+/usr/share/bgscripts/docs/debian-bgscripts-core/compat
+/usr/share/bgscripts/docs/debian-bgscripts-core/postrm
+/usr/share/bgscripts/docs/debian-bgscripts-core/rules
+/usr/share/bgscripts/docs/debian-bgscripts-core/control
+/usr/share/bgscripts/docs/debian-bgscripts-core/conffiles
+/usr/share/bgscripts/dnskeepalive.sh
 /usr/share/bgscripts/inc/pack
 /usr/share/bgscripts/inc/localize_git.sh
 %doc %attr(444, -, -) /usr/share/bgscripts/inc/scrub.txt
 /usr/share/bgscripts/inc/get-files-core
-/usr/share/bgscripts/scrub.py
-/usr/share/bgscripts/scrub.pyc
-/usr/share/bgscripts/scrub.pyo
-/usr/share/bgscripts/bgscripts.bashrc
-/usr/share/bgscripts/send.sh
-/usr/share/bgscripts/bashrc.d/fedora.bashrc
-/usr/share/bgscripts/bashrc.d/korora.bashrc
-/usr/share/bgscripts/bashrc.d/rhel.bashrc
-/usr/share/bgscripts/bashrc.d/debian.bashrc
-/usr/share/bgscripts/bashrc.d/ubuntu.bashrc
-/usr/share/bgscripts/bashrc.d/centos.bashrc
-/usr/share/bgscripts/updateval.sh
-/usr/share/bgscripts/dli.py
-/usr/share/bgscripts/dli.pyc
-/usr/share/bgscripts/dli.pyo
-/usr/share/bgscripts/examples/shares-keepalive.cron
-/usr/share/bgscripts/fl.sh
-/usr/share/bgscripts/changelog.sh
-/usr/share/bgscripts/framework.sh
-/usr/share/bgscripts/newscript.sh
-/usr/share/bgscripts/docs/debian-bgscripts/control
-/usr/share/bgscripts/docs/debian-bgscripts/prerm
-/usr/share/bgscripts/docs/debian-bgscripts/postinst
-/usr/share/bgscripts/docs/debian-bgscripts/preinst
-/usr/share/bgscripts/docs/debian-bgscripts/conffiles
-/usr/share/bgscripts/docs/debian-bgscripts/changelog
-/usr/share/bgscripts/docs/debian-bgscripts/rules
-/usr/share/bgscripts/docs/debian-bgscripts/md5sums
-/usr/share/bgscripts/docs/debian-bgscripts/postrm
-/usr/share/bgscripts/docs/debian-bgscripts/compat
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/files-for-versioning.txt
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/packaging.txt
-/usr/share/bgscripts/docs/testing/debian/control
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/testing/debian/debian.txt
-/usr/share/bgscripts/docs/bgscripts.spec
-/usr/share/bgscripts/docs/debian-bgscripts-core/control
-/usr/share/bgscripts/docs/debian-bgscripts-core/prerm
-/usr/share/bgscripts/docs/debian-bgscripts-core/postinst
-/usr/share/bgscripts/docs/debian-bgscripts-core/preinst
-/usr/share/bgscripts/docs/debian-bgscripts-core/conffiles
-/usr/share/bgscripts/docs/debian-bgscripts-core/changelog
-/usr/share/bgscripts/docs/debian-bgscripts-core/rules
-/usr/share/bgscripts/docs/debian-bgscripts-core/md5sums
-/usr/share/bgscripts/docs/debian-bgscripts-core/postrm
-/usr/share/bgscripts/docs/debian-bgscripts-core/compat
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/README.txt
 /usr/share/bgscripts/updateval.py
 /usr/share/bgscripts/updateval.pyc
 /usr/share/bgscripts/updateval.pyo
-/usr/share/bgscripts/ctee.sh
-/usr/share/bgscripts/shares.sh
-/usr/share/bgscripts/bounce.sh
+/usr/share/bgscripts/lecho.sh
+/usr/share/bgscripts/fl.sh
 /usr/share/bgscripts/bup.sh
-/usr/share/bgscripts/orig-send.sh
+/usr/share/bgscripts/newscript.sh
+/usr/share/bgscripts/bashrc.d/fedora.bashrc
+/usr/share/bgscripts/bashrc.d/rhel.bashrc
+/usr/share/bgscripts/bashrc.d/ubuntu.bashrc
+/usr/share/bgscripts/bashrc.d/korora.bashrc
+/usr/share/bgscripts/bashrc.d/debian.bashrc
+/usr/share/bgscripts/bashrc.d/centos.bashrc
+/usr/share/bgscripts/updateval.sh
+/usr/share/bgscripts/ctee.sh
+/usr/share/bgscripts/beep.sh
+/usr/share/bgscripts/ftemplate.sh
+/usr/share/bgscripts/shares.sh
 %{_unitdir}/dnskeepalive.service
 /usr/lib/systemd/system-preset/80-dnskeepalive.preset
+%verify(link) /usr/bin/dnskeepalive
+%verify(link) /usr/bin/fl
+%verify(link) /usr/bin/bp
+%verify(link) /usr/bin/plecho
+%verify(link) /usr/bin/lecho
+%verify(link) /usr/bin/rdp
+%verify(link) /usr/bin/shares
+%verify(link) /usr/bin/ctee
+%verify(link) /usr/bin/bup
+%verify(link) /usr/bin/dli
+%verify(link) /usr/bin/updateval
+%verify(link) /usr/bin/newscript
+%verify(link) /usr/bin/beep
+%verify(link) /usr/bin/send
 
 %changelog
 * Mon Apr 17 2017 B Stack <bgstack15@gmail.com> 1.2-9

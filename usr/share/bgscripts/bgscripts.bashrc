@@ -23,18 +23,16 @@
 #    2017-01-10 fixed all options on centos 5, 6 by using \s instead of \B
 #    2017-01-17 Fixed location for bgscripts package dependencies
 #    2017-03-04 removed proxy options and AIX support for version 1p2
-#    2017-04-17 Added htmlize. Modified to only run if dot-sourced
+#    2017-04-19 Added htmlize. Modified to only run if dot-sourced
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
 # Improve:
-pversion="2017-04-17a"
+pversion="2017-04-19a"
 echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && exit
 
-if echo "$0" | grep -qiE "\/bin\/[^\/]{0,8}sh$|\-(ba)?sh$";
+if test "$( readlink -f $0 2>/dev/null )" = "/usr/share/bgscripts/bgscripts.bashrc";
 then
-   :
-else
    echo "Please dot-source this script. Aborted." 1>&2
    exit 1
 fi
