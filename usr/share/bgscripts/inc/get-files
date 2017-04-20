@@ -14,7 +14,8 @@ find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
    ! -regex '.*?DEBIAN.*?' \
    \( \
       -regex '.*gui.*' -o \
-      -regex '.*get-files$' \
+      -regex '.*get-files$' -o \
+      -regex '.*rdp.*' \
    \) \
    | sed -e '
 s/^/\//

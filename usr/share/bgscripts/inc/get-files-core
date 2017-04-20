@@ -14,6 +14,7 @@ find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
    ! -regex '.*DEBIAN.*' \
    ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
+   ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \
    | sed -r -e '
 s/^/\//;
 s/(.*\.txt)/%doc %attr(444, -, -) \1/;
