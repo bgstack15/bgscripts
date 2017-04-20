@@ -225,4 +225,17 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 2017-04-15 B Stack <bgstack15@gmail.com> 1.2-9
 - Rewrote send.sh to be more modular for future send mechanisms
-- 
+- Added htmlize function to bgscripts.bashrc
+- Fixed pack file to mkdir; cd instead of mkdir cd
+- Modified shares.sh to not show error "host is down." when bouncing a network share.
+- Fixed packaging.txt for tarball-based deployments
+- Added bounce.sh, which takes dynamic input and cycles its status. Currently supports network cards and network shares.
+- Added dnskeepalive
+- Fixed bp where when you call it without sourcing it, it will not throw the cryptic error and will instead warn you to source it.
+- Rearranged ftemplate.sh "REACT TO OPERATING SYSTEM TYPE"
+- Framework changes:
+-  Added fistruthy 
+-  Cleaned up fwhich
+- RPM scriptlets:
+-  Added systemd scriptlet functions for adding/removing dnskeepalive.
+- Adjusted get-files-core to include /etc/bgscripts directory for proper cleanup
