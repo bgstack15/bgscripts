@@ -5,7 +5,7 @@ case "${1}" in
 
 ### for rpm
 find * -type d -regextype grep \
-   -regex 'usr\/share\/bgscripts.*' \
+   \( -regex 'usr\/share\/bgscripts.*' -o -regex 'etc\/bgscripts.*' \) \
    ! -regex '.*gui.*' \
    | sed -e 's/^/%dir \//;'
 find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
@@ -14,12 +14,13 @@ find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
    ! -regex '.*DEBIAN.*' \
    ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
-   | sed -e '
-s/^/\//
-s/\(.*\.txt\)/%doc %attr(444, -, -) \1/
-s/\(.*bin.*\)/%verify(link) \1/
-s/\(.*\)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/
-s/\(.*\.conf\)/%config %attr(666, -, -) \1/
+   | sed -r -e '
+s/^/\//;
+s/(.*\.txt)/%doc %attr(444, -, -) \1/;
+s/(.*bin.*)/%verify(link) \1/;
+s/(.*)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/;
+s/(.*\.conf)/%config %attr(666, -, -) \1/;
+s/(\/usr)?\/lib\/systemd\/system\/(.*)/%{_unitdir}\/\2/;
 '
 
       ;;
