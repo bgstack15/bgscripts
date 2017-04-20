@@ -263,6 +263,7 @@ fi
 %dir /usr/share/bgscripts/gui/icons
 %dir /usr/share/bgscripts/gui/icons/apps
 %dir /usr/share/bgscripts/gui/icons/mimetypes
+%config %attr(666, -, -) /etc/bgscripts/rdp.conf
 /usr/share/bgscripts/gui/rdp.sh
 /usr/share/bgscripts/gui/icons/generate-icons.sh
 /usr/share/bgscripts/gui/icons/apps/rdp-circle.svg
@@ -318,6 +319,7 @@ fi
 /usr/share/bgscripts/gui/resize.sh
 /usr/share/bgscripts/gui/rdp.desktop
 /usr/share/bgscripts/inc/get-files
+%verify(link) /usr/bin/rdp
 
 %files core
 %dir /etc/bgscripts
@@ -330,7 +332,6 @@ fi
 %dir /usr/share/bgscripts/docs/debian-bgscripts-core
 %dir /usr/share/bgscripts/inc
 %dir /usr/share/bgscripts/bashrc.d
-%config %attr(666, -, -) /etc/bgscripts/rdp.conf
 %config %attr(666, -, -) /etc/bgscripts/dnskeepalive.conf
 /etc/sysconfig/dnskeepalive
 /etc/sudoers.d/10_bgstack15
@@ -404,7 +405,6 @@ fi
 %verify(link) /usr/bin/bp
 %verify(link) /usr/bin/plecho
 %verify(link) /usr/bin/lecho
-%verify(link) /usr/bin/rdp
 %verify(link) /usr/bin/shares
 %verify(link) /usr/bin/ctee
 %verify(link) /usr/bin/bup
