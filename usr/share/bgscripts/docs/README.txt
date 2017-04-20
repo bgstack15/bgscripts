@@ -31,6 +31,10 @@ http://stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-numbe
 function isvalidip: Test string for valid IP address
 http://stackoverflow.com/questions/4890789/regex-for-an-ip-address/30023010#30023010
 
+considered systemd timer:
+   https://unix.stackexchange.com/questions/198444/run-script-every-30-min-with-systemd
+   https://unix.stackexchange.com/questions/303926/run-while-true-in-systemd-script
+
 ### CHANGELOG
 bgscripts 1.1-9
 bgscripts.bashrc includes ls --color=auto for all ls aliases.
