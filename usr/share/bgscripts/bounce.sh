@@ -4,7 +4,7 @@
 # Author: bgstack15@gmail.com
 # Startdate: 2017-04-16 15:39:59
 # Title: Script that Bounces Objects
-# Purpose: 
+# Purpose: To make it easy to restart items regardless of type
 # Package: bgscripts
 # History: 
 # Usage: 
@@ -15,12 +15,13 @@ bounceversion="2017-04-16a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
-usage: bounce.sh [-duV] [-i infile1]
+usage: bounce.sh [-duV] [object1 ...]
 version ${bounceversion}
  -d debug   Show debugging info, including parsed variables.
  -u usage   Show this usage block.
  -V version Show script version number.
- -i infile  Overrides default infile value. Default is none.
+ -s seconds DELAY in seconds between down and up cycles. Default is "${DELAY}"
+ object1... Item to restart. Supported items include network cards, network shares, and systemd services.
 Return values:
 0 Normal
 1 Help or version info displayed
@@ -36,9 +37,10 @@ ENDUSAGE
 bounce_nics() {
    for _word in $@;
    do
+      debuglev 2 && ferror "Bouncing ${_word}"
       fsudo ifdown "${_word}"
    done
-   sleep "${SECONDS}"
+   sleep "${DELAY}"
    for _word in $@;
    do
       fsudo ifup "${_word}"
@@ -47,19 +49,34 @@ bounce_nics() {
 
 bounce_dirs() {
    # network shares
-   /usr/share/bgscripts/shares.sh -s "${SECONDS}" -r $@
+   /usr/share/bgscripts/shares.sh -s "${DELAY}" -r $@
+}
+
+bounce_services() {
+   # systemd services
+   for _word in $@;
+   do
+      debuglev 2 && ferror "Bouncing ${_word}"
+      fsudo systemctl stop "${_word}"
+   done
+   sleep "${DELAY}"
+   for _word in $@;
+   do
+      fsudo systemctl start "${_word}"
+   done
 }
 
 # DEFINE TRAPS
 
 clean_bounce() {
-   #rm -f ${logfile} > /dev/null 2>&1
-   [ ] #use at end of entire script if you need to clean up tmpfiles
+   rm -f "${tmpfile1}" > /dev/null 2>&1
+   #use at end of entire script if you need to clean up tmpfiles
 }
 
 CTRLC() {
    #trap "CTRLC" 2
    [ ] #useful for controlling the ctrl+c keystroke
+   clean_bounce
 }
 
 CTRLZ() {
@@ -75,7 +92,7 @@ parseFlag() {
       "d" | "debug" | "DEBUG" | "dd" ) setdebug; ferror "debug level ${debug}";;
       "u" | "usage" | "help" | "h" ) usage; exit 1;;
       "V" | "fcheck" | "version" ) ferror "${scriptfile} version ${bounceversion}"; exit 1;;
-      "s" | "sec" | "second" | "seconds" ) getval; SECONDS="${tempval}";;
+      "s" | "sec" | "second" | "seconds" ) getval; DELAY="${tempval}";;
       #"i" | "infile" | "inputfile" ) getval;infile1=${tempval};;
    esac
    
@@ -115,8 +132,9 @@ infile1=
 outfile1=
 logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="bgstack15@gmail.com"
-SECONDS=2
+DELAY=2
 BOUNCE_TYPE=
+tmpfile1="$( mktemp )"
 
 ## REACT TO ROOT STATUS
 #case ${is_root} in
@@ -130,14 +148,6 @@ BOUNCE_TYPE=
 #      [ ]
 #      ;;
 #esac
-
-# SET CUSTOM SCRIPT AND VALUES
-#setval 1 sendsh sendopts<<EOFSENDSH      # if $1="1" then setvalout="critical-fail" on failure
-#/usr/share/bgscripts/send.sh -hs     #                setvalout maybe be "fail" otherwise
-#/usr/local/bin/send.sh -hs               # on success, setvalout="valid-sendsh"
-#/usr/bin/mail -s
-#EOFSENDSH
-#test "${setvalout}" = "critical-fail" && ferror "${scriptfile}: 4. mailer not found. Aborted." && exit 4
 
 # VALIDATE PARAMETERS
 # objects before the dash are options, which get filled with the optvals
@@ -153,38 +163,6 @@ validateparams - "$@"
 
 # CONFIGURE VARIABLES AFTER PARAMETERS
 
-## START READ CONFIG FILE TEMPLATE
-#oIFS="${IFS}"; IFS=$'\n'
-#infiledata=$( ${sed} ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${infile1}") #the crazy sed removes c style multiline comments
-#IFS="${oIFS}"; infilelines=$( echo "${infiledata}" | wc -l )
-#{ echo "${infiledata}"; echo "ENDOFFILE"; } | {
-#   while read line; do
-#   # the crazy sed removes leading and trailing whitespace, blank lines, and comments
-#   if test ! "${line}" = "ENDOFFILE";
-#   then
-#      line=$( echo "${line}" | sed -e 's/^\s*//;s/\s*$//;/^[#$]/d;s/\s*[^\]#.*$//;' )
-#      if test -n "${line}";
-#      then
-#         debuglev 8 && ferror "line=\"${line}\""
-#         if echo "${line}" | grep -qiE "\[.*\]";
-#         then
-#            # new zone
-#            zone=$( echo "${line}" | tr -d '[]' )
-#            debuglev 7 && ferror "zone=${zone}"
-#         else
-#            # directive
-#            varname=$( echo "${line}" | awk -F= '{print $1}' )
-#            varval=$( echo "${line}" | awk -F= '{$1=""; printf "%s", $0}' | sed 's/^ //;' )
-#            debuglev 7 && ferror "${zone}${varname}=\"${varval}\""
-#            # simple define variable
-#            eval "${zone}${varname}=\${varval}"
-#         fi
-#         ## this part is untested
-#         #read -p "Please type something here:" response < ${thistty}
-#         #echo "${response}"
-#      fi
-#   else
-
 ## REACT TO BEING A CRONJOB
 #if test ${is_cronjob} -eq 1;
 #then
@@ -194,31 +172,33 @@ validateparams - "$@"
 #fi
 
 # SET TRAPS
-#trap "CTRLC" 2
+trap "CTRLC" 2
 #trap "CTRLZ" 18
-#trap "clean_bounce" 0
+trap "clean_bounce" 0
 
+# MAIN LOOP
 # Determine type of bounce
 if echo "${fallopts}" | grep -qiE "(eth|ens|enp)[0-9]";
 then
-   debuglev 5 && ferror "Found network cards";
+   debuglev 1 && ferror "Found network cards";
    bounce_nics ${fallopts}
 elif echo "${fallopts}" | grep -qiE "\/";
 then
-   debuglev 5 && "Found directory paths!";
+   debuglev 1 && ferror "Found network shares";
    bounce_dirs ${fallopts}
 else
-   echo "not supported yet: ${fallopts}"
+   # check if systemd service
+   { find /usr/lib/systemd/system/ -regextype grep -regex '.*\.service' | sed -r -e 's#.*\/##;' | sort | uniq > "${tmpfile1}"; } 2>/dev/null
+   _issystemdservice=0
+   for word in ${fallopts};
+   do
+      grep -qiE "${word}" "${tmpfile1}" && _issystemdservice=$(( _issystemdservice + 1 ))
+   done
+   if test ${_issystemdservice} -gt 0;
+   then
+      debuglev 1 && ferror "Found systemd services";
+      bounce_services ${fallopts}
+   else
+      echo "not supported yet: ${fallopts}"
+   fi
 fi
-
-# MAIN LOOP
-#{
-   [ ]
-#} | tee -a ${logfile}
-
-# EMAIL LOGFILE
-#${sendsh} ${sendopts} "${server} ${scriptfile} out" ${logfile} ${interestedparties}
-
-## STOP THE READ CONFIG FILE
-#exit 0
-#fi; done; }
