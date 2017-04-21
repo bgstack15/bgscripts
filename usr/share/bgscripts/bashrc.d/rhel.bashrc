@@ -58,3 +58,17 @@ _cd_mnt() {
    return 0
 } &&
 complete -F _cd_mnt -o nospace cdmnt
+
+# for bounce.sh
+_bounce_autocomplete() {
+   local cur prev words cword;
+   _init_completion || return
+   _tmpfile1="$( mktemp )"
+   _configured_interfaces; echo "${COMPREPLY[@]}" > "${_tmpfile1}"
+   _services; echo "${COMPREPLY[@]}" >> "${_tmpfile1}"
+   awk '$3 ~ /cifs|nfs/{print $2}' /etc/fstab >> "${_tmpfile1}"
+   COMPREPLY=($( compgen -W "$( cat ${_tmpfile1} )" -- "$cur" ))
+   command rm -rf "${_tmpfile1}" 1>/dev/null 2>&1
+   return 0
+}
+complete -F _bounce_autocomplete bounce
