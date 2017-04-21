@@ -402,6 +402,7 @@ fi
 /usr/lib/systemd/system-preset/80-dnskeepalive.preset
 %verify(link) /usr/bin/dnskeepalive
 %verify(link) /usr/bin/fl
+%verify(link) /usr/bin/bounce
 %verify(link) /usr/bin/bp
 %verify(link) /usr/bin/plecho
 %verify(link) /usr/bin/lecho
@@ -415,8 +416,10 @@ fi
 %verify(link) /usr/bin/send
 
 %changelog
-* Mon Apr 17 2017 B Stack <bgstack15@gmail.com> 1.2-9
-- Updated content. See docs/README.txt
+* Thu Apr 20 2017 B Stack <bgstack15@gmail.com> 1.2-9
+- Updated content. See docs/README.txt.
+- Rearranged rdp symlink and conf to main package.
+- Added systemd tasks for dnskeepalive, a new feature.
 
 * Mon Apr  3 2017 B Stack <bgstack15@gmail.com> 1.2-8
 - Updated content. See docs/README.txt

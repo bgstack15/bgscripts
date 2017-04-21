@@ -7,13 +7,14 @@
 # Purpose: 
 # Package: bgscripts
 # History: 
+#    2017-04-20 suppressed error "bup: /etc/resolv.conf does not exist."
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    https://github.com/kvz/nsfailover/blob/master/nsfailover.sh
 # Improve:
 # Dependencies:
 fiversion="2017-01-17a"
-dnskeepaliveversion="2017-04-16a"
+dnskeepaliveversion="2017-04-20a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -261,7 +262,7 @@ fi
          debuglev 1 && log "no changes required"
       else
          log "changed nameserver priority to: ${neworder}"
-         /usr/bin/bup "${DNSK_RESOLVCONF}"
+         /usr/bin/bup "${DNSK_RESOLVCONF}" 2>/dev/null
          {
             grep -viE "^nameserver " "${DNSK_RESOLVCONF}"
             for word in ${neworder};
