@@ -19,6 +19,6 @@ tar -C ~/ -zxf ~/"${pkgfile}"
 #( cd ~/; gunzip ${pkgfile}; tar -xf ${pkgfile%%.tgz}.tar; ) # for freebsd
 /bin/rm -rf /usr/share/bgscripts; mkdir -p /usr/share/bgscripts
 /bin/mv -f ~/"bgscripts-${version}"/usr/share/"${package}"/* /usr/share/bgscripts
-for word in beep bup ctee fl lecho newscript plecho rdp send; do ln -sf ../share/bgscripts/${word}.sh /usr/bin/${word}; done; ln -sf ../share/bgscripts/bgscripts.bashrc /usr/bin/bp
+for word in beep bup ctee fl lecho newscript plecho rdp send bounce; do ln -sf ../share/bgscripts/${word}.sh /usr/bin/${word}; done; ln -sf ../share/bgscripts/bgscripts.bashrc /usr/bin/bp
 for word in dli updateval; do ln -sf ../share/bgscripts/${word}.py /usr/bin/${word}; done
 /bin/rm -rf ~/"bgscripts-${version}"*
