@@ -24,11 +24,12 @@
 #    2017-01-17 Fixed location for bgscripts package dependencies
 #    2017-03-04 removed proxy options and AIX support for version 1p2
 #    2017-04-19 Added htmlize. Modified to only run if dot-sourced
+#    2017-04-29 Added VISUAL and EDITOR.
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
 # Improve:
-pversion="2017-04-19a"
+pversion="2017-04-29a"
 echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && exit
 
 if test "$( readlink -f $0 2>/dev/null )" = "/usr/share/bgscripts/bgscripts.bashrc";
@@ -96,6 +97,8 @@ esac
 SERVER="$( hostname -s )"
 set -o vi
 export today="$( date '+%Y-%m-%d' )"
+export VISUAL=vi
+export EDITOR="$VISUAL"
 
 # SIMPLE ALIASES
 alias where='printf "%s\n%s\n" "$( id )" "$( pwd )"'

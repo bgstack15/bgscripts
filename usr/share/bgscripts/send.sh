@@ -12,7 +12,7 @@
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 # Improve:
 fiversion="2017-01-17a"
-sendversion="2017-04-15a"
+sendversion="2017-04-29a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -133,11 +133,11 @@ _send() {
    _emaillist="${3}"
    _file="${4}"
    _fromemail="${5}"
-   echo "subject=${_subject}"
-   echo "headers=${_headers}"
-   echo "emaillist=${_emaillist}"
-   echo "file=${_file}"
-   echo "fromemail=${_fromemail}"
+   #echo "subject=${_subject}"
+   #echo "headers=${_headers}"
+   #echo "emaillist=${_emaillist}"
+   #echo "file=${_file}"
+   #echo "fromemail=${_fromemail}"
 
    case "${sender}" in
       mail)

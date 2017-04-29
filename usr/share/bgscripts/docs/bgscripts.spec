@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	9
+Release:	10
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -416,6 +416,9 @@ fi
 %verify(link) /usr/bin/send
 
 %changelog
+* Sat Apr 29 2017 B Stack <bgstack15@gmail.com> 1.2-10
+- Updated content. See docs/README.txt.
+
 * Thu Apr 20 2017 B Stack <bgstack15@gmail.com> 1.2-9
 - Updated content. See docs/README.txt.
 - Rearranged rdp symlink and conf to main package.

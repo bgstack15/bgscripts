@@ -245,3 +245,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  Added systemd scriptlet functions for adding/removing dnskeepalive.
 - Adjusted get-files to include rdp symlink and conf
 - Adjusted get-files-core to include /etc/bgscripts directory for proper cleanup
+
+2017-04-29 B Stack <bgstack15@gmail.com> 1.2-10
+- Updated resize.sh to work on Lubuntu as well, by refreshing all active monitors.

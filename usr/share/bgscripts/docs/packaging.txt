@@ -12,7 +12,7 @@ Document: Below this line
 
 ### DEPLOYING from web-hosted master.tgz
 package=bgscripts
-version=1.2-9
+version=1.2-10
 pkgfile="${package}-${version}".master.tgz
 wget --quiet "http://albion320.no-ip.biz/smith122/repo/rpm/${package}/${pkgfile}" -O ~/"${pkgfile}"
 tar -C ~/ -zxf ~/"${pkgfile}"
