@@ -33,6 +33,7 @@ find * -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
    ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
    ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
+   ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \
    -printf '%P '
 
       ;;

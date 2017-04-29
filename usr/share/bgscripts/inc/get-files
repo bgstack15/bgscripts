@@ -36,7 +36,8 @@ find . -mindepth 1 \
    ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
    \( \
       -regex '.*gui.*' -o \
-      -regex '.*get-files$' \
+      -regex '.*get-files$' -o \
+      -regex '.*rdp.*' \
    \) \
    -printf '%P '
 
