@@ -10,7 +10,7 @@
 # Usage: 
 # Reference: ftemplate.sh 2017-04-17a; framework.sh 2017-04-17a
 # Improve:
-fiversion="2017-04-17a"
+fiversion="2017-04-29a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
@@ -134,7 +134,7 @@ validateparams - "$@"
 # CONFIGURE VARIABLES AFTER PARAMETERS
 
 ## START READ CONFIG FILE TEMPLATE
-#oIFS="${IFS}"; IFS=$'\n'
+#oIFS="${IFS}"; IFS="$( printf '\n' )"
 #infiledata=$( ${sed} ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${infile1}") #the crazy sed removes c style multiline comments
 #IFS="${oIFS}"; infilelines=$( echo "${infiledata}" | wc -l )
 #{ echo "${infiledata}"; echo "ENDOFFILE"; } | {

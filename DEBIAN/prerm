@@ -1,4 +1,4 @@
-# deb prerm 2017-01-25
+# deb prerm 2017-03-24
 if test "$1" = "remove";
 then
 {
@@ -8,7 +8,7 @@ then
    for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
    do
       which xdg-mime && {
-         su "${user}" -c "xdg-mime uninstall /usr/share/bgscripts/inc/x-rdp.xml &"
+         su "${user}" -c "xdg-mime uninstall /usr/share/bgscripts/gui/x-rdp.xml &"
       }
    done
 } 1>/dev/null 2>&1

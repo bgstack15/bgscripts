@@ -28,9 +28,10 @@ s/(\/usr)?\/lib\/systemd\/system\/(.*)/%{_unitdir}\/\2/;
    deb)
 
 ### for deb
-find * -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
+find . -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
    ! -type d -regextype grep \
-   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
+   ! -regex '.*hg.*' ! -regex '.*?debian-binary.*' \
+   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' ! -name 'README.md' \
    ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
    ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \

@@ -1,1 +1,6 @@
-# deb core postinst 2017-01-17
+# deb core postinst 2017-04-29
+if test "$1" = "configure";
+then
+   # Initial installation
+   systemctl --no-reload preset dnskeepalive.service 1>/dev/null 2>&1 || :
+fi

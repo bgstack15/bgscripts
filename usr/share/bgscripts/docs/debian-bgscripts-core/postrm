@@ -1,1 +1,6 @@
-# deb core postrm 2017-01-25
+# deb core postrm 2017-04-29
+if test "$1" = "upgrade";
+then
+   # Package upgrade, not uninstall
+   systemctl try-restart dnskeepalive.service 1>/dev/null 2>&1 || :
+fi

@@ -1,10 +1,10 @@
 Package: bgscripts
-Version: 1.1-33
+Version: 1.2-10
 Section: utils
 Architecture: all
 Essential: no
 Priority: optional
-Description: bgscripts for debian
+Description: bgscripts gui components
 Maintainer: B Stack <bgstack15@gmail.com>
 Homepage: https://bgstack15.wordpress.com/
 Depends: bgscripts-core

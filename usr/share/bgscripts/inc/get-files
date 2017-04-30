@@ -33,7 +33,7 @@ s/\(.*\.conf\)/%config %attr(666, -, -) \1/
 find . -mindepth 1 \
    ! -type d -regextype grep \
    ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' \
-   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
+   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' ! -name 'README.md' \
    \( \
       -regex '.*gui.*' -o \
       -regex '.*get-files$' -o \

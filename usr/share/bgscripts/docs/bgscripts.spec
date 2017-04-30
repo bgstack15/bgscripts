@@ -231,7 +231,7 @@ fi
 exit 0
 
 %post core
-# post core 2017-04-19
+# post core 2017-04-29
 # References:
 #    https://fedoraproject.org/wiki/Packaging:Scriptlets
 #    https://fedoraproject.org/wiki/Changes/systemd_file_triggers
@@ -243,7 +243,7 @@ then
 fi
 
 %preun core
-# preun core 2017-04-19
+# preun core 2017-04-29
 if test "$1" -eq 0;
 then
    # Package removal, not upgrade
@@ -251,7 +251,7 @@ then
 fi
 
 %postun core
-# postun core 2017-04-19
+# postun core 2017-04-29
 if test "$1" -ge 1;
 then
    # Package upgrade, not uninstall

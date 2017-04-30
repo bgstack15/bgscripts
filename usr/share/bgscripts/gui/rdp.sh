@@ -13,6 +13,8 @@
 #    2017-01-25 Changed the notification if no file was specified.
 #    2017-02-02 Added file selection if called form gui without a file.
 #    2017-03-24 Updated rdp file filter patterns.
+#    2017-04-29 Adjusted to remove as many bashisms as possible
+#       attempted to remove all bashisms. Please test.
 # Usage:
 #    Warning: Some systems don't like the clipboard sharing.
 #    This script uses /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.conf for extra settings.
@@ -48,7 +50,7 @@ ENDUSAGE
 }
 
 # DEFINE FUNCTIONS
-function getscreensize {
+getscreensize() {
    # call: getscreensize thisheight thiswidth
    # assigns W and H to the 2 variables sent to the function
    calledvar1=${1-thiswidth}
@@ -65,7 +67,7 @@ function getscreensize {
    rm -rf ${thisfile}
 }
 
-function getuser {
+getuser() {
    # call: getuser "${userfile}" thisuser thispassword
    # read fstab credentials file "userfile" and place in strings thisuser and thispassword
    # Note: This gets user in domain\username format.
@@ -73,8 +75,8 @@ function getuser {
    calledvar1=${2-thisuser}
    calledvar2=${3-thispassword}
 
-   [[ -n "$1" ]] && thisinfile="$1"
-   if [[ -f "${thisinfile}" ]];
+   test -n "$1" && thisinfile="$1"
+   if test -f "${thisinfile}";
    then
       for word in $( fsudo grep -viE "^$|^#" "${thisinfile}" );
       do
@@ -98,7 +100,7 @@ function getuser {
 
 }
 
-function displaymessage {
+displaymessage() {
    # call: displaymessage error "This error happened."
    _msgtype="${1}"
    _msgstring="${2}"
@@ -117,14 +119,16 @@ function displaymessage {
    esac
 }
 
-function parse_config {
+parse_config() {
    # call: parse_config "${conffile1}"
    _conffile="${1}"
+   local _tmpfile1="$( mktemp )"
 
-   oIFS="${IFS}"; IFS=$'\n'
-   conffiledata=( $( sed ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${_conffile}") ) #the crazy sed removes c style multiline comments
+   oIFS="${IFS}"; IFS="$( printf '\n' )"
+   #conffiledata=( $( sed ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${_conffile}") ) #the crazy sed removes c style multiline comments
+   sed ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${_conffile}") > "${_tmpfile1}"
    IFS="${oIFS}"
-   for line in "${conffiledata[@]}";
+   while read line;
    do line=$( echo "${line}" | sed -e 's/^\s*//;s/\s*$//;/^[#$]/d;s/\s*[^\]#.*$//;' ); test -n "${line}" && {
       # the crazy sed removes leading and trailing whitespace, blank lines, and comments
       debuglev 8 && ferror "line=\"$line\""
@@ -163,27 +167,29 @@ function parse_config {
             esac
          fi
       fi
-   }; done
+   }; done < "${_tmpfile1}"
+
+   /bin/rm -rf "${_tmpfile1}" 1>/dev/null 2>&1
 }
 
 # DEFINE TRAPS
 
-function clean_rdp {
-   #rm -f $logfile >/dev/null 2>&1
-   [ ] #use at end of entire script if you need to clean up tmpfiles
+clean_rdp() {
+   rm -f "${tmpfile1}" 1>/dev/null 2>&1
+    #use at end of entire script if you need to clean up tmpfiles
 }
 
-function CTRLC {
+CTRLC() {
    #trap "CTRLC" 2
    [ ] #useful for controlling the ctrl+c keystroke
 }
 
-function CTRLZ {
+CTRLZ() {
    #trap "CTRLZ" 18
    [ ] #useful for controlling the ctrl+z keystroke
 }
 
-function parseFlag {
+parseFlag() {
    flag=$1
    hasval=0
    case $flag in
@@ -196,11 +202,11 @@ function parseFlag {
       "gui" ) usinggui=1;;
    esac
   
-   debuglev 10 && { [[ hasval -eq 1 ]] && ferror "flag: $flag = $tempval" || ferror "flag: $flag"; }
+   debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: $flag = $tempval" || ferror "flag: $flag"; }
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if [[ -x $flocation ]] && [[ $( $flocation --fcheck ) -ge 20151123 ]]; then frameworkscript=$flocation; break; fi; done <<EOFLOCATIONS
+while read flocation; do if test -x $flocation && test $( $flocation --fcheck ) -ge 20151123; then frameworkscript=$flocation; break; fi; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
 ~/bin/bgscripts/framework.sh
@@ -214,7 +220,7 @@ ${scriptdir}/framework.sh
 /bin/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
-[[ -z "$frameworkscript" ]] && echo "$0: framework not found. Aborted." 1>&2 && exit 4
+test -z "$frameworkscript" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
@@ -235,6 +241,7 @@ rdpcommand=/usr/bin/xfreerdp
 alloptions="/sec-rdp /cert-tofu"; #where defaults go. Will be added to by infile1 options
 userfile=~/.bgirton.smith122.com # is configurable with -U flag
 fullscreenborder=80px;
+tmpfile1="$( mktemp )"
 
 # options that may be in conffiles:
 # rdpversion, rdpcommand, defaultoptions, userfile, fullscreenborder
@@ -260,7 +267,7 @@ conffile2=~/.config/bgscripts/rdp.conf
 #/usr/local/bin/send.sh -hs               # on success, setvalout="valid-sendsh"
 #/usr/bin/mail -s
 #EOFSENDSH
-#[[ "$setvalout" = "critical-fail" ]] && ferror "${scriptfile}: 4. mailer not found. Aborted." && exit 4
+#test "$setvalout" = "critical-fail" && ferror "${scriptfile}: 4. mailer not found. Aborted." && exit 4
 
 # VALIDATE PARAMETERS
 # objects before the dash are options, which get filled with the optvals
@@ -268,7 +275,7 @@ conffile2=~/.config/bgscripts/rdp.conf
 validateparams infile1 - "$@"
 
 # CONFIRM TOTAL NUMBER OF FLAGLESSVALS IS CORRECT
-if [[ $thiscount -lt 1 ]];
+if test $thiscount -lt 1;
 then
    case "${usinggui}" in
       1) # gui
@@ -300,8 +307,9 @@ then
 fi # no announcements at all if user config file does not exist.
 
 # READ RDP FILE
-remember_IFS="${IFS}"; IFS=$'\n'
-the_raw_data=($(cat "${infile1}"))
+remember_IFS="${IFS}"; IFS="$( printf '\n' )"
+#the_raw_data=($(cat "${infile1}"))
+cat "${infile1}" > "${tmpfile1}"
 IFS="${remember_IFS}"
 
 unhandled="unhandled:";
@@ -309,7 +317,8 @@ sizes=0;
 #grep -viE "^$|^#" "${infile1}" | sed "s/[^\]#.*$//;' | while read line
 #BASH BELOW
 #while read -r line
-for line in "${the_raw_data[@]}"
+#for line in "${the_raw_data[@]}"
+while read line;
 do
    debuglev 5 && ferror "$line"
    value=$( echo "${line##*:}" | tr -d '\r' )
@@ -318,8 +327,8 @@ do
    case "${line}" in
       *screen\ mode\ id*)    screenmode="${value}";;
       use\ multimon*)        multimon="${value}";;
-      desktopwidth*)        desktopwidth="${value}";((sizes+=10));;
-      desktopheight*)        desktopheight="${value}";((sizes+=1));;
+      desktopwidth*)        desktopwidth="${value}"; sizes=$(( sizes + 10 ));;
+      desktopheight*)        desktopheight="${value}"; sizes=$(( sizes + 1 ));;
       session\ bpp*)        sessionbpp="${value}";;
       full\ address*)        fulladdress="${value}";; #should include port if necessary
       compression*)        compression="${value}";;
@@ -336,7 +345,7 @@ do
       disable\ themes*)        themes="${value}";;
       *) debuglev 4 && ferror "Unknown option: ${line}";;
    esac
-done
+done < "${tmpfile1}"
 #BASH BELOW
 #done < <( grep -viE "^$|^#" "${infile1}" | sed 's/[^\]#.*$//g;' )
 
@@ -344,9 +353,9 @@ done
 getuser "${userfile}" thisuser thispassword
 
 #FINISH PARSING DIRECTIVES FOR freerdp
-[[ "${multimon}" = "1" ]] && alloptions="${alloptions} /multimon"
+test "${multimon}" = "1" && alloptions="${alloptions} /multimon"
 #echo "screenmode=${screenmode}"
-if [[ "${screenmode}" = "1" ]];
+if test "${screenmode}" = "1";
 then
    # screenmode 1 windowed
    case sizes in
@@ -357,7 +366,7 @@ then
       *) ferror "Did not understand sizing. Emulating fullscreen." && screenmode=2;;
    esac
 fi
-if [[ "${screenmode}" = "2" ]];
+if test "${screenmode}" = "2";
 then
    # screenmode 2 fullscreen
 
@@ -365,23 +374,24 @@ then
    # xfreerdp has the "/f" flag though if I want to change it in the future
    getscreensize thiswidth thisheight
    fullscreenborder=${fullscreenborder%%px}
-   ((thiswidth-=fullscreenborder)) && ((thisheight -=fullscreenborder))
+   thiswidth=$(( thiswidth - fullscreenborder ))
+   thisheight=$(( thisheight - fullscreenborder ))
    
 
    alloptions="${alloptions} /size:${thiswidth}x${thisheight}"
 fi
-[[ -n "${sessionbpp}" ]] && alloptions="${alloptions} /bpp:${sessionbpp}"
-[[ -n "${fulladdress}" ]] && alloptions="${alloptions} /v:${fulladdress}"
-[[ -n "${compression}" ]] && alloptions="${alloptions} -z"
-[[ "${displayconnectionbar}" = "1" ]] && alloptions="${alloptions} /disp"
-[[ -n "${audiomode}" ]] && alloptions="${alloptions} /audio-mode:${audiomode}"
-[[ -n "${audiocapturemode}" ]] && alloptions="${alloptions} /mic"
-[[ "${clipboard}" = "1" ]] && alloptions="${alloptions} +clipboard"
-[[ "${wallpaper}" = "0" ]] && alloptions="${alloptions} /wallpaper" #because it is actually a disable-wallpaper flag
-[[ "${fontsmoothing}" = "1" ]] && alloptions="${alloptions} /fonts"
-[[ "${windowdrag}" = "0" ]] && alloptions="${alloptions} /window-drag"
-[[ "${menuanims}" = "0" ]] && alloptions="${alloptions} /menu-anims"
-[[ "${themes}" = "0" ]] && alloptions="${alloptions} /themes"
+test -n "${sessionbpp}" && alloptions="${alloptions} /bpp:${sessionbpp}"
+test -n "${fulladdress}" && alloptions="${alloptions} /v:${fulladdress}"
+test -n "${compression}" && alloptions="${alloptions} -z"
+test "${displayconnectionbar}" = "1" && alloptions="${alloptions} /disp"
+test -n "${audiomode}" && alloptions="${alloptions} /audio-mode:${audiomode}"
+test -n "${audiocapturemode}" && alloptions="${alloptions} /mic"
+test "${clipboard}" = "1" && alloptions="${alloptions} +clipboard"
+test "${wallpaper}" = "0" && alloptions="${alloptions} /wallpaper" #because it is actually a disable-wallpaper flag
+test "${fontsmoothing}" = "1" && alloptions="${alloptions} /fonts"
+test "${windowdrag}" = "0" && alloptions="${alloptions} /window-drag"
+test "${menuanims}" = "0" && alloptions="${alloptions} /menu-anims"
+test "${themes}" = "0" && alloptions="${alloptions} /themes"
 alloptionsfordebug="${alloptions} /u:${thisuser} /p:********"
 alloptions="${alloptions} /u:${thisuser} /p:${thispassword}"
 
@@ -398,7 +408,7 @@ alloptions="${alloptions# }" # to trim leading space just to look nicer
 # SET TRAPS
 #trap "CTRLC" 2
 #trap "CTRLZ" 18
-#trap "clean_rdp" 0
+trap "clean_rdp" 0
 
 # MAIN LOOP
 #{

@@ -1,1 +1,7 @@
-# deb core prerm 2017-01-25
+# deb core prerm 2017-04-29
+# Reference: https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html
+if test "$1" = "remove";
+then
+   # Package  removal, not upgrade
+   systemctl --no-reload disable --now dnskeepalive.service 1>/dev/null 2>&1 || :
+fi

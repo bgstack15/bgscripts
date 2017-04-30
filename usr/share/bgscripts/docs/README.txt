@@ -248,3 +248,5 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 2017-04-29 B Stack <bgstack15@gmail.com> 1.2-10
 - Updated resize.sh to work on Lubuntu as well, by refreshing all active monitors.
+- Updated deb maintainer scripts which were disused for a few months.
+- Removed bashisms from rdp.sh and one lingering one from ftemplate.sh.

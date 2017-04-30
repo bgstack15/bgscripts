@@ -50,6 +50,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       touch --no-create /usr/share/icons/${word}
       gtk-update-icon-cache /usr/share/icons/${word} &
    done
+
 } 1>/dev/null 2>&1
 
 # Deploy desktop files

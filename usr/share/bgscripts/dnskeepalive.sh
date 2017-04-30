@@ -38,7 +38,7 @@ ENDUSAGE
 
 # DEFINE FUNCTIONS
 
-function get_conf {
+get_conf() {
    local _infile="$1"
    local _tmpfile1="$( mktemp )"
    grep -viE '^\s*((#).*)?$' "${_infile}" | while read _line;
@@ -51,7 +51,7 @@ function get_conf {
    /bin/rm -rf "${_tmpfile1}"
 }
 
-function dnsisgood() {
+dnsisgood() {
    local _ns="${1}"
    local _domain="${2}"
    local _result="$( $( which dig ) @${_ns} +time=3 +tries=1 +short "${_domain}" 2>/dev/null | head -n1 )"
@@ -79,7 +79,7 @@ function dnsisgood() {
 
 }
 
-function log {
+log() {
    # send to stdout because journald will log it.
    echo "$@"
 }
