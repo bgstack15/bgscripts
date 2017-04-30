@@ -126,7 +126,7 @@ parse_config() {
 
    oIFS="${IFS}"; IFS="$( printf '\n' )"
    #conffiledata=( $( sed ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${_conffile}") ) #the crazy sed removes c style multiline comments
-   sed ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${_conffile}") > "${_tmpfile1}"
+   sed ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${_conffile}" > "${_tmpfile1}"
    IFS="${oIFS}"
    while read line;
    do line=$( echo "${line}" | sed -e 's/^\s*//;s/\s*$//;/^[#$]/d;s/\s*[^\]#.*$//;' ); test -n "${line}" && {
