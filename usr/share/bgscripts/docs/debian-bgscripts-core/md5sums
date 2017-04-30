@@ -25,13 +25,13 @@ bdc601bf212af38f60e5d08535b29732  usr/share/bgscripts/bup.sh
 14cc79febb317c3e702be498350695a7  usr/share/bgscripts/docs/testing/debian/control
 5f1e28b4c7587d65a3c976f28ae63631  usr/share/bgscripts/docs/files-for-versioning.txt
 ce644aa55dc68d0245006299a0156d48  usr/share/bgscripts/docs/bgscripts.spec
-d41d8cd98f00b204e9800998ecf8427e  usr/share/bgscripts/docs/debian-bgscripts-core/conffiles
+90b0c8b53fcd20b2e54ac22d871eda2d  usr/share/bgscripts/docs/debian-bgscripts-core/conffiles
 8ec6b01b367c88d679c4dc980bcc1646  usr/share/bgscripts/docs/debian-bgscripts-core/changelog
 04fbc69551b4ee5a0ccb0e1d74fe6f06  usr/share/bgscripts/docs/debian-bgscripts-core/prerm
 a8f08ad964291479d776dc279be4cb57  usr/share/bgscripts/docs/debian-bgscripts-core/postinst
 84bc3da1b3e33a18e8d5e1bdd7a18d7a  usr/share/bgscripts/docs/debian-bgscripts-core/compat
 6d4f4fa8a596c49e4c1ef0166c66d15f  usr/share/bgscripts/docs/debian-bgscripts-core/rules
-9285cadd3bc12464d06a25e9900b16ac  usr/share/bgscripts/docs/debian-bgscripts-core/md5sums
+0bdd546b46903e8c9013071e6bcb0a49  usr/share/bgscripts/docs/debian-bgscripts-core/md5sums
 da25dfcc29f694cdb367c74b11a21891  usr/share/bgscripts/docs/debian-bgscripts-core/control
 d41d8cd98f00b204e9800998ecf8427e  usr/share/bgscripts/docs/debian-bgscripts-core/preinst
 6f5bc6ef55959227c6f3a7a55e0752b5  usr/share/bgscripts/docs/debian-bgscripts-core/postrm
@@ -41,7 +41,7 @@ d41d8cd98f00b204e9800998ecf8427e  usr/share/bgscripts/docs/debian-bgscripts-core
 32760ef0d6ff4067919e4139afc34fde  usr/share/bgscripts/docs/debian-bgscripts/postinst
 84bc3da1b3e33a18e8d5e1bdd7a18d7a  usr/share/bgscripts/docs/debian-bgscripts/compat
 6d4f4fa8a596c49e4c1ef0166c66d15f  usr/share/bgscripts/docs/debian-bgscripts/rules
-83dc33ceef45ba201ba223a512fdb30b  usr/share/bgscripts/docs/debian-bgscripts/md5sums
+7434df285abafb8b7119bd0b2a925cb8  usr/share/bgscripts/docs/debian-bgscripts/md5sums
 e09d01bf0866a7b76b5b5cfcdf4cf869  usr/share/bgscripts/docs/debian-bgscripts/control
 d41d8cd98f00b204e9800998ecf8427e  usr/share/bgscripts/docs/debian-bgscripts/preinst
 b27963aa8978f8fb014821cb6decd232  usr/share/bgscripts/docs/debian-bgscripts/postrm
