@@ -246,7 +246,13 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Adjusted get-files to include rdp symlink and conf
 - Adjusted get-files-core to include /etc/bgscripts directory for proper cleanup
 
-2017-04-29 B Stack <bgstack15@gmail.com> 1.2-10
+2017-04-30 B Stack <bgstack15@gmail.com> 1.2-10
 - Updated resize.sh to work on Lubuntu as well, by refreshing all active monitors.
-- Updated deb maintainer scripts which were disused for a few months.
+- Resumed maintenance of deb package after skipping them for a few months (last testing around version 1.1-30):
+-  Updated deb maintainer scripts.
+-  Adjusted get-files scripts for deb.
+-  Confirmed deb conffiles.
 - Removed bashisms from rdp.sh and one lingering one from ftemplate.sh.
+- Updated rdp:
+-  Adjusted default rdp.conf settings.
+-  Adjusted to use framework thisosflavor instead of using own logic.
