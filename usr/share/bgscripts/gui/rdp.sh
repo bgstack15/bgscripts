@@ -26,7 +26,7 @@
 #    Check for more error types, including when the certificate has updated and you haven't approved it yet.
 #    Long shot: Someday give the ability to edit/write RDP files.
 fiversion="2016-02-02a"
-rdpversion="2017-04-30a"
+rdpversion="2017-04-30b"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -59,7 +59,7 @@ getscreensize() {
  
    # exact methods will differ depending on available packages and distros
    # Korora 22
-   echo "${thisflavor}" | grep -qie "fedora|korora|redhat|centos|ubuntu|debian" && \
+   echo "${thisflavor}" | grep -qiE "fedora|korora|redhat|centos|ubuntu|debian" && \
       xdpyinfo | grep -oiE "dimensions.*[0-9]{3,4}x[0-9]{3,4} pi" | tr -d '[A-Za-wyz ():]' | tr 'x' ' ' > "${_tmpfile1}"
    read myx myy < "${_tmpfile1}"
    eval "${calledvar1}=\${myx}"

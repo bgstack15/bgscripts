@@ -50,8 +50,8 @@ a258a62f13e5ca6afa5b1e1d83004782  usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu
 294cf6e2d3db00f787fc66b605036248  usr/share/bgscripts/gui/icons/apps/rdp-square-24.png
 455dac918befb29fab8d7d575f610237  usr/share/bgscripts/gui/icons/apps/rdp-circle-64.png
 424fcaf063eec40882a41012668aeb79  usr/share/bgscripts/gui/resize.sh
-855b03e2264947fac5ea9d2ba7f4fcda  usr/share/bgscripts/gui/rdp.sh
+9241bacd264a0cd41ef75b836053744d  usr/share/bgscripts/gui/rdp.sh
 cb9ff522401617627d35d463c7768ae1  usr/share/bgscripts/gui/rdp.desktop
 bd4a010abbb1aaf62a16565737b2cc92  usr/share/bgscripts/inc/get-files
-855b03e2264947fac5ea9d2ba7f4fcda  usr/bin/rdp
+9241bacd264a0cd41ef75b836053744d  usr/bin/rdp
 022c07f3b877730c394b10549331ec4f  etc/bgscripts/rdp.conf
