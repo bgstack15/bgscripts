@@ -26,7 +26,7 @@
 #    Check for more error types, including when the certificate has updated and you haven't approved it yet.
 #    Long shot: Someday give the ability to edit/write RDP files.
 fiversion="2016-02-02a"
-rdpversion="2017-02-02a"
+rdpversion="2017-04-30a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -55,16 +55,16 @@ getscreensize() {
    # assigns W and H to the 2 variables sent to the function
    calledvar1=${1-thiswidth}
    calledvar2=${2-thisheight}
-   thisfile=$(mktemp -u)
+   local _tmpfile1="$(mktemp )"
  
    # exact methods will differ depending on available packages and distros
    # Korora 22
-   grep -qiE "(Fedora|Korora).*(2.)" /etc/redhat-release 2>/dev/null && \
-      xdpyinfo | grep -oiE "dimensions.*[0-9]{3,4}x[0-9]{3,4} pi" | tr -d '[A-Za-wyz ():]' | tr 'x' ' ' > ${thisfile}
-   read myx myy < ${thisfile}
+   echo "${thisflavor}" | grep -qie "fedora|korora|redhat|centos|ubuntu|debian" && \
+      xdpyinfo | grep -oiE "dimensions.*[0-9]{3,4}x[0-9]{3,4} pi" | tr -d '[A-Za-wyz ():]' | tr 'x' ' ' > "${_tmpfile1}"
+   read myx myy < "${_tmpfile1}"
    eval "${calledvar1}=\${myx}"
    eval "${calledvar2}=\${myy}"
-   rm -rf ${thisfile}
+   /bin/rm -rf "${_tmpfile1}" 2>/dev/null
 }
 
 getuser() {
