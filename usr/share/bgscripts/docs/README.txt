@@ -256,3 +256,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Updated rdp:
 -  Adjusted default rdp.conf settings.
 -  Adjusted to use framework thisosflavor instead of using own logic.
+
+2017-05-00 B Stack <bgstack15@gmail.com> 1.2-11
+- Update bounce.sh to have better autocompletion based on flags -m -n -s.

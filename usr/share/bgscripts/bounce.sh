@@ -10,18 +10,20 @@
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 # Improve:
+#   possibly take _available_interfaces from typeset -f on a fedora 25 system
 fiversion="2017-01-17a"
-bounceversion="2017-04-16a"
+bounceversion="2017-05-03a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
-usage: bounce.sh [-duV] [object1 ...]
+usage: bounce.sh [-duV] [-D delay] [-n|-d|-s] [object1 ...]
 version ${bounceversion}
  -d debug   Show debugging info, including parsed variables.
  -u usage   Show this usage block.
  -V version Show script version number.
- -s seconds DELAY in seconds between down and up cycles. Default is "${DELAY}"
+ -D delay   DELAY in seconds between down and up cycles. Default is "${DELAY}"
  object1... Item to restart. Supported items include network cards, network shares, and systemd services.
+ -n|-d|-s   Optional flags that provide nice autocomplete options.
 Return values:
 0 Normal
 1 Help or version info displayed
@@ -92,7 +94,8 @@ parseFlag() {
       "d" | "debug" | "DEBUG" | "dd" ) setdebug; ferror "debug level ${debug}";;
       "u" | "usage" | "help" | "h" ) usage; exit 1;;
       "V" | "fcheck" | "version" ) ferror "${scriptfile} version ${bounceversion}"; exit 1;;
-      "s" | "sec" | "second" | "seconds" ) getval; DELAY="${tempval}";;
+      "D" | "delay" | "DELAY" | "sec" | "second" | "seconds" ) getval; DELAY="${tempval}";;
+      "n" | "s" | "m" | "network" | "nic" | "service" | "systemdservice" | "mount" | "dir" | "directory") :;;
       #"i" | "infile" | "inputfile" ) getval;infile1=${tempval};;
    esac
    
@@ -178,7 +181,7 @@ trap "clean_bounce" 0
 
 # MAIN LOOP
 # Determine type of bounce
-if echo "${fallopts}" | grep -qiE "(eth|ens|enp)[0-9]";
+if echo "${fallopts}" | grep -qiE "(eth|ens|enp)[0-9]|(wl.{0,8})";
 then
    debuglev 1 && ferror "Found network cards";
    bounce_nics ${fallopts}
