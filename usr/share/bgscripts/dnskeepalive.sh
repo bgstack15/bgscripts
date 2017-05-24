@@ -269,7 +269,7 @@ fi
             do
                printf "nameserver %s\n" "${word}"
             done
-         } > "${tmpfile1}"; cat "${tmpfile1}" > "${DNSK_RESOLVCONF}"
+         } > "${tmpfile1}"; cat "${tmpfile1}" > "${DNSK_RESOLVCONF}"; rm -f "${tmpfile1}";
       fi
 
       if test "${DNSK_ONESHOT}" = "yes" || test -n "${DNSK_ONESHOT}";
