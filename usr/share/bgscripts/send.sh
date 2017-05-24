@@ -1,15 +1,18 @@
 #!/bin/sh
 # Filename: send.sh 2017-04-15
-# Location: 
+# Location: /usr/share/bgscripts/
 # Author: bgstack15@gmail.com
 # Startdate: 2017-04-15 20:42:07
-# Title: 
-# Purpose: 
+# Title: Wrapper Script for Sending Mail
+# Purpose: To send files easily to myself or others
 # Package: 
 # History: 
 #   send.sh 2014-10-06 edition, which was a rewrite of the 2014-06-06/2014-08-13 original edition
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
+#    using a linux sendmail-hook wrapper script: http://stackoverflow.com/questions/2591755/how-send-html-mail-using-linux-command-line
+#    adding a \n to end of </html> in htmlize: http://community.spiceworks.com/topic/108939-exchange-puts-equal-signs-at-line-breaks
+#    replaced sendmail-hook wrapper with new method: http://unix.stackexchange.com/questions/15405/how-do-i-send-html-email-using-linux-mail-command
 # Improve:
 fiversion="2017-01-17a"
 sendversion="2017-04-29a"
@@ -106,7 +109,7 @@ htmlize() {
    case "${htmltype}" in
       1)
          echo "<html><body><pre>"
-         sed -r -e 's/</\&lt/g;' -e 's/>/\&gt;/g;' -e 's/\&/\&amp;/g;'
+         sed -r -e 's/</\^lt;/g;' -e 's/>/\^gt;/g;' -e 's/\&/\^amp;/g;' | sed -r -e 's/\^(lt|amp|gt)/\&\1/g;'
          echo "</pre></body></html>"
          headers="
 Mime-Version: 1.0
