@@ -239,7 +239,7 @@ logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="bgstack15@gmail.com"
 rdpcommand=/usr/bin/xfreerdp
 alloptions="/sec-rdp /cert-tofu"; #where defaults go. Will be added to by infile1 options
-userfile=~/.bgirton.smith122.com # is configurable with -U flag
+userfile=~/.config/bgscripts/.bgirton.smith122.com # is configurable with -U flag
 fullscreenborder=80px;
 tmpfile1="$( mktemp )"
 
