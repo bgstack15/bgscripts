@@ -2,6 +2,7 @@
 # File: get-files-core
 case "${1}" in
    rpm)
+if test -n "${package}"; then cd ${rpmbuilddir}/SOURCES/"${package}-${version}"; else cd $( pwd | sed -r -e 's/(SOURCES\/[^\/]+\/).*/\1/;' ); fi
 
 ### for rpm
 find * -type d -regextype grep \
