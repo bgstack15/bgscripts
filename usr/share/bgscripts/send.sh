@@ -8,6 +8,7 @@
 # Package: 
 # History: 
 #   send.sh 2014-10-06 edition, which was a rewrite of the 2014-06-06/2014-08-13 original edition
+#    2017-05-24 Commented out the htmlize misc error
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    using a linux sendmail-hook wrapper script: http://stackoverflow.com/questions/2591755/how-send-html-mail-using-linux-command-line
@@ -123,10 +124,10 @@ Mime-Version: 1.0
 Content-Type: text/html
 Content-Transfer-Encoding: 8bit"
          ;;
-      *)
-         ferror "htmlize: Ignoring unknown parameters: $@"
-         cat
-         ;;
+      #*)
+      #   ferror "htmlize: Ignoring unknown parameters: $@"
+      #   cat
+      #   ;;
    esac
 }
 
