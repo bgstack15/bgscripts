@@ -65,7 +65,7 @@ mv -f "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp" "${rpmbuilddir}/SOURCES
 rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}"; cp -prf "${rpmbuilddir}/SOURCES/${package}-${version}" "${rpmbuilddir}/SOURCES/${package}-${shortversion}"
 rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/DEBIAN"
 cd "${rpmbuilddir}/SOURCES"
-rm -rf "${package}.tgz"; tar -zc --exclude='.git' --exclude='README.md' -f "${package}.tgz" "${package}-${shortversion}"
+rm -rf "${package}.tgz"; tar -zc --exclude='.git*' --exclude='README.md' -f "${package}.tgz" "${package}-${shortversion}"
 cp -p "${rpmbuilddir}/SOURCES/${packagespecfile}" "${rpmbuilddir}/SPECS"
 mkdir -p "${rpmbuilddir}/RPMS/noarch"; cd "${rpmbuilddir}/RPMS/noarch"
 rpmbuild -bb "${rpmbuilddir}/SPECS/${package}.spec"
@@ -91,7 +91,7 @@ cd "${debdir}"
 rm -rf "${debdir}/${package}-${version}/DEBIAN/" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN/"
 cp -pf "${debdir}/${debiandirsub1}"/* "${debdir}/${package}-${version}/DEBIAN/"
 mkdir "${debdir}/${package}" 2>/dev/null; rm -rf "${debdir}/${package}-${version}-work.tgz"
-tar -zc --exclude='.git' --exclude='README.md' -f "${debdir}/${package}-${version}-work.tgz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN
+tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}-${version}-work.tgz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN
 tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}-${version}-work.tgz"
 fakeroot dpkg-deb -b "${debdir}/${package}"
 mv -f "${debdir}/${package}.deb" "${debdir}/${package}-${sub1}-${version}.deb"
@@ -101,7 +101,7 @@ rm -rf "${debdir}/${package}-${version}-work.tgz" "${debdir}/${package}"
 rm -rf "${debdir}/${package}-${version}/DEBIAN/" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN/"
 cp -pf "${debdir}/${debiandirmain}"/* "${debdir}/${package}-${version}/DEBIAN/"
 mkdir "${debdir}/${package}" 2>/dev/null; rm -rf "${debdir}/${package}-${version}-work.tgz"
-tar -zc --exclude='.git' --exclude='README.md' -f "${debdir}/${package}-${version}-work.tgz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN
+tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}-${version}-work.tgz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN
 tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}-${version}-work.tgz"
 fakeroot dpkg-deb -b "${debdir}/${package}"
 mv -f "${debdir}/${package}.deb" "${debdir}/${package}-${version}.deb"
