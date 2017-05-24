@@ -16,7 +16,7 @@
 #    replaced sendmail-hook wrapper with new method: http://unix.stackexchange.com/questions/15405/how-do-i-send-html-email-using-linux-mail-command
 # Improve:
 fiversion="2017-01-17a"
-sendversion="2017-04-29a"
+sendversion="2017-05-24a"
 
 usage() {
    less -F >&2 <<ENDUSAGE

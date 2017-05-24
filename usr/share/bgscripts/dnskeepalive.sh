@@ -8,13 +8,14 @@
 # Package: bgscripts
 # History: 
 #    2017-04-20 suppressed error "bup: /etc/resolv.conf does not exist."
+#    2017-05-24 added extra cleanup of temp file during loop to see if this reduces clutter in /tmp directory
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    https://github.com/kvz/nsfailover/blob/master/nsfailover.sh
 # Improve:
 # Dependencies:
 fiversion="2017-01-17a"
-dnskeepaliveversion="2017-04-20a"
+dnskeepaliveversion="2017-05-24a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
