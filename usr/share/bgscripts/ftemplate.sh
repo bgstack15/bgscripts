@@ -8,9 +8,9 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-04-17a; framework.sh 2017-04-17a
+# Reference: ftemplate.sh 2017-05-24a; framework.sh 2017-05-24a
 # Improve:
-fiversion="2017-04-29a"
+fiversion="2017-05-24a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
@@ -65,7 +65,7 @@ parseFlag() {
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170524; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
 ~/bin/bgscripts/framework.sh
@@ -89,7 +89,10 @@ test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 &&
 infile1=
 outfile1=
 logfile=${scriptdir}/${scripttrim}.${today}.out
-interestedparties="bgstack15@gmail.com"
+define_if_new interestedparties "bgstack15@gmail.com"
+# SIMPLECONF
+define_if_new default_conffile "/etc/SCRIPTTRIM/SCRIPTTRIM.conf"
+define_if_new defuser_conffile ~/.config/SCRIPTTRIM/SCRIPTTRIM.conf
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
@@ -132,6 +135,22 @@ validateparams - "$@"
 #fi
 
 # CONFIGURE VARIABLES AFTER PARAMETERS
+
+## LOAD CONFIG FROM SIMPLECONF
+## This section follows a simple hierarchy of precedence, with first being used:
+##    1. parameters and flags
+##    2. environment
+##    3. config file
+##    4. default user config: ~/.config/script/script.conf
+##    5. default config: /etc/script/cript.conf
+#if test -f "${conffile}";
+#then
+#   get_conf "${conffile}"
+#else
+#   if test "${conffile}" = "${default_conffile}" || test "${conffile}" = "${defuser_conffile}"; then :; else ferror "${scriptfile}: Ignoring conf file which is not found: ${conffile}."; fi
+#fi
+#test -f "${defuser_conffile}" && get_conf "${defuser_conffile}"
+#test -f "${default_conffile}" && get_conf "${default_conffile}"
 
 ## START READ CONFIG FILE TEMPLATE
 #oIFS="${IFS}"; IFS="$( printf '\n' )"
@@ -177,6 +196,13 @@ validateparams - "$@"
 #trap "CTRLC" 2
 #trap "CTRLZ" 18
 #trap "clean_SCRIPTTRIM" 0
+
+## DEBUG SIMPLECONF
+#debuglev 5 && {
+#   ferror "Using values"
+#   # used values: EX_(OPT1|OPT2|VERBOSE)
+#   set | grep -iE "^EX_" 1>&2
+#}
 
 # MAIN LOOP
 #{

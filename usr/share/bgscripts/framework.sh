@@ -5,7 +5,7 @@
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
 # Package: bgscripts 1.2-11
-# History: fv2017-04-17a=fi2017-04-17a
+# History: fv2017-05-24a=fi2017-05-24a
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
 #    2016-07-12a fixed thisos and thisflavor; added thisflavorversion
@@ -22,7 +22,7 @@
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
 # Improve: 
-fversion="2017-04-17a"
+fversion="2017-05-24a"
 
 # DEFINE FUNCTIONS
 
@@ -288,6 +288,26 @@ isvalidip() {
    #   or: isvalidip $input && echo yes
    iptotest="${1}"
    echo "${iptotest}" | grep -qoE "^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$"
+}
+
+get_conf() {
+   # call: get_conf "${conffile}"
+   local _infile="$1"
+   local _tmpfile1="$( mktemp )"
+   sed -e 's/^\s*//;s/\s*$//;/^[#$]/d;s/\s*[^\]#.*$//;' "${_infile}" | while read _line;
+   do
+      local _left="$( echo "${_line}" | cut -d'=' -f1 )"
+      eval "_thisval=\"\${${_left}}\""
+      test -z "${_thisval}" && echo "${_line}" >> "${_tmpfile1}"
+   done
+   test -f "${_tmpfile1}" && { . "${_tmpfile1}" 1>/dev/null 2>&1; debuglev 10 && cat "${_tmpfile1}" 1>&2; }
+   /bin/rm -rf "${_tmpfile1}" 1>/dev/null 2>&1
+}
+
+define_if_new() {
+   # call: define_if_new IFW_IN_LOG_FILE "/var/log/messages"
+   eval thisval="\${${1}}"
+   test -z "${thisval}" && eval "$1"=\"$2\"
 }
 
 # INITIALIZE VARIABLES
