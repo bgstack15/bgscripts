@@ -1,8 +1,8 @@
 #!/bin/sh
-# Call: toucher root:root 0755 /var/file
+# Call: toucher 0755 root:root /var/file
 
-toucher_user="${1}"
-toucher_mode="${2}"
+toucher_mode="${1}"
+toucher_user="${2}"
 toucher_file="${3}"
 
-touch "${toucher_file}"; chown "${toucher_user}" "${toucher_file}"; chmod "${toucher_mode}" "${toucher_file}"; restorecon "${toucher_file}"
+touch "${toucher_file}"; chmod "${toucher_mode}" "${toucher_file}"; chown "${toucher_user}" "${toucher_file}"; restorecon "${toucher_file}"
