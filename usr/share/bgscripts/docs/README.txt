@@ -272,3 +272,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -   4. default user config: ~/.config/script/script.conf
 -   5. default config: /etc/script/script.conf
 -  define_if_new() function which can be helpful in simpleconf
+- Added host-bup.sh which bups the config files on a host based on its config file.

@@ -338,6 +338,8 @@ fi
 /usr/share/bgscripts/bgscripts.bashrc
 /usr/share/bgscripts/ftemplate.sh
 /usr/share/bgscripts/lecho.sh
+/usr/share/bgscripts/host-bup.sh
+%config %attr(666, -, -) /usr/share/bgscripts/docs/host-bup.conf.example
 %doc %attr(444, -, -) /usr/share/bgscripts/docs/files-for-versioning.txt
 %doc %attr(444, -, -) /usr/share/bgscripts/docs/README.txt
 %doc %attr(444, -, -) /usr/share/bgscripts/docs/packaging.txt
