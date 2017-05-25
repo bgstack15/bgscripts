@@ -3,11 +3,11 @@
 # Location: 
 # Author: bgstack15@gmail.com
 # Startdate: 2017-05-24 19:51:55
-# Title: 
-# Purpose: 
-# Package: 
+# Title: Script that Bups Configs on a Host
+# Purpose: To provide a single conf and command for backing up important conf files
+# Package: bgscripts
 # History: 
-# Usage: 
+# Usage: host-bup
 # Reference: ftemplate.sh 2017-05-24a; framework.sh 2017-05-24a
 # Improve:
 fiversion="2017-05-24a"
@@ -21,6 +21,8 @@ version ${hostbupversion}
  -u usage   Show this usage block.
  -V version Show script version number.
  -c conf    Select conf file. Default is ${conffile}.
+ -n dryrun  Only perform debugging. Do not execute scripts or build tgz.
+Debug level 5 and above will not execute the script_1_cmd values.
 Return values:
 0 Normal
 1 Help or version info displayed
@@ -62,6 +64,7 @@ parseFlag() {
       "V" | "fcheck" | "version" ) ferror "${scriptfile} version ${hostbupversion}"; exit 1;;
       #"i" | "infile" | "inputfile" ) getval;infile1=${tempval};;
       "c" | "conffile" | "conf" ) getval; conffile="${tempval}";;
+      "n" | "dry" | "dryrun" ) HOSTBUP_DRYRUN=1;;
    esac
    
    debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: ${flag} = ${tempval}" || ferror "flag: ${flag}"; }
@@ -207,25 +210,37 @@ eval hostbup_main_tar_out_file="${hostbup_main_tar_out_file}"
 
 # DEBUG SIMPLECONF
 debuglev 5 && {
-   ferror "Using values"
+   ferror "Using values:"
    # used values: EX_(OPT1|OPT2|VERBOSE)
    set | grep -iE "^hostbup" 1>&2
-   ferror "Will back up files"
+   ferror "Back up files:"
    cat "${tmpfile1}" 1>&2
 }
+define_if_new HOSTBUP_DRYRUN "${hostbup_main_dryrun}"
 
 # MAIN LOOP
 #{
 
-   # execute pre scripts
-   x=0
+   # Show if dry run
+   fistruthy "${HOSTBUP_DRYRUN}" && ferror "Dry run"
+   # Execute pre scripts
+   x=0; _shown=0
    while test $x -lt "${hostbup_main_script_count}";
    do
       x=$(( x + 1 ))
       eval thiscommand="\${hostbup_main_script_${x}_cmd}"
-      echo "want to run:"
-      echo "${thiscommand}"
+      debuglev 5 && {
+         test "${_shown}" = "0" && { ferror "Commands to run:"; _shown=1; }
+         ferror "${thiscommand}"
+      }
+      ! fistruthy "${HOSTBUP_DRYRUN}" && eval ${thiscommand}
    done
+
+   # Tarball everything
+   debuglev 1 && echo tar -zcf "${hostbup_main_tar_out_file}" -C / $( cat "${tmpfile1}" )
+   ! fistruthy "${HOSTBUP_DRYRUN}" && { {
+      tar -zcf "${hostbup_main_tar_out_file}" --ignore-failed-read -C / $( cat "${tmpfile1}" ) 2>&1 1>&3
+   } | grep -viE "tar: Removing leading ." 1>&2; } 3>&1
    [ ]
 #} | tee -a ${logfile}
 
