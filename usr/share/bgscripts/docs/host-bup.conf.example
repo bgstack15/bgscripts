@@ -1,0 +1,8 @@
+[hostbup:main]
+hostname=storage1.ipa.smith122.com
+tar_out_file=/mnt/public/Support/Systems/storage1/storage1.$( date "+%Y-%m-%dT%H%M%S" ).tgz
+script_count=1
+script_1_cmd=/usr/share/bgscripts/dli.sh -v > /tmp/dli.log
+
+[hostbup:files]
+/etc/foo
