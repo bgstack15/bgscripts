@@ -163,19 +163,19 @@ IFS="${oIFS}"; infilelines=$( echo "${infiledata}" | wc -l )
          if echo "${line}" | grep -qiE "\[.*\]";
          then
             # new zone
-            zone=$( echo "${line}" | tr -d '[]:' )
+            zone=$( echo "${line}" | tr -d '[]' | tr ':' '_' )
             debuglev 7 && ferror "zone=${zone}"
          else
             # directive
             varname=$( echo "${line}" | awk -F= '{print $1}' )
             varval=$( echo "${line}" | awk -F= '{$1=""; printf "%s", $0}' | sed 's/^ //;' )
             case "${zone}" in
-               hostbupmain)
+               hostbup_main)
                   debuglev 7 && ferror "${zone}_${varname}=\"${varval}\""
                   # simple define variable
                   eval "${zone}_${varname}=\${varval}"
                   ;;
-               hostbupfiles)
+               hostbup_files)
                   debuglev 7 && ferror "${varname}"
                   echo "${varname}" >> "${tmpfile1}"
                   ;;
@@ -203,7 +203,7 @@ trap "CTRLC" 2
 #trap "CTRLZ" 18
 trap "clean_hostbup" 0
 
-eval hostbupmain_tar_out_file="${hostbupmain_tar_out_file}"
+eval hostbup_main_tar_out_file="${hostbup_main_tar_out_file}"
 
 # DEBUG SIMPLECONF
 debuglev 5 && {
@@ -216,6 +216,16 @@ debuglev 5 && {
 
 # MAIN LOOP
 #{
+
+   # execute pre scripts
+   x=0
+   while test $x -lt "${hostbup_main_script_count}";
+   do
+      x=$(( x + 1 ))
+      eval thiscommand="\${hostbup_main_script_${x}_cmd}"
+      echo "want to run:"
+      echo "${thiscommand}"
+   done
    [ ]
 #} | tee -a ${logfile}
 
