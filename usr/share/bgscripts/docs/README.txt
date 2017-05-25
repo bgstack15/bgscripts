@@ -257,5 +257,18 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  Adjusted default rdp.conf settings.
 -  Adjusted to use framework thisosflavor instead of using own logic.
 
-2017-05-00 B Stack <bgstack15@gmail.com> 1.2-11
-- Update bounce.sh to have better autocompletion based on flags -m -n -s.
+2017-05-24 B Stack <bgstack15@gmail.com> 1.2-11
+- Updated bounce.sh to have better autocompletion based on flags -m -n -s.
+- Fixed send.sh htmlize.
+- Fixed rdp to use ~/.config/bgscripts/.credentials file.
+- Enhanced get-files package helper scripts by having them change directories on their own.
+- Added toucher script, which does touch chown chmod restorecon.
+- Added new SIMPLECONF features to framework:
+-  simpleconf uses get_conf() and is the hierarchy of precedence, and UNIX philosophy of using environment variables.
+-   SIMPLECONF follows a simple hierarchy of precedence, with first being used:
+-   1. parameters and flags
+-   2. environment
+-   3. config file
+-   4. default user config: ~/.config/script/script.conf
+-   5. default config: /etc/script/script.conf
+-  define_if_new() function which can be helpful in simpleconf

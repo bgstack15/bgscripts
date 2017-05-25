@@ -142,7 +142,7 @@ validateparams - "$@"
 ##    2. environment
 ##    3. config file
 ##    4. default user config: ~/.config/script/script.conf
-##    5. default config: /etc/script/cript.conf
+##    5. default config: /etc/script/script.conf
 #if test -f "${conffile}";
 #then
 #   get_conf "${conffile}"
