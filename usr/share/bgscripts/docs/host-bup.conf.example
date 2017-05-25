@@ -9,9 +9,12 @@ dryrun=0
 # this file
 /etc/installed/host-bup.conf
 
-# host changelog and installed packages
+# host changelog
 /etc/installed/storage1.log
+
+# installed packages from script 1
 /tmp/dnf.installed.log
+
 # Samba
 /etc/samba/smb.conf
 # NFS

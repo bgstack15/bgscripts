@@ -22,11 +22,13 @@ version ${hostbupversion}
  -V version Show script version number.
  -c conf    Select conf file. Default is ${conffile}.
  -n dryrun  Only perform debugging. Do not execute scripts or build tgz.
+ -f force   Ignore hostname mismatch.
+host-bup.sh is designed to easily bup the config files on a host.
 Debug level 5 and above will not execute the script_1_cmd values.
 Return values:
 0 Normal
 1 Help or version info displayed
-2 Count or type of flaglessvals is incorrect
+2 Hostname mismatch
 3 Incorrect OS type
 4 Unable to find dependency
 5 Not run as root or sudo
@@ -65,6 +67,7 @@ parseFlag() {
       #"i" | "infile" | "inputfile" ) getval;infile1=${tempval};;
       "c" | "conffile" | "conf" ) getval; conffile="${tempval}";;
       "n" | "dry" | "dryrun" ) HOSTBUP_DRYRUN=1;;
+      "f" | "force" ) HOSTBUP_FORCE=1;;
    esac
    
    debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: ${flag} = ${tempval}" || ferror "flag: ${flag}"; }
@@ -220,6 +223,17 @@ define_if_new HOSTBUP_DRYRUN "${hostbup_main_dryrun}"
 
 # MAIN LOOP
 #{
+
+   # Check against hostname
+   if ! test "$( hostname --fqdn )" = "${hostbup_main_hostname}";
+   then
+      if ! test "${HOSTBUP_FORCE}";
+      then
+         ferror "${scripttrim}: 2. Current hostname $( hostname --fqdn ) does not match conffile hostname ${hostbup_main_hostname}."
+         ferror "Override this with the --force option. Aborted."
+         exit 2
+      fi
+   fi
 
    # Show if dry run
    fistruthy "${HOSTBUP_DRYRUN}" && ferror "Dry run"
