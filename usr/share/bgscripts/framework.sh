@@ -294,7 +294,7 @@ get_conf() {
    # call: get_conf "${conffile}"
    local _infile="$1"
    local _tmpfile1="$( mktemp )"
-   sed -e 's/^\s*//;s/\s*$//;/^[#$]/d;s/\s*[^\]#.*$//;' "${_infile}" | while read _line;
+   sed -e 's/^\s*//;s/\s*$//;/^[#$]/d;s/\s*[^\]#.*$//;' "${_infile}" | grep -viE "^$" | while read _line;
    do
       local _left="$( echo "${_line}" | cut -d'=' -f1 )"
       eval "_thisval=\"\${${_left}}\""
