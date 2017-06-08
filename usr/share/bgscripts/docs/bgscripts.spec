@@ -50,7 +50,7 @@ rsync -a . %{buildroot}/ --exclude='**/.*.swp' --exclude='**/.git'
 rm -rf %{buildroot}
 
 %post
-# rpm post 2017-04-04
+# rpm post 2017-06-08
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -112,9 +112,10 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
    desktop-file-install --rebuild-mime-info-cache %{_datarootdir}/%{name}/gui/rdp.desktop
 
    # resize utility
-   which virt-what && test -n "$( virt-what )" && {
+   if { which virt-what && test -n "$( virt-what )"; } || test -f /usr/bin/spice-vdagent;
+   then
       desktop-file-install %{_datarootdir}/%{name}/gui/resize.desktop
-   }
+   fi
 
 } 1>/dev/null 2>&1
 
