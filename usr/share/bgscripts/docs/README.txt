@@ -273,3 +273,8 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -   5. default config: /etc/script/script.conf
 -  define_if_new() function which can be helpful in simpleconf
 - Added host-bup.sh which bups the config files on a host based on its config file.
+
+2017-06-08 B Stack <bgstack15@gmail.com> 1.2-12
+- Update ftemplate/framework
+-  Included "c" | "conf" for conffile.
+-  Updated help text to include conffile.

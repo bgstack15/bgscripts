@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	11
+Release:	12
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -420,6 +420,9 @@ fi
 /usr/lib/systemd/system-preset/80-dnskeepalive.preset
 
 %changelog
+* Wed Jun  8 2017 B Stack <bgstack15@gmail.com> 1.2-12
+- Updated content. See docs/README.txt.
+
 * Wed May  3 2017 B Stack <bgstack15@gmail.com> 1.2-11
 - Updated content. See docs/README.txt.
 

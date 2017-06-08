@@ -1,4 +1,5 @@
 docs/README.txt
+docs/bgscripts-version.txt
 docs/bgscripts.spec
 docs/debian-bgscripts/control
 docs/debian-bgscripts-core/control
