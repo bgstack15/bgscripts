@@ -8,26 +8,26 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-05-24a; framework.sh 2017-05-24a
+# Reference: ftemplate.sh 2017-06-08a; framework.sh 2017-06-08a
 # Improve:
-fiversion="2017-05-24a"
+fiversion="2017-06-08a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
    less -F >&2 <<ENDUSAGE
-usage: SCRIPTNAME [-duV] [-i infile1]
+usage: SCRIPTNAME [-duV] [-c conffile]
 version ${SCRIPTTRIMversion}
  -d debug   Show debugging info, including parsed variables.
  -u usage   Show this usage block.
  -V version Show script version number.
- -i infile  Overrides default infile value. Default is none.
+ -c conf    Read in this config file.
 Return values:
-0 Normal
-1 Help or version info displayed
-2 Count or type of flaglessvals is incorrect
-3 Incorrect OS type
-4 Unable to find dependency
-5 Not run as root or sudo
+ 0 Normal
+ 1 Help or version info displayed
+ 2 Count or type of flaglessvals is incorrect
+ 3 Incorrect OS type
+ 4 Unable to find dependency
+ 5 Not run as root or sudo
 ENDUSAGE
 }
 
@@ -36,18 +36,21 @@ ENDUSAGE
 # DEFINE TRAPS
 
 clean_SCRIPTTRIM() {
-   #rm -f ${logfile} > /dev/null 2>&1
-   [ ] #use at end of entire script if you need to clean up tmpfiles
+   # use at end of entire script if you need to clean up tmpfiles
+   #rm -f ${tmpfile} 1>/dev/null 2>&1
+   :
 }
 
 CTRLC() {
-   #trap "CTRLC" 2
-   [ ] #useful for controlling the ctrl+c keystroke
+   # use with: trap "CTRLC" 2
+   # useful for controlling the ctrl+c keystroke
+   :
 }
 
 CTRLZ() {
-   #trap "CTRLZ" 18
-   [ ] #useful for controlling the ctrl+z keystroke
+   # use with: trap "CTRLZ" 18
+   # useful for controlling the ctrl+z keystroke
+   :
 }
 
 parseFlag() {
@@ -58,14 +61,15 @@ parseFlag() {
       "d" | "debug" | "DEBUG" | "dd" ) setdebug; ferror "debug level ${debug}";;
       "u" | "usage" | "help" | "h" ) usage; exit 1;;
       "V" | "fcheck" | "version" ) ferror "${scriptfile} version ${SCRIPTTRIMversion}"; exit 1;;
-      #"i" | "infile" | "inputfile" ) getval;infile1=${tempval};;
+      #"i" | "infile" | "inputfile" ) getval; infile1=${tempval};;
+      "c" | "conf" | "conffile" | "config" ) getval; conffile="${tempval}";;
    esac
    
    debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: ${flag} = ${tempval}" || ferror "flag: ${flag}"; }
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170524; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170608; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
 ~/bin/bgscripts/framework.sh
