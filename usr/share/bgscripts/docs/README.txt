@@ -283,4 +283,5 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Moved host-bup.conf to example directory.
 - Fixed package so it actually does desktop-file-install of resize if spice-vdagent is present.
 - Fixed package so it uses %{_presetdir}.
-
+- Added bgscripts-version.txt file.
+- Fixed newscript to use $( which vi ) and also for chmod.

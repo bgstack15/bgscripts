@@ -5,11 +5,12 @@
 # Title: Newscript: Script that Copies template.sh to a specified file
 # Purpose: To simplify making a new script file
 # History: 
+#    2017-06-08a updated chmod and vi calls to use which chmod and which vi
 # Usage: 
 # Reference: 
 # Improve:
 fiversion="2014-12-03a"
-newscriptversion="2017-01-17a"
+newscriptversion="2017-06-08a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -63,7 +64,7 @@ test -z "$frameworkscript" && echo "$0: framework not found. Aborted." 1>&2 && e
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
-   Linux) myeditor=/usr/bin/vi;;
+   Linux) myeditor=$( which vi );;
    FreeBSD) myeditor=/usr/local/bin/vim;;
    *) ferror "$scriptfile: 3. Indeterminate OS: $( uname -s )" && exit 3;;
 esac
@@ -80,7 +81,7 @@ logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="root"
 #myeditor=/usr/bin/vi # works on CentOS
 now=$( date "+%Y-%m-%d %T" )
-      chmodcmd=/usr/bin/chmod
+      chmodcmd=$( which chmod )
 
 # DETERMINE LOCATION OF TEMPLATE
 setval 1 infile <<EOFINFILE
