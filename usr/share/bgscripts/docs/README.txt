@@ -35,6 +35,8 @@ considered systemd timer:
    https://unix.stackexchange.com/questions/198444/run-script-every-30-min-with-systemd
    https://unix.stackexchange.com/questions/303926/run-while-true-in-systemd-script
 
+command: rpm --showrc
+
 ### CHANGELOG
 bgscripts 1.1-9
 bgscripts.bashrc includes ls --color=auto for all ls aliases.
@@ -278,3 +280,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Update ftemplate/framework
 -  Included "c" | "conf" for conffile.
 -  Updated help text to include conffile.
+- Moved host-bup.conf to example directory.
+- Fixed package so it actually does desktop-file-install of resize if spice-vdagent is present.
+- Fixed package so it uses %{_presetdir}.
+
