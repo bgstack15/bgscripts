@@ -28,6 +28,7 @@ s/\(.*\.conf\)/%config %attr(666, -, -) \1/
 
       ;;
    deb)
+if test -n "${package}"; then cd ~/deb/"${package}-${version}"; else cd $( pwd | sed -r -e 's/(deb\/[^\/]+\/).*/\1/;' ); fi
 
 ### for deb
 # will be redirected to md5sum

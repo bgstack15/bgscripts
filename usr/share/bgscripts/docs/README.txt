@@ -285,3 +285,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Fixed package so it uses %{_presetdir}.
 - Added bgscripts-version.txt file.
 - Fixed newscript to use $( which vi ) and also for chmod.
+- Fixed get-files so it includes the cd debdir stuff

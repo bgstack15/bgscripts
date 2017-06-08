@@ -28,6 +28,7 @@ s/(\/usr)?\/lib\/systemd\/system-preset\/(.*)/%{_presetdir}\/\2/;
 
       ;;
    deb)
+if test -n "${package}"; then cd ~/deb/"${package}-${version}"; else cd $( pwd | sed -r -e 's/(deb\/[^\/]+\/).*/\1/;' ); fi
 
 ### for deb
 find . -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
