@@ -246,7 +246,6 @@ then
    then
       install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/dnskeepalive.service" || :
       install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/80-dnskeepalive.preset" || :
-   else
    fi
    systemctl --no-reload preset dnskeepalive.service || :
 fi
