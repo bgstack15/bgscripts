@@ -1,5 +1,5 @@
 # deb core postinst 2017-06-08
-# {
+{
 if test "$1" = "configure";
 then
    if test "$( ps --no-headers -o comm 1 )" = "systemd";
