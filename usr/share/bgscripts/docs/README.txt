@@ -37,6 +37,8 @@ considered systemd timer:
 
 command: rpm --showrc
 
+https://superuser.com/questions/1017959/how-to-know-if-i-am-using-systemd-on-my-linux
+
 ### CHANGELOG
 bgscripts 1.1-9
 bgscripts.bashrc includes ls --color=auto for all ls aliases.

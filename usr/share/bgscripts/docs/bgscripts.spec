@@ -232,24 +232,37 @@ fi
 exit 0
 
 %post core
-# post core 2017-04-29
+# post core 2017-06-08
 # References:
 #    https://fedoraproject.org/wiki/Packaging:Scriptlets
 #    https://fedoraproject.org/wiki/Changes/systemd_file_triggers
+#    https://superuser.com/questions/1017959/how-to-know-if-i-am-using-systemd-on-my-linux
 #    rpmrebuild -e ntp
+{
 if test "$1" -eq 1;
 then
    # Initial installation
-   systemctl --no-reload preset dnskeepalive.service 1>/dev/null 2>&1 || :
+   if test "$( ps --no-headers -o comm 1 )" = "systemd";
+   then
+      install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/dnskeepalive.service" || :
+      install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/80-dnskeepalive.preset" || :
+   else
+   fi
+   systemctl --no-reload preset dnskeepalive.service || :
 fi
+} 1>/dev/null 2>&1
 
 %preun core
-# preun core 2017-04-29
+# preun core 2017-06-08
+{
 if test "$1" -eq 0;
 then
    # Package removal, not upgrade
-   systemctl --no-reload disable --now dnskeepalive.service 1>/dev/null 2>&1 || :
+   systemctl --no-reload disable --now dnskeepalive.service || :
+   rm -f %{_unitdir}/dnskeepalive.service || :
+   rm -f %{_presetdir}/80-dnskeepalive.preset || :
 fi
+} 1>/dev/null 2>&1
 
 %postun core
 # postun core 2017-04-29
