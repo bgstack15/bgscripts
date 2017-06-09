@@ -288,3 +288,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Added bgscripts-version.txt file.
 - Fixed newscript to use $( which vi ) and also for chmod.
 - Fixed get-files so it includes the cd debdir stuff
+- Adjusted package so it only deploys systemd stuff if systemd is present. Need to test!

@@ -339,6 +339,7 @@ fi
 %dir /etc/bgscripts
 %dir /usr/share/bgscripts
 %dir /usr/share/bgscripts/inc
+%dir /usr/share/bgscripts/inc/systemd
 %dir /usr/share/bgscripts/bashrc.d
 %dir /usr/share/bgscripts/examples
 %dir /usr/share/bgscripts/docs
@@ -373,6 +374,8 @@ fi
 /usr/share/bgscripts/inc/localize_git.sh
 %doc %attr(444, -, -) /usr/share/bgscripts/inc/scrub.txt
 /usr/share/bgscripts/inc/get-files-core
+/usr/share/bgscripts/inc/systemd/dnskeepalive.service
+/usr/share/bgscripts/inc/systemd/80-dnskeepalive.preset
 /usr/share/bgscripts/scrub.py
 /usr/share/bgscripts/scrub.pyc
 /usr/share/bgscripts/scrub.pyo
@@ -388,12 +391,12 @@ fi
 /usr/share/bgscripts/dli.py
 /usr/share/bgscripts/dli.pyc
 /usr/share/bgscripts/dli.pyo
+%config %attr(666, -, -) /usr/share/bgscripts/examples/host-bup.conf.example
 /usr/share/bgscripts/examples/shares-keepalive.cron
 /usr/share/bgscripts/fl.sh
 /usr/share/bgscripts/changelog.sh
 /usr/share/bgscripts/framework.sh
 /usr/share/bgscripts/newscript.sh
-%config %attr(666, -, -) /usr/share/bgscripts/docs/host-bup.conf.example
 /usr/share/bgscripts/docs/debian-bgscripts/control
 /usr/share/bgscripts/docs/debian-bgscripts/prerm
 /usr/share/bgscripts/docs/debian-bgscripts/postinst
@@ -419,6 +422,7 @@ fi
 /usr/share/bgscripts/docs/debian-bgscripts-core/md5sums
 /usr/share/bgscripts/docs/debian-bgscripts-core/postrm
 /usr/share/bgscripts/docs/debian-bgscripts-core/compat
+%doc %attr(444, -, -) /usr/share/bgscripts/docs/bgscripts-version.txt
 %doc %attr(444, -, -) /usr/share/bgscripts/docs/README.txt
 /usr/share/bgscripts/updateval.py
 /usr/share/bgscripts/updateval.pyc
@@ -430,11 +434,9 @@ fi
 /usr/share/bgscripts/host-bup.sh
 /usr/share/bgscripts/orig-send.sh
 /usr/share/bgscripts/toucher.sh
-%{_unitdir}/dnskeepalive.service
-/usr/lib/systemd/system-preset/80-dnskeepalive.preset
 
 %changelog
-* Wed Jun  8 2017 B Stack <bgstack15@gmail.com> 1.2-12
+* Thu Jun  8 2017 B Stack <bgstack15@gmail.com> 1.2-12
 - Updated content. See docs/README.txt.
 
 * Wed May  3 2017 B Stack <bgstack15@gmail.com> 1.2-11
