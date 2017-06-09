@@ -244,8 +244,8 @@ then
    # Initial installation
    if test "$( ps --no-headers -o comm 1 )" = "systemd";
    then
-      install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/dnskeepalive.service" || :
-      install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/80-dnskeepalive.preset" || :
+      install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/systemd/dnskeepalive.service" || :
+      install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/systemd/80-dnskeepalive.preset" || :
    fi
    systemctl --no-reload preset dnskeepalive.service || :
 fi

@@ -4,8 +4,8 @@ if test "$1" = "configure";
 then
    if test "$( ps --no-headers -o comm 1 )" = "systemd";
    then
-      install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/dnskeepalive.service" || :
-      install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/80-dnskeepalive.preset" || :
+      install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/dnskeepalive.service" || :
+      install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/systemd/80-dnskeepalive.preset" || :
    fi
    systemctl --no-reload preset dnskeepalive.service || :
 fi
