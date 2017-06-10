@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # File: /usr/share/bgscripts/updateval.py
 # Author: bgstack15@gmail.com
 # Startdate: 2016-10-11 15:59
@@ -39,7 +39,8 @@ parser.add_argument("infile", help="file to use")
 parser.add_argument("searchstring", help="regex string to search")
 parser.add_argument("deststring", help="literal string that should be there")
 parser.add_argument("-V","--version", action="version", version="%(prog)s " + updatevalversion)
-parser.add_argument("-s","--stanza", help="only in specified [stanza] or stanza()",default="")
+parser.add_argument("-s","--stanza", help="only in specified [stanza] or stanza() or ucustom regex if --stanzadef is also used",default="")
+parser.add_argument("--stanzadef", help="definition of stanza regex", default="")
 parser.add_argument("-b","--beginning", help="Insert value at beginning of stanza or file if match not found.",action="store_true")
 args = parser.parse_args()
 
@@ -51,6 +52,7 @@ infile = args.infile
 searchstring = args.searchstring
 destinationstring = args.deststring
 stanza=args.stanza
+stanzadef=args.stanzadef
 beginning=args.beginning
 
 wasfixed = False
@@ -64,6 +66,9 @@ elif re.compile('.*\(\)').match(stanza):
    _stanza_delim=["(",")",'end']
 elif re.compile('\(.*\)').match(stanza):
    _stanza_delim=["(",")",'surrounding']
+#elif re.compile('^\^.*').match(stanza):
+elif len(stanzadef) > 0:
+   _stanza_delim=[stanzadef,stanza,'regex']
 
 # Make file if it does not exist
 if not os.path.isfile(infile): open(infile, "w").close()
@@ -71,6 +76,8 @@ if not os.path.isfile(infile): open(infile, "w").close()
 # If line exists, replace it
 stanzacount=0
 thisstanza=-1
+#if _stanza_delim[0] == stanzadef and _stanza_delim[1] == "":
+#   thisstanza=0
 shutil.copy2(infile,outfile) # initialize duplicate file with same perms
 with open(outfile, "w") as outf:
    for line in open(infile, "r"):
@@ -81,11 +88,14 @@ with open(outfile, "w") as outf:
          s = re.compile( "\\" + _stanza_delim[0] + ".*" + "\\" + _stanza_delim[1] )
       elif "end" in _stanza_delim[2]:
          s = re.compile( ".*" + "\\" + _stanza_delim[0] + "\\" + _stanza_delim[1] )
+      elif "regex" in _stanza_delim[2]:
+         s = re.compile( _stanza_delim[0] )
       if ( not wasfixed or doall ) and s.match( line ):
          stanzacount+=1
          #print("stanza " + str(stanzacount) + ": " + line.rstrip())
          # check if this stanza
-         if re.compile( re.escape(stanza) ).match( line.strip() ):
+         #if re.compile( re.escape(stanza) ).match( line.strip() ):
+         if re.compile( re.escape(stanza) ).match( line.strip() ) or ( _stanza_delim[2] == 'regex' and re.compile(stanza).match(line.strip()) ):
             thisstanza=stanzacount
          # if we moved past the correct stanza but did not fix it
          if ( thisstanza == stanzacount - 1 ) and not wasfixed:
