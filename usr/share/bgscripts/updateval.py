@@ -40,6 +40,7 @@ parser.add_argument("searchstring", help="regex string to search")
 parser.add_argument("deststring", help="literal string that should be there")
 parser.add_argument("-V","--version", action="version", version="%(prog)s " + updatevalversion)
 parser.add_argument("-s","--stanza", help="only in specified [stanza] or stanza()",default="")
+parser.add_argument("-b","--beginning", help="Insert value at beginning of stanza or file if match not found.",action="store_true")
 args = parser.parse_args()
 
 # Configure variables after parameters
@@ -50,6 +51,7 @@ infile = args.infile
 searchstring = args.searchstring
 destinationstring = args.deststring
 stanza=args.stanza
+beginning=args.beginning
 
 wasfixed = False
 outfile = infile + ".updateval-new"
