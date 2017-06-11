@@ -124,7 +124,7 @@ for line in open(infile, "r"):
       if s.match(inline):
          if debuglev(6): print("Heading","\"" + inline + "\"")
          stanzacount+=1
-         if wouldfix == 0 and thisstanza >= 0 and thisstanza < stanzacount:
+         if wouldfix == 0 and thisstanza >= 0 and thisstanza < stanzacount or ( s is not None and which_stanza==''):
             insert_line=linecount-1
             if beginning == True: insert_line=beginning_line
          # detect if correct stanza
@@ -154,24 +154,34 @@ if match_line > 0:
 # debug section
 if debuglev(1):
    print("Think we should %s line %s" % (action,_displaynum))
+if debuglev(2):
+   print("insert_line:",insert_line)
+   print("match_line:",match_line)
 
 # update line in the outfile
 #if action=="insert after"
 linecount=0
+have_fixed=0
 regex_blank_line=re.compile('^\s*$')
 with open(outfile, "w") as outf:
    for line in open(infile, "r"):
       linecount+=1
       outline = line.rstrip('\n')
-      if linecount == match_line:
-         outline=re.sub(searchstring,destinationstring,line).rstrip('\n')
-      elif linecount == insert_line:
-         if regex_blank_line.match(outline):
+      if not have_fixed:
+         if linecount == match_line:
+            #outline=re.sub(searchstring,destinationstring,line).rstrip('\n')
+            outline=destinationstring
+            have_fixed=True
+         elif linecount == insert_line:
+            if regex_blank_line.match(outline):
+               outline=destinationstring+'\n'+outline
+               have_fixed=True
+            else:
+               outline=outline+'\n'+destinationstring
+               have_fixed=True
+         elif action=="insert after" and insert_line==0 and linecount==1:
             outline=destinationstring+'\n'+outline
-         else:
-            outline=outline+'\n'+destinationstring
-      elif action=="insert after" and insert_line==0 and linecount==1:
-         outline=destinationstring+'\n'+outline
+            have_fixed=True
       if verbose: print(outline)
       outf.write(outline+'\n')
 
