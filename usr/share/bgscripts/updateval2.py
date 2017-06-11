@@ -24,6 +24,8 @@
 # Improve:
 #    idea: use argparse "nargs" optional input file to use stdin piping/redirection!
 #    idea: be able to specify comment types
+#    WORKHERE: fix the ./updateval2.py -v -b -d 10 --stanzaregex '\[.*\]' -s '' ~/qux '^force\s*[0-9]' 'PORT FUN' # where ~/qux is bgconf snippet.
+#       it is supposed to insert before the first [bgconf] stanza but it is inserting into the bgconf stanza.
 
 import re, shutil, os, argparse, sys
 updatevalversion="2017-01-11a"
@@ -124,7 +126,7 @@ for line in open(infile, "r"):
       if s.match(inline):
          if debuglev(6): print("Heading","\"" + inline + "\"")
          stanzacount+=1
-         if wouldfix == 0 and thisstanza >= 0 and thisstanza < stanzacount or ( s is not None and which_stanza==''):
+         if wouldfix == 0 and (thisstanza > 0 and thisstanza < stanzacount or (which_stanza=='' and stanzacount==1)):
             insert_line=linecount-1
             if beginning == True: insert_line=beginning_line
          # detect if correct stanza
