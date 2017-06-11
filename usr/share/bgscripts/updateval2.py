@@ -115,8 +115,13 @@ linecount=0
 thisstanza=-1
 beginning_line=0
 insert_line=0
+insert_line_no_stanza=0
 match_line=0
 wouldfix=0
+if which_stanza=='' and stanza_regex != '':
+   #thisstanza=0
+   wouldfix=1
+   print("starting with thisstanza=0")
 for line in open(infile, "r"):
    linecount+=1
    inline=line.strip()
@@ -126,11 +131,11 @@ for line in open(infile, "r"):
       if s.match(inline):
          if debuglev(6): print("Heading","\"" + inline + "\"")
          stanzacount+=1
-         if wouldfix == 0 and (thisstanza > 0 and thisstanza < stanzacount or (which_stanza=='' and stanzacount==1)):
+         if wouldfix == 0 and stanzacount > 0 and thisstanza < stanzacount:
             insert_line=linecount-1
             if beginning == True: insert_line=beginning_line
          # detect if correct stanza
-         if regex_ws.match(inline) or regex_ws_straight.match(inline):
+         if regex_ws_straight.match(inline) or (stanza_regex != '' and regex_ws.match(inline)):
             thisstanza=stanzacount
             beginning_line=linecount
             if debuglev(2): print("Matching stanza, line %s: \"%s\"" % (beginning_line, inline))
@@ -144,8 +149,14 @@ for line in open(infile, "r"):
          if debuglev(2): print("Matching line %s: \"%s\"" % (match_line, inline))
          wouldfix=1
 
+   if stanzacount < 1 and stanza_regex != "" and which_stanza == "": 
+      insert_line_no_stanza=linecount
+
 # append if not found at all
-if insert_line==0 and match_line==0 and beginning==False: insert_line=linecount
+if insert_line==0 and match_line==0 and beginning==False:
+   insert_line=linecount
+if stanza_regex != "" and which_stanza == "" and beginning==False:
+   insert_line=insert_line_no_stanza
 
 action="insert after"
 _displaynum=insert_line
@@ -158,6 +169,7 @@ if debuglev(1):
    print("Think we should %s line %s" % (action,_displaynum))
 if debuglev(2):
    print("insert_line:",insert_line)
+   print("insert_line_no_stanza:",insert_line_no_stanza)
    print("match_line:",match_line)
 
 # update line in the outfile
