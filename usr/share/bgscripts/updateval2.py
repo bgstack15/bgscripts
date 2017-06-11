@@ -39,7 +39,7 @@ def debuglev(_numbertocheck):
    return _debuglev
 
 # Define default variables
-stanza_delim=['[',']','surrounding']
+stanza_delim=['[',']','none']
 
 # Parse parameters
 parser = argparse.ArgumentParser(description="Idempotent value updater for a file",epilog="If searchstring is not found, deststring will be inserted to infile")
@@ -101,7 +101,10 @@ elif "end" in stanza_delim[2]:
 elif "regex" in stanza_delim[2]:
    s = re.compile( stanza_delim[0] )
 regex_ws = re.compile(re.escape(which_stanza))
-regex_ws_straight = re.compile(which_stanza)
+try:
+   regex_ws_straight = re.compile(which_stanza)
+except:
+   regex_ws_straight = re.compile(re.escape(which_stanza))
 regex_ss = re.compile(searchstring)
 
 # Find where to insert/replace the line
@@ -117,18 +120,21 @@ for line in open(infile, "r"):
    inline=line.strip()
    if debuglev(6): print("%s %s" % (linecount,inline))
    # detect if is a new stanza
-   if s.match(inline):
-      if debuglev(6): print("Heading","\"" + inline + "\"")
-      stanzacount+=1
-      if wouldfix == 0 and thisstanza >= 0 and thisstanza < stanzacount:
-         insert_line=linecount-1
-         if beginning == True: insert_line=beginning_line
-      # detect if correct stanza
-      if regex_ws.match(inline) or regex_ws_straight.match(inline):
-         thisstanza=stanzacount
-         beginning_line=linecount
-         if debuglev(2): print("Matching stanza, line %s: \"%s\"" % (beginning_line, inline))
-      wouldfix=0
+   try:
+      if s.match(inline):
+         if debuglev(6): print("Heading","\"" + inline + "\"")
+         stanzacount+=1
+         if wouldfix == 0 and thisstanza >= 0 and thisstanza < stanzacount:
+            insert_line=linecount-1
+            if beginning == True: insert_line=beginning_line
+         # detect if correct stanza
+         if regex_ws.match(inline) or regex_ws_straight.match(inline):
+            thisstanza=stanzacount
+            beginning_line=linecount
+            if debuglev(2): print("Matching stanza, line %s: \"%s\"" % (beginning_line, inline))
+         wouldfix=0
+   except:
+      pass
    # detect if this line matches and is in the correct stanza
    if regex_ss.match(inline):
       if thisstanza == stanzacount or which_stanza == '':
@@ -136,6 +142,7 @@ for line in open(infile, "r"):
          if debuglev(2): print("Matching line %s: \"%s\"" % (match_line, inline))
          wouldfix=1
 
+# append if not found at all
 if insert_line==0 and match_line==0 and beginning==False: insert_line=linecount
 
 action="insert after"
@@ -148,52 +155,29 @@ if match_line > 0:
 if debuglev(1):
    print("Think we should %s line %s" % (action,_displaynum))
 
-sys.exit(0)
-
-#if stanza_delim[0] == stanzadef and stanza_delim[1] == "":
-#   thisstanza=0
-#shutil.copy2(infile,outfile) # initialize duplicate file with same perms
-#with open(outfile, "w") as outf:
-#   for line in open(infile, "r"):
-#      # set default outline
-#      outline = line.rstrip('\n')
-#      # check if new stanza
-#      if "surrounding" in stanza_delim[2]:
-#         s = re.compile( "\\" + stanza_delim[0] + ".*" + "\\" + stanza_delim[1] )
-#      elif "end" in stanza_delim[2]:
-#         s = re.compile( ".*" + "\\" + stanza_delim[0] + "\\" + stanza_delim[1] )
-#      elif "regex" in stanza_delim[2]:
-#         s = re.compile( stanza_delim[0] )
-#      if ( not wasfixed or doall ) and s.match( line ):
-#         stanzacount+=1
-#         #print("stanza " + str(stanzacount) + ": " + line.rstrip())
-#         # check if this stanza
-#         #if re.compile( re.escape(stanza) ).match( line.strip() ):
-#         if re.compile( re.escape(stanza) ).match( line.strip() ) or ( stanza_delim[2] == 'regex' and re.compile(stanza).match(line.strip()) ):
-#            thisstanza=stanzacount
-#         # if we moved past the correct stanza but did not fix it
-#         if ( thisstanza == stanzacount - 1 ) and not wasfixed:
-#            outline = destinationstring + '\n' + outline
-#            wasfixed = True
-#      p = re.compile( searchstring )
-#      # if line matches the searchstring, as well as we have not fixed it yet or we are doing all changes, as well as this stanza matches or no stanza specified
-#      if p.match( line ) and ( not wasfixed or doall ) and ( thisstanza == stanzacount or stanza == "" ):
-#         outline = re.sub( searchstring, destinationstring, line).rstrip( '\n' )
-#         wasfixed = True
-
-      # Output
-#      if verbose: print(outline)
-#      outf.write(outline + '\n')
-
-# Append line if it has not been fixed yet
-#if not wasfixed:
-#   with open(outfile, "a") as outf:
-#      if verbose: print(destinationstring)
-#      outf.write(destinationstring + '\n')
+# update line in the outfile
+#if action=="insert after"
+linecount=0
+regex_blank_line=re.compile('^\s*$')
+with open(outfile, "w") as outf:
+   for line in open(infile, "r"):
+      linecount+=1
+      outline = line.rstrip('\n')
+      if linecount == match_line:
+         outline=re.sub(searchstring,destinationstring,line).rstrip('\n')
+      elif linecount == insert_line:
+         if regex_blank_line.match(outline):
+            outline=destinationstring+'\n'+outline
+         else:
+            outline=outline+'\n'+destinationstring
+      elif action=="insert after" and insert_line==0 and linecount==1:
+         outline=destinationstring+'\n'+outline
+      if verbose: print(outline)
+      outf.write(outline+'\n')
 
 # replace old file with new file
-#if doapply:
-#   shutil.move(outfile,infile)
+if doapply:
+   shutil.move(outfile,infile)
 
 # Clean up outfile just in case
 try:
