@@ -381,6 +381,7 @@ fi
 /usr/share/bgscripts/bgscripts.bashrc
 /usr/share/bgscripts/send.sh
 /usr/share/bgscripts/bashrc.d/fedora.bashrc
+/usr/share/bgscripts/bashrc.d/devuan.bashrc
 /usr/share/bgscripts/bashrc.d/korora.bashrc
 /usr/share/bgscripts/bashrc.d/rhel.bashrc
 /usr/share/bgscripts/bashrc.d/debian.bashrc
