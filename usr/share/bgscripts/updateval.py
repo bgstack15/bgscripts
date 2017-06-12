@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-# File: /usr/share/bgscripts/updateval.py
+# File: /usr/share/bgscripts/updateval2.py
 # Author: bgstack15@gmail.com
 # Startdate: 2016-10-11 15:59
-# Title: Python Script that Updates/Adds Value
+# Title: Python Script that Updates/Adds Value version 2
 # Purpose: Allows idempotent and programmatic modifications to config files
 # Package: bgscripts
 # History:
@@ -12,6 +12,7 @@
 #    2016-10-19 added stanza option
 #    2016-10-24 adding stanza() and (stanza) types
 #    2017-01-11 moved whole package to /usr/share/bgscripts
+#    2017-06-12 rewrote whole detection and update sections
 # Usage:
 #   updateval.py /etc/rc.conf "^ntpd_enable=.*" 'ntpd_enable="YES"' --apply
 # Reference:
@@ -24,35 +25,51 @@
 #    idea: use argparse "nargs" optional input file to use stdin piping/redirection!
 #    idea: be able to specify comment types
 
-import re, shutil, os, argparse
-updatevalversion="2017-01-11a"
+import re, shutil, os, argparse, sys
+updatevalversion="2017-01-12a"
+
+def debuglev(_numbertocheck):
+   # if _numbertocheck <= debuglevel then return truthy
+   _debuglev = False
+   try:
+      if int(_numbertocheck) <= int(debuglevel):
+         _debuglev = True
+   except Exception as e:
+      pass
+   return _debuglev
 
 # Define default variables
-_stanza_delim=['[',']','surrounding']
+stanza_delim=['[',']','none']
 
 # Parse parameters
-parser = argparse.ArgumentParser(description="Idempotent value updater for a file",epilog="If searchstring is not found, deststring will be appended to infile")
+parser = argparse.ArgumentParser(description="Idempotent value updater for a file",epilog="If searchstring is not found, deststring will be inserted to infile")
+parser.add_argument("-d","--debug", nargs='?', default=0, type=int, choices=range(0,11), help="Set debug level.")
 parser.add_argument("-v","--verbose",help="displays output",      action="store_true",default=False)
 parser.add_argument("-a","--apply",  help="perform substitution", action="store_true",default=False)
-parser.add_argument("-L","--all",    help="replace all instances",action="store_true",default=False)
 parser.add_argument("infile", help="file to use")
 parser.add_argument("searchstring", help="regex string to search")
 parser.add_argument("deststring", help="literal string that should be there")
 parser.add_argument("-V","--version", action="version", version="%(prog)s " + updatevalversion)
-parser.add_argument("-s","--stanza", help="only in specified [stanza] or stanza() or ucustom regex if --stanzadef is also used",default="")
-parser.add_argument("--stanzadef", help="definition of stanza regex", default="")
+parser.add_argument("-s","--stanza", help="[stanza] or stanza() or custom regex",default="")
+parser.add_argument("--stanzaregex", help="definition of stanza regex", default="")
 parser.add_argument("-b","--beginning", help="Insert value at beginning of stanza or file if match not found.",action="store_true")
 args = parser.parse_args()
 
 # Configure variables after parameters
+debuglevel=0
+if args.debug is None:
+   # -d was used but no value provided
+   debuglevel = 10
+elif args.debug:
+   debuglevel = args.debug
+
 verbose = args.verbose
 doapply = args.apply
-doall = args.all
 infile = args.infile
 searchstring = args.searchstring
 destinationstring = args.deststring
-stanza=args.stanza
-stanzadef=args.stanzadef
+which_stanza=args.stanza
+stanza_regex=args.stanzaregex
 beginning=args.beginning
 
 wasfixed = False
@@ -60,62 +77,123 @@ outfile = infile + ".updateval-new"
 
 # Derive stanza delimiters
 # It might be [newstanza] or ## Heading but it'll probably just be the []
-if re.compile('\[.*\]').match(stanza):
-   _stanza_delim=["[","]",'surrounding'] # is default already
-elif re.compile('.*\(\)').match(stanza):
-   _stanza_delim=["(",")",'end']
-elif re.compile('\(.*\)').match(stanza):
-   _stanza_delim=["(",")",'surrounding']
-#elif re.compile('^\^.*').match(stanza):
-elif len(stanzadef) > 0:
-   _stanza_delim=[stanzadef,stanza,'regex']
+if re.compile('\[.*\]').match(which_stanza):
+   if debuglev(8): print("Headings: [surrounding]")
+   stanza_delim=["[","]",'surrounding'] # is default already
+elif re.compile('.*\(\)').match(which_stanza):
+   if debuglev(8): print("Headings: end()")
+   stanza_delim=["(",")",'end']
+elif re.compile('\(.*\)').match(which_stanza):
+   if debuglev(8): print("Headings: (surrounding)")
+   stanza_delim=["(",")",'surrounding']
+elif len(stanza_regex) > 0:
+   if debuglev(8): print("Headings: ",stanza_regex)
+   stanza_delim=[stanza_regex,which_stanza,'regex']
 
 # Make file if it does not exist
 if not os.path.isfile(infile): open(infile, "w").close()
 
-# If line exists, replace it
+# prepare regex
+if "surrounding" in stanza_delim[2]:
+   regex_headings = re.compile("\\"+stanza_delim[0]+".*"+"\\"+stanza_delim[1])
+elif "end" in stanza_delim[2]:
+   regex_headings = re.compile( ".*" + "\\" + stanza_delim[0] + "\\" + stanza_delim[1] )
+elif "regex" in stanza_delim[2]:
+   regex_headings = re.compile( stanza_delim[0] )
+else:
+   regex_headings = re.compile( "WGLIWJLGJSDKFJLWJIEGLJWLJlwgi28P" )
+regex_ws = re.compile(re.escape(which_stanza))
+try:
+   regex_ws_straight = re.compile(which_stanza)
+except:
+   regex_ws_straight = re.compile(re.escape(which_stanza))
+regex_ss = re.compile(searchstring)
+
+# Find where to insert/replace the line
+linecount=0
 stanzacount=0
-thisstanza=-1
-#if _stanza_delim[0] == stanzadef and _stanza_delim[1] == "":
-#   thisstanza=0
-shutil.copy2(infile,outfile) # initialize duplicate file with same perms
+insert_line=0
+beginning_line=0
+match_line=0
+this_stanza=0
+for line in open(infile, "r"):
+   linecount+=1
+   inline=line.strip()
+   if debuglev(5): print("%s %s" % (linecount,line.rstrip()))
+
+   # check if a new zone
+   if regex_headings.match(inline):
+      stanzacount+=1
+      _takeaction=0
+      try:
+         if regex_ws_straight.match(inline):
+            _takeaction=1
+      except:
+         pass
+      if regex_ws.match(inline):
+         _takeaction=1
+      if _takeaction == 1 and which_stanza != "":
+         if debuglev(3): print("Match stanza:", inline)
+         this_stanza=stanzacount
+         beginning_line=linecount
+      else:
+         if debuglev(3): print("Found new stanza:", inline)
+         if this_stanza == stanzacount - 1 and match_line == 0:
+            insert_line=linecount-1
+
+   # check if matches the main search
+   if regex_ss.match(inline):
+      if which_stanza=="" or this_stanza==stanzacount:
+         if debuglev(2): print("Match line:", inline)
+         match_line=linecount
+
+# Be ready to add to end of file
+stanzacount+=1
+if this_stanza == stanzacount -1 and match_line == 0:
+   insert_line=linecount
+
+# Prepare which action
+action_string=""
+action_line=0
+if match_line > 0:
+   action_string="update"
+   action_line=match_line
+elif beginning:
+   action_string="insert"
+   action_line=beginning_line
+else:
+   action_string="insert"
+   action_line=insert_line
+
+# Debug section
+if debuglev(6):
+   print("match_line:",match_line)
+   print("beginning_line:",beginning_line)
+   print("insert_line:",insert_line)
+if debuglev(1):
+   print("Action %s at line: %s" % (action_string,action_line))
+
+# Update file
+linecount=0
+have_fixed=0
+regex_blank_line=re.compile('^\s*$')
 with open(outfile, "w") as outf:
    for line in open(infile, "r"):
-      # set default outline
-      outline = line.rstrip('\n')
-      # check if new stanza
-      if "surrounding" in _stanza_delim[2]:
-         s = re.compile( "\\" + _stanza_delim[0] + ".*" + "\\" + _stanza_delim[1] )
-      elif "end" in _stanza_delim[2]:
-         s = re.compile( ".*" + "\\" + _stanza_delim[0] + "\\" + _stanza_delim[1] )
-      elif "regex" in _stanza_delim[2]:
-         s = re.compile( _stanza_delim[0] )
-      if ( not wasfixed or doall ) and s.match( line ):
-         stanzacount+=1
-         #print("stanza " + str(stanzacount) + ": " + line.rstrip())
-         # check if this stanza
-         #if re.compile( re.escape(stanza) ).match( line.strip() ):
-         if re.compile( re.escape(stanza) ).match( line.strip() ) or ( _stanza_delim[2] == 'regex' and re.compile(stanza).match(line.strip()) ):
-            thisstanza=stanzacount
-         # if we moved past the correct stanza but did not fix it
-         if ( thisstanza == stanzacount - 1 ) and not wasfixed:
-            outline = destinationstring + '\n' + outline
-            wasfixed = True
-      p = re.compile( searchstring )
-      # if line matches the searchstring, as well as we have not fixed it yet or we are doing all changes, as well as this stanza matches or no stanza specified
-      if p.match( line ) and ( not wasfixed or doall ) and ( thisstanza == stanzacount or stanza == "" ):
-         outline = re.sub( searchstring, destinationstring, line).rstrip( '\n' )
-         wasfixed = True
-
-      # Output
+      linecount+=1
+      outline=line.rstrip('\n')
+      if have_fixed != 1 and linecount == action_line:
+         if action_string=="update":
+            outline=re.sub(regex_ss,destinationstring,outline)
+            have_fixed=1
+         elif action_string=="insert":
+            if regex_blank_line.match(outline):
+               outline=destinationstring+'\n'+outline
+            else:
+               outline=outline+'\n'+destinationstring
+            have_fixed=1
+         else:
+            print("Error! Uncertain action.")
       if verbose: print(outline)
-      outf.write(outline + '\n')
-
-# Append line if it has not been fixed yet
-if not wasfixed:
-   with open(outfile, "a") as outf:
-      if verbose: print(destinationstring)
-      outf.write(destinationstring + '\n')
 
 # replace old file with new file
 if doapply:
