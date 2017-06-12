@@ -290,5 +290,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Fixed get-files so it includes the cd debdir stuff
 - Adjusted package so it only deploys systemd stuff if systemd is present. Need to test!
 
-2017-06-XX B Stack <bgstack15@gmail.com> 1.2-13
-
+2017-06-12 B Stack <bgstack15@gmail.com> 1.2-13
+- Fixed updateval.py
+- Added devuan.bashrc symlink to debian.bashrc

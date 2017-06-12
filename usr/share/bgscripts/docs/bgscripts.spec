@@ -435,6 +435,9 @@ fi
 /usr/share/bgscripts/toucher.sh
 
 %changelog
+* Mon Jun 12 2017 B Stack <bgstack15@gmail.com> 1.2-13
+- Updated content. See docs/README.txt.
+
 * Thu Jun  8 2017 B Stack <bgstack15@gmail.com> 1.2-12
 - Updated content. See docs/README.txt.
 
