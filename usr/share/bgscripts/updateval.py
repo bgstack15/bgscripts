@@ -180,6 +180,7 @@ regex_blank_line=re.compile('^\s*$')
 with open(outfile, "w") as outf:
    # if first line
    if action_line == 0 and action_string == "insert":
+      if verbose: print(destinationstring)
       outf.write(destinationstring+'\n')
       have_fixed=1
    # go through file
