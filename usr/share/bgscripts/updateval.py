@@ -178,6 +178,11 @@ linecount=0
 have_fixed=0
 regex_blank_line=re.compile('^\s*$')
 with open(outfile, "w") as outf:
+   # if first line
+   if action_line == 0 and action_string == "insert":
+      outf.write(destinationstring+'\n')
+      have_fixed=1
+   # go through file
    for line in open(infile, "r"):
       linecount+=1
       outline=line.rstrip('\n')
@@ -193,7 +198,9 @@ with open(outfile, "w") as outf:
             have_fixed=1
          else:
             print("Error! Uncertain action.")
+      # output
       if verbose: print(outline)
+      outf.write(outline+'\n')
 
 # replace old file with new file
 if doapply:
