@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	13
+Release:	14
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -436,6 +436,9 @@ fi
 /usr/share/bgscripts/toucher.sh
 
 %changelog
+* Wed Jun 28 2017 B Stack <bgstack15@gmail.com> 1.2-14
+- Updated content. See docs/README.txt.
+
 * Mon Jun 12 2017 B Stack <bgstack15@gmail.com> 1.2-13
 - Updated content. See docs/README.txt.
 

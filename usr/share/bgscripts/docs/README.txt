@@ -293,3 +293,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 2017-06-12 B Stack <bgstack15@gmail.com> 1.2-13
 - Fixed updateval.py
 - Added devuan.bashrc symlink to debian.bashrc
+
+2017-06-28 B Stack <bgstack15@gmail.com> 1.2-14
+- Updated rdp.sh to include devuan in the screen size calculations
+- 
