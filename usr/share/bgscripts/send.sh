@@ -9,6 +9,7 @@
 # History: 
 #   send.sh 2014-10-06 edition, which was a rewrite of the 2014-06-06/2014-08-13 original edition
 #    2017-05-24 Commented out the htmlize misc error
+#    2017-06-28 Updated the help text to include -f from
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    using a linux sendmail-hook wrapper script: http://stackoverflow.com/questions/2591755/how-send-html-mail-using-linux-command-line
@@ -16,17 +17,18 @@
 #    replaced sendmail-hook wrapper with new method: http://unix.stackexchange.com/questions/15405/how-do-i-send-html-email-using-linux-mail-command
 # Improve:
 fiversion="2017-01-17a"
-sendversion="2017-05-24a"
+sendversion="2017-06-28a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
-usage: send.sh [-duV] [-h|-H] [-s "subject line"] <infile> [email1 ...]
+usage: send.sh [-duV] [-h|-H] [-s "subject line"] [ -f <fromemail> ] <infile> [email1 ...]
 version ${sendversion}
  -d debug   Show debugging info, including parsed variables.
  -u usage   Show this usage block.
  -V version Show script version number.
  -h html    Add html headers, and edit the contents to include the <html> tags.
  -H         Add html headers, and assume content is already html format.
+ -f from    Set value of From: header
  <infile>   The file to mail. Required if stdin not provided.
  email1...  Overrides default email addresses. Default is ${defaultemail}
 Accepts stdin and will use the first line as the subject if not specified.

@@ -39,6 +39,8 @@ command: rpm --showrc
 
 https://superuser.com/questions/1017959/how-to-know-if-i-am-using-systemd-on-my-linux
 
+Terminal title https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-from-the-command-line/
+
 ### CHANGELOG
 bgscripts 1.1-9
 bgscripts.bashrc includes ls --color=auto for all ls aliases.
@@ -296,4 +298,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 2017-06-28 B Stack <bgstack15@gmail.com> 1.2-14
 - Updated rdp.sh to include devuan in the screen size calculations
-- 
+- Added title.sh which adjusts the title of the terminal window
