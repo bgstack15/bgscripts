@@ -349,6 +349,7 @@ fi
 /etc/sudoers.d/10_bgstack15
 %config %attr(666, -, -) /etc/bgscripts/dnskeepalive.conf
 /etc/sysconfig/dnskeepalive
+%verify(link) /usr/bin/title
 %verify(link) /usr/bin/bounce
 %verify(link) /usr/bin/shares
 %verify(link) /usr/bin/beep
@@ -365,6 +366,7 @@ fi
 %verify(link) /usr/bin/updateval
 %verify(link) /usr/bin/dli
 /usr/share/bgscripts/beep.sh
+/usr/share/bgscripts/title.sh
 /usr/share/bgscripts/ftemplate.sh
 /usr/share/bgscripts/dnskeepalive.sh
 /usr/share/bgscripts/plecho.sh
