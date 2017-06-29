@@ -25,11 +25,13 @@
 #    2017-03-04 removed proxy options and AIX support for version 1p2
 #    2017-04-19 Added htmlize. Modified to only run if dot-sourced
 #    2017-04-29 Added VISUAL and EDITOR.
+#    2017-06-28 Added permtitle.
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
+#    permtitle https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-from-the-command-line/
 # Improve:
-pversion="2017-04-29a"
+pversion="2017-06-28a"
 echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && exit
 
 if test "$( readlink -f $0 2>/dev/null )" = "/usr/share/bgscripts/bgscripts.bashrc";
@@ -163,6 +165,21 @@ function ccat {
 
 function htmlize {
    $( which sed ) -r -e 's/</\&lt/g;' -e 's/>/\&gt;/g;' -e 's/\&/\&amp;/g;'
+}
+
+permtitle() {
+   test -z "${__permtitle_file}" && {
+      __permtitle_file="$( mktemp -p /tmp tmp.$$.XXXXX )"
+      echo "${PROMPT_COMMAND}" > "${__permtitle_file}"
+   }   
+   case "${@}" in
+      "") 
+         export PROMPT_COMMAND="$( cat "${__permtitle_file}" )"
+         ;;
+      *)
+         export PROMPT_COMMAND="printf '\033];%s\007' '$@'"
+         ;;  
+   esac
 }
 
 tty -s 1>/dev/null 2>&1 && ! echo " $@ " | grep -qiE -- "\s--noclear\s" 1>/dev/null 2>&1 && {
