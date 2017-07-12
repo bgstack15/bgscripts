@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	14
+Release:	15
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -438,6 +438,10 @@ fi
 /usr/share/bgscripts/toucher.sh
 
 %changelog
+* Tue Jul 11 2017 B Stack <bgstack15@gmail.com> 1.2-15
+- Fix /etc/sudoers.d/ files to be chmod 0440
+- Updated content. See docs/README.txt.
+
 * Wed Jun 28 2017 B Stack <bgstack15@gmail.com> 1.2-14
 - Updated content. See docs/README.txt.
 

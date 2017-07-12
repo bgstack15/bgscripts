@@ -300,3 +300,5 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Updated rdp.sh to include devuan in the screen size calculations
 - Added title.sh which adjusts the title of the terminal window
 - Updated bgscripts.bashrc to include permtitle() function
+
+2017-07-11 B Stack <bgstack15@gmail.com> 1.2-15
