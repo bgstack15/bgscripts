@@ -232,20 +232,21 @@ fi
 exit 0
 
 %post core
-# post core 2017-06-08
+# post core 2017-07-11
 # References:
 #    https://fedoraproject.org/wiki/Packaging:Scriptlets
 #    https://fedoraproject.org/wiki/Changes/systemd_file_triggers
 #    https://superuser.com/questions/1017959/how-to-know-if-i-am-using-systemd-on-my-linux
 #    rpmrebuild -e ntp
 {
-if test "$1" -eq 1;
+if test "$1" -ge 1;
 then
    # Initial installation
    if test "$( ps --no-headers -o comm 1 )" = "systemd";
    then
       install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/systemd/dnskeepalive.service" || :
       install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/systemd/80-dnskeepalive.preset" || :
+      systemctl daemon-reload &
    fi
    systemctl --no-reload preset dnskeepalive.service || :
 fi

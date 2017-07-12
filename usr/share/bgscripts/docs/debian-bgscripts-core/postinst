@@ -1,4 +1,4 @@
-# deb core postinst 2017-06-08
+# deb core postinst 2017-07-11
 {
 if test "$1" = "configure";
 then
@@ -6,6 +6,7 @@ then
    then
       install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/dnskeepalive.service" || :
       install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/systemd/80-dnskeepalive.preset" || :
+      systemctl daemon-reload &
    fi
    systemctl --no-reload preset dnskeepalive.service || :
 fi
