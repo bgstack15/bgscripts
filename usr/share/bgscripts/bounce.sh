@@ -181,7 +181,7 @@ trap "clean_bounce" 0
 
 # MAIN LOOP
 # Determine type of bounce
-if echo "${fallopts}" | grep -qiE "(eth|ens|enp)[0-9]|(wl.{0,8})";
+if echo "${fallopts}" | grep -qiE "$( ip -o link show | awk '{print $2}' | xargs | sed -e 's/ //g;' -e 's/:/\|/g;' )((eth|ens|enp)[0-9])|(wl.{0,8})";
 then
    debuglev 1 && ferror "Found network cards";
    bounce_nics ${fallopts}
