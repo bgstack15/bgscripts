@@ -24,6 +24,7 @@ s/(.*)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/;
 s/(.*\.conf)/%config %attr(666, -, -) \1/;
 s/(\/usr)?\/lib\/systemd\/system\/(.*)/%{_unitdir}\/\2/;
 s/(\/usr)?\/lib\/systemd\/system-preset\/(.*)/%{_presetdir}\/\2/;
+s/(.*\/sudoers\.d\/.*)/%attr(440, root, root) \1/;
 '
 
       ;;
