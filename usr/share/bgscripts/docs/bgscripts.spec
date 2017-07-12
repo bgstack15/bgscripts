@@ -347,7 +347,7 @@ fi
 %dir /usr/share/bgscripts/docs/testing
 %dir /usr/share/bgscripts/docs/testing/debian
 %dir /usr/share/bgscripts/docs/debian-bgscripts-core
-/etc/sudoers.d/10_bgstack15
+%attr(440, root, root) /etc/sudoers.d/10_bgstack15
 %config %attr(666, -, -) /etc/bgscripts/dnskeepalive.conf
 /etc/sysconfig/dnskeepalive
 %verify(link) /usr/bin/title
