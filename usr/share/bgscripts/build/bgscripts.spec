@@ -338,6 +338,7 @@ fi
 %files core
 %dir /etc/bgscripts
 %dir /usr/share/bgscripts
+%dir /usr/share/bgscripts/build
 %dir /usr/share/bgscripts/inc
 %dir /usr/share/bgscripts/inc/systemd
 %dir /usr/share/bgscripts/bashrc.d
@@ -370,6 +371,7 @@ fi
 /usr/share/bgscripts/title.sh
 /usr/share/bgscripts/ftemplate.sh
 /usr/share/bgscripts/dnskeepalive.sh
+/usr/share/bgscripts/build/bgscripts.spec
 /usr/share/bgscripts/plecho.sh
 /usr/share/bgscripts/lecho.sh
 /usr/share/bgscripts/inc/pack
@@ -414,7 +416,6 @@ fi
 %doc %attr(444, -, -) /usr/share/bgscripts/docs/packaging.txt
 /usr/share/bgscripts/docs/testing/debian/control
 %doc %attr(444, -, -) /usr/share/bgscripts/docs/testing/debian/debian.txt
-/usr/share/bgscripts/docs/bgscripts.spec
 /usr/share/bgscripts/docs/debian-bgscripts-core/control
 /usr/share/bgscripts/docs/debian-bgscripts-core/prerm
 /usr/share/bgscripts/docs/debian-bgscripts-core/postinst

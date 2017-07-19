@@ -1,7 +1,7 @@
 docs/README.txt
 docs/bgscripts-version.txt
 build/bgscripts.spec
-docs/debian-bgscripts/control
-docs/debian-bgscripts-core/control
+build/debian-bgscripts/control
+build/debian-bgscripts-core/control
 framework.sh
 docs/packaging.txt
