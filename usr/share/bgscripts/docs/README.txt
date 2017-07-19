@@ -306,3 +306,5 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Updated rpm spec to make dnskeepalive installation/replacment work even on upgrades.
 - Updated bounce.sh to include any network card as seen by ip -o link show
 - Fixed rpm spec /etc/sudoers.d/ file permissions
+
+2017-07-19 B Stack <bgstack15@gmail.com> 1.2-16

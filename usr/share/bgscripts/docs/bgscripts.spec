@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.2
-Release:	15
+Release:	16
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
