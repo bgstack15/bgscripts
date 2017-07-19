@@ -55,7 +55,7 @@ case "${type}" in
 # if you copy-paste this, be sure to define package, version, shortversion
 rpmbuilddir=~/rpmbuild/
 sub1="core"
-packagespecfile="${package}-${version}/usr/share/${package}/docs/${package}.spec"
+packagespecfile="${package}-${version}/usr/share/${package}/build/${package}.spec"
 sed -n -e '1,/^\%files$/p;' "${rpmbuilddir}/SOURCES/${packagespecfile}" > "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp" # removes files and changelog
 cd ${rpmbuilddir}/SOURCES/"${package}-${version}"
 "${rpmbuilddir}/SOURCES/${package}-${version}/usr/share/${package}/inc/get-files" rpm >> "${rpmbuilddir}/SOURCES/${packagespecfile}.$$.swp"
