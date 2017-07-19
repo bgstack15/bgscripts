@@ -279,6 +279,7 @@ fi
 %dir /usr/share/bgscripts/gui/icons/mimetypes
 %config %attr(666, -, -) /etc/bgscripts/rdp.conf
 %verify(link) /usr/bin/rdp
+/usr/share/bgscripts/build/get-files
 /usr/share/bgscripts/gui/resize.desktop
 /usr/share/bgscripts/gui/x-rdp.xml
 /usr/share/bgscripts/gui/resize.sh
@@ -333,21 +334,19 @@ fi
 /usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-64.png
 /usr/share/bgscripts/gui/rdp.sh
 /usr/share/bgscripts/gui/rdp.desktop
-/usr/share/bgscripts/inc/get-files
 
 %files core
 %dir /etc/bgscripts
 %dir /usr/share/bgscripts
 %dir /usr/share/bgscripts/build
+%dir /usr/share/bgscripts/build/debian-bgscripts
+%dir /usr/share/bgscripts/build/testing
+%dir /usr/share/bgscripts/build/testing/debian
+%dir /usr/share/bgscripts/build/debian-bgscripts-core
 %dir /usr/share/bgscripts/inc
 %dir /usr/share/bgscripts/inc/systemd
 %dir /usr/share/bgscripts/bashrc.d
 %dir /usr/share/bgscripts/examples
-%dir /usr/share/bgscripts/docs
-%dir /usr/share/bgscripts/docs/debian-bgscripts
-%dir /usr/share/bgscripts/docs/testing
-%dir /usr/share/bgscripts/docs/testing/debian
-%dir /usr/share/bgscripts/docs/debian-bgscripts-core
 %attr(440, root, root) /etc/sudoers.d/10_bgstack15
 %config %attr(666, -, -) /etc/bgscripts/dnskeepalive.conf
 /etc/sysconfig/dnskeepalive
@@ -367,17 +366,43 @@ fi
 %verify(link) /usr/bin/fl
 %verify(link) /usr/bin/updateval
 %verify(link) /usr/bin/dli
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/version.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/packaging.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/README.txt
 /usr/share/bgscripts/beep.sh
 /usr/share/bgscripts/title.sh
 /usr/share/bgscripts/ftemplate.sh
 /usr/share/bgscripts/dnskeepalive.sh
+/usr/share/bgscripts/build/pack
+/usr/share/bgscripts/build/localize_git.sh
+/usr/share/bgscripts/build/debian-bgscripts/control
+/usr/share/bgscripts/build/debian-bgscripts/prerm
+/usr/share/bgscripts/build/debian-bgscripts/postinst
+/usr/share/bgscripts/build/debian-bgscripts/preinst
+/usr/share/bgscripts/build/debian-bgscripts/conffiles
+/usr/share/bgscripts/build/debian-bgscripts/changelog
+/usr/share/bgscripts/build/debian-bgscripts/rules
+/usr/share/bgscripts/build/debian-bgscripts/md5sums
+/usr/share/bgscripts/build/debian-bgscripts/postrm
+/usr/share/bgscripts/build/debian-bgscripts/compat
+%doc %attr(444, -, -) /usr/share/bgscripts/build/files-for-versioning.txt
+/usr/share/bgscripts/build/testing/debian/control
+%doc %attr(444, -, -) /usr/share/bgscripts/build/testing/debian/debian.txt
 /usr/share/bgscripts/build/bgscripts.spec
+%doc %attr(444, -, -) /usr/share/bgscripts/build/scrub.txt
+/usr/share/bgscripts/build/get-files-core
+/usr/share/bgscripts/build/debian-bgscripts-core/control
+/usr/share/bgscripts/build/debian-bgscripts-core/prerm
+/usr/share/bgscripts/build/debian-bgscripts-core/postinst
+/usr/share/bgscripts/build/debian-bgscripts-core/preinst
+/usr/share/bgscripts/build/debian-bgscripts-core/conffiles
+/usr/share/bgscripts/build/debian-bgscripts-core/changelog
+/usr/share/bgscripts/build/debian-bgscripts-core/rules
+/usr/share/bgscripts/build/debian-bgscripts-core/md5sums
+/usr/share/bgscripts/build/debian-bgscripts-core/postrm
+/usr/share/bgscripts/build/debian-bgscripts-core/compat
 /usr/share/bgscripts/plecho.sh
 /usr/share/bgscripts/lecho.sh
-/usr/share/bgscripts/inc/pack
-/usr/share/bgscripts/inc/localize_git.sh
-%doc %attr(444, -, -) /usr/share/bgscripts/inc/scrub.txt
-/usr/share/bgscripts/inc/get-files-core
 /usr/share/bgscripts/inc/systemd/dnskeepalive.service
 /usr/share/bgscripts/inc/systemd/80-dnskeepalive.preset
 /usr/share/bgscripts/scrub.py
@@ -402,35 +427,10 @@ fi
 /usr/share/bgscripts/changelog.sh
 /usr/share/bgscripts/framework.sh
 /usr/share/bgscripts/newscript.sh
-/usr/share/bgscripts/docs/debian-bgscripts/control
-/usr/share/bgscripts/docs/debian-bgscripts/prerm
-/usr/share/bgscripts/docs/debian-bgscripts/postinst
-/usr/share/bgscripts/docs/debian-bgscripts/preinst
-/usr/share/bgscripts/docs/debian-bgscripts/conffiles
-/usr/share/bgscripts/docs/debian-bgscripts/changelog
-/usr/share/bgscripts/docs/debian-bgscripts/rules
-/usr/share/bgscripts/docs/debian-bgscripts/md5sums
-/usr/share/bgscripts/docs/debian-bgscripts/postrm
-/usr/share/bgscripts/docs/debian-bgscripts/compat
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/files-for-versioning.txt
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/packaging.txt
-/usr/share/bgscripts/docs/testing/debian/control
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/testing/debian/debian.txt
-/usr/share/bgscripts/docs/debian-bgscripts-core/control
-/usr/share/bgscripts/docs/debian-bgscripts-core/prerm
-/usr/share/bgscripts/docs/debian-bgscripts-core/postinst
-/usr/share/bgscripts/docs/debian-bgscripts-core/preinst
-/usr/share/bgscripts/docs/debian-bgscripts-core/conffiles
-/usr/share/bgscripts/docs/debian-bgscripts-core/changelog
-/usr/share/bgscripts/docs/debian-bgscripts-core/rules
-/usr/share/bgscripts/docs/debian-bgscripts-core/md5sums
-/usr/share/bgscripts/docs/debian-bgscripts-core/postrm
-/usr/share/bgscripts/docs/debian-bgscripts-core/compat
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/bgscripts-version.txt
-%doc %attr(444, -, -) /usr/share/bgscripts/docs/README.txt
 /usr/share/bgscripts/updateval.py
 /usr/share/bgscripts/updateval.pyc
 /usr/share/bgscripts/updateval.pyo
+/usr/share/bgscripts/doc
 /usr/share/bgscripts/ctee.sh
 /usr/share/bgscripts/shares.sh
 /usr/share/bgscripts/bounce.sh
