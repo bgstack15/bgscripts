@@ -18,12 +18,12 @@ find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
       -regex '.*get-files$' -o \
       -regex '.*rdp.*' \
    \) \
-   | sed -e '
+   | sed -r -e '
 s/^/\//
-s/\(.*\.txt\|\/usr\/share\/doc\/.*\)/%doc %attr(444, -, -) \1/
-s/\(.*bin.*\)/%verify(link) \1/
-s/\(.*\)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/
-s/\(.*\.conf\)/%config %attr(666, -, -) \1/
+s/(.*\.txt|\/usr\/share\/doc\/.*)/%doc %attr(444, -, -) \1/
+s/(.*bin.*)/%verify(link) \1/
+s/(.*)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/
+s/(.*\.conf)/%config %attr(666, -, -) \1/
 '
 
       ;;
