@@ -1,1 +1,73 @@
-WORKHERE explain the bashrc.d and some of the more useful functions
+######################################################
+### bgscripts.bashrc
+
+#### WELCOME
+
+bgscripts.bashrc started life in 2013 as my ~/.profile for kornshell 93 on AIX 7.1.
+As my main environment switched to GNU bash on Linux, my needs changed.
+
+#### BEHAVIOR
+ --fcheck
+The script returns its version if you pass it the --fcheck flag. This is a legacy command which originally meant "framework check" to see what version of the framework library was in use.
+ --noglobalprofile
+Skips loading the /etc/bashrc. Otherwise, reads /etc/bashrc if running on Linux.
+ --nodeps
+Acts as --noos and --noflavor.
+ --noos
+Skips the os-specific bashrc in /usr/share/bgscripts/bashrc.d/.
+ --noflavor
+Skips the flavor-specific bashrc in /usr/share/bgscripts/bashrc.d/.
+ --noclear
+Skips the clear and tty display commands.
+
+Reads the local profile, so ~/.bashrc.local if it exists.
+
+#### VARIABLES
+thisos
+thisflavor
+thisflavorversion
+PATH
+PS1
+sudo
+_lscolorstring
+SERVER
+today
+VISUAL
+EDITOR
+
+#### SIMPLE FUNCTIONS
+psg = ps -ef | grep $1
+ll = ls -l
+vir = vi -R
+own = chown $USER:${thisusersprimarygroup}
+sshp = ssh with only password auth. Useful for ensuring a documented password is correct, or gssapi auth hangs.
+
+#### COMPLEX FUNCTIONS
+newest dir/ filepattern
+The newest function returns the most recently modified file that matches pattern "*filepattern*" in the entire directory structure of dir/
+Example:
+vi $( newest /var/log/application webapp )
+
+ccat
+Color cat. Wrapper around the highlight -O ansi command.
+
+htmlize
+Modifies standard in to replace every less than < sign with the html &lt; representation of it. Also does greater than > and ampersand & signs.
+Example:
+cat file1.txt file2.txt | htmlize > files.html
+
+permtitle
+Modifies the PROMPT_COMMAND with your string, so the terminal window title is changed permanently.
+Caches the original value so calling permtitle without any parameters resets it.
+Examples:
+permtitle "remoteuser@farawaydevice"; ssh remoteuser@farawaydevice.example.com; permtitle;
+
+#### bashrc.d/rhel.bashrc
+update-repo allows you to list updates for just one specific respository. Includes bash autocompletion of respository names.
+Example:
+update-repo smith122rpm
+
+Other bash autocompletions, including for bounce.sh.
+
+#### bashrc.d/debian.bashrc
+update-repo allows you to download update filelists for just one specific debian source list.
