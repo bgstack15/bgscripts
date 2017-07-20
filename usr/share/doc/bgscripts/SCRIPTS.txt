@@ -1,0 +1,282 @@
+######################################################
+### beep.sh
+Make a simple bell sound.
+If this does not work in your terminal, it is possible you need to enable the kernel mod:
+sudo modprobe pcspkr
+
+To enable this permanently on a RHEL-like system:
+echo "pcspkr" > /etc/modules-load.d/pckspkr.conf
+
+For an alternate beep noise of your choice:
+dnf -y install pulseaudio-utils
+echo "paplay /usr/share/sounds/freedesktop/stereo/dialog-error.oga" > beep.sh
+
+######################################################
+### bounce.sh
+Restart items. Currently supports network cards, network shares, and systemd services. Only bounce one type of item, but can accept multiple of that type. This means do not bounce eno1 and /mnt/cifsshare1 in the same command.
+
+usage: bounce.sh [-duV] [-D delay] [-n|-d|-s] [object1 ...]
+ -d debug   Show debugging info, including parsed variables.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+ -D delay   DELAY in seconds between down and up cycles. Default is "${DELAY}"
+ object1... Item to restart. Supported items include network cards, network shares, and systemd services.
+ -n|-d|-s   Optional flags that provide nice autocomplete options.
+
+Examples:
+bounce -n eno1
+bounce -d /mnt/foo
+bounce ntpd.service
+
+######################################################
+### bup.sh
+Backup (bup) a file to file.YYYY-MM-DD.serialnumber.
+If you provide a directory at the end, bup all named files to that output directory.
+
+usage: bup.sh [-udp] [<infile1> <infile2> <infile3> ...] [<outdir>]
+ -u usage    Show this usage block.
+ -d debug    Show parameters while being parsed. Prevents actual operation.
+ -p pwd      For all files, bup each file to PWD. Ignored if <outdir> is specified.
+ infile1     Required. This is a file to bup.
+Notes:
+ If the last object name passed is a directory, it will be used to store each
+bupfile. Otherwise, the script will bup each file to its own location.
+
+Examples:
+bup foofile1  # will output foofile1.2017-07-19.01
+bup recentlymodified.txt # if recentlymodified.txt.2017-07-19.02 exists, will create recentlymodified.txt.2017-07-19.03
+
+Limitations:
+Only counts up to 20. If you are trying to preserve history of a configuration more than 20 times in a day, please look into a proper version control system.
+
+######################################################
+### changelog.sh
+A simple and probably incomplete attempt to make it possible to convert rpm spec %changelog formats into the debian maintainer script changelog formats and vice versa.
+
+usage: changelog.sh [-duV] [-f] [-i infile] [-o outfile] [ rpm | (deb|dpkg) ] [ -p packagename ]
+ -d debug   Show debugging info, including parsed variables.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+ -f force   Just overwrite the relevant parts of the outfile, regardless of type.
+ -i infile  File to be converted. 'stdin' is available as an option.
+ -o outfile Output file. If a .spec, replace any %changelog present. Default is stdout.
+ -p packagename Name to use if output is deb. Can be determined if an understandable filename.
+
+######################################################
+### ctee.sh
+Displays output to terminal and still includes the color ANSI escape codes, while sending on to the pipe stdout the output excluding the color ANSI escape codes.
+This script is useful for when a process contains colorized output and you want to keep it colorized, but capture into a log just the plain text.
+
+usage: some-program | ctee.sh [-duV] [outfile1]
+ -d debug   Throws error. For debugging, edit value \$devtty in the script.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+This script operates tee and preserves color on the output while sending uncolored output to the file.
+Sometimes a program needs to be used with unbuffer to display color to a pipe.
+
+Examples:
+time unbuffer ansible-playbook example.yml | ctee /var/log/ansible-plays.log
+
+######################################################
+### dnskeepalive.sh
+Service that rotates dns server settings based on which name servers are responding.
+
+It is not intended that the user call this script manually. A systemd service is installed by the rpm package and is titled dnskeepalive.service.
+
+Configuration is possible by default in file /etc/sysconfig/dnskeepalive.
+
+usage: dnskeepalive.sh [-duV] [-c conffile]
+ -d debug   Show debugging info, including parsed variables.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+ -c conffile Specify config file. If not provided, use default values for everything.
+ -1 one     Run dnskeepalive just once.
+
+Examples:
+systemctl start dnskeeplive && systemctl enable dnskeepalive
+/usr/share/bgscripts/dnskeepalive.sh -1 -c /etc/dnskeepalivecustom.conf
+
+######################################################
+### fl.sh
+Wrapper for 'find | xargs ls -dl'
+
+Not really in use anymore, but might be of some helpfulness somewhere.
+
+usage: fl.sh [-ud]
+ -u usage   Show this usage block.
+ -d debug   Show what search would be used. Prevents actual operation.
+
+######################################################
+### framework.sh
+Framework is a library for shell scripts. It will never be needed on its own.
+
+Its documentation is in a separate file named FRAMEWORK.txt
+
+######################################################
+### ftemplate.sh
+Ftemplate is the basis for any new scripts, because it is called by the newscript.sh script. It is also available for manual manipulation/duplication.
+
+A better description is included in the FRAMEWORK.txt document.
+
+######################################################
+### host-bup.sh
+Provides a nice way to simplify backing up the configuration files on a system.
+
+Configure the default file /etc/installed/host-bup.conf to resemble this example:
+
+    [hostbup:main]
+    hostname=storage1.ipa.smith122.com
+    tar_out_file=/mnt/public/Support/Systems/storage1/config.storage1.$( date "+%Y-%m-%d" ).tgz
+    script_count=1
+    script_1_cmd=/usr/share/bgscripts/dli.py . > /tmp/dnf.installed.log
+    dryrun=0
+    
+    [hostbup:files]
+    # this file
+    /etc/installed/host-bup.conf
+    /tmp/dnf.installed.log  # dnf list installed
+    # host changelog
+    /etc/installed/storage1.log
+    # apache
+    /etc/httpd/conf/httpd.conf
+
+With the above host-bup.conf, you can call:
+/usr/share/bgscripts/host-bup.sh
+And the script will tar and gzip all the files from the [hostbup:files] section in the ${tar_out_file} file.
+Any commands in the script_X_cmd variables up to the value of script_count will be executed.
+
+See example file /usr/share/bgscripts/examples/host-bup.conf.example
+
+NOTICE! For safety, you must have the correct hostname in the host-bup.conf file. This is to protect the system from trying to use a list of files and actions meant for a different host.
+
+usage: host-bup.sh [-duV] [-c conffile]
+ -d debug   Show debugging info, including parsed variables.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+ -c conf    Select conf file. Default is ${conffile}.
+ -n dryrun  Only perform debugging. Do not execute scripts or build tgz.
+ -f force   Ignore hostname mismatch.
+host-bup.sh is designed to easily bup the config files on a host.
+Debug level 5 and above will not execute the script_1_cmd values.
+
+######################################################
+### lecho.sh
+Log Echo. This script takes the parameters given to out and prepends the timestamp and username and hostname.
+
+This script is useful when called in other scripts, to provide an easily greppable format of the date and time.
+
+Examples:
+lecho "job started"
+Output:
+[2017-07-19 20:20:14]bgstack15@woof-01: job started
+
+######################################################
+### newscript.sh
+Generates a new script with the provided name and fills in a number of variables, from the ftemplate file.
+
+A better description is included in the FRAMEWORK.txt document.
+
+######################################################
+### orig-send.sh
+Original version of send.sh
+
+
+######################################################
+### plecho.sh
+Pipe Log Echo, which does the log echo action to the standard input.
+
+When you have standard input which you want timestamped, use plecho.
+
+Examples:
+ls -lZ /etc/krb5.conf | plecho
+Output:
+[2017-07-19 20:25:06]bgstack15@woof-01: -rw-r--r--.1 root root system_u:object_r:krb5_conf_t:s0 575 Jul 13 20:50 /etc/krb5.conf
+
+######################################################
+### send.sh
+Send.sh was a sendmail wrapper originally written for an AIX environment. This script is almost obsolete in a GNU environment with the mailx command.
+
+The redeemable feature of send.sh is that it provides options for sending messages in fixed-width html format.  The script will detect when a flaglessval (parameter without a leading dash and not the option of such a parameter) is either a filename or an email address.
+Accepts standard input as well.
+
+For when you want to use a different smtp server, use mailx:
+echo "${message}" | mailx -r 'Pretty name <bgstack15@gmail.com>' -S smtp='smtp.example.com:25' -s 'subject line example' me@example.com
+
+For when you want to send an attachment, use mailx:
+mailx -a attachment.txt -s 'includes attachment' me@example.com < message.txt
+
+usage: send.sh [-duV] [-h|-H] [-s "subject line"] [ -f <fromemail> ] <infile> [email1 ...]  
+ -d debug   Show debugging info, including parsed variables.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+ -h html    Add html headers, and edit the contents to include the <html> tags.
+ -H         Add html headers, and assume content is already html format.
+ -f from    Set value of From: header
+ <infile>   The file to mail. Required if stdin not provided.
+ email1...  Overrides default email addresses. Default is ${defaultemail}
+Accepts stdin and will use the first line as the subject if not specified.
+
+Examples:
+If you have file dnf.installed.log and wish to email it in a fixed-width message, use this command:
+send -h -s 'dnf install gnome-desktop' dnf.installed.log destination@example.com
+Send standard input from a particular email to a destination email address.
+ls -l | send -f 'Pretty name <bgstack15@gmail.com>' -s 'Listing of pwd files' destination@example.com
+
+######################################################
+### shares.sh
+Shares.sh performs tasks on network mounts, including remounting and touching (to keep alive).
+
+This script can be used to touch (without creating) a file on a filesystem. By using a network mount every so often, it keeps the share from going stale.
+
+usage: shares.sh [-duV] [-r|-k] [-a] [-t <type>] [/mounted/directory [ ... ]]
+ -d debug   Show debugging info, including parsed variables.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+ -r remount Remount shares
+ -k keepalive Touch shares to keep them from timing out
+ -a all     All shares. Can be limited with -t. Default behavior if no directories provided.
+ -t <type>  Only this type of share. Needs -a flag.
+
+An example cron job is provided at /usr/share/bgscripts/examples/shares-keepalive.cron.
+*/3	*	*	*	*	root	/usr/share/bgscripts/shares.sh --all --keepalive 1>/dev/null 2>&1
+
+To install as a cronjob, just copy the file to /etc/cron.d/.
+sudo cp -p /usr/share/bgscripts/examples/shares-keepalive.cron /etc/cron.d/
+
+Examples:
+To remount all cifs shares:
+shares -r -a -t cifs
+To touch certain directories to keep the connection from going stale:
+shares -k /mnt/cifs1 /mnt/cifs2
+
+######################################################
+### title.sh
+Uses the escape commands to adjust the terminal window.
+Observe that this script only does the basic printf command. It is likely that the PROMPT_COMMAND variable also includes a command that manipulates the terminal title.
+To modify the title on a 'permanent' basis, use the permtitle alias from the bgscripts.bashrc file, which is described in the BGSCRIPTS-BASHRC.txt document.
+
+Examples:
+title 'running backup job'; ./backup-script.sh --incremental; beep
+
+######################################################
+### toucher.sh
+Toucher provides a simpler way to touch, chmod, chown, restorecon a file.
+
+In many scriptlet copy-paste segments I generate a file in preparation for catting content into it. To prepare a file, I might run:
+tf=/etc/krb5.conf
+touch "${tf}"; chmod 0600 "${tf}"; chown root:root "${tf}"; restorecon "${tf}"
+
+To make this process take fewer characters to type, I wrote this toucher script.
+
+Examples:
+tf=/home/developers/example.txt
+toucher 0644 bgstack15:bgstack15 "${tf}"
+cat <<EOF > "${tf}"
+Contents of the example file go here.
+EOF
+
+######################################################
+### updateval.sh
+The legacy version of updateval.py. The shell version is no longer recommended for use.
+
+

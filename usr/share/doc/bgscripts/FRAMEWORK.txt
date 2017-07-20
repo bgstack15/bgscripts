@@ -1,0 +1,8 @@
+### framework.sh
+
+Framework is the main library of shell functions and run-time and environment variables needed by many of the scripts in the bgscripts and bgscripts-core packages.
+
+Only functions that provide external value will be described in this document.
+
+### ftemplate.sh
+WORKHERE 2017-07-19 20:09

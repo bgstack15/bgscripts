@@ -1,0 +1,1 @@
+WORKHERE explain the bashrc.d and some of the more useful functions

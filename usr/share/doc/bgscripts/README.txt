@@ -10,11 +10,15 @@ Improve:
 Document: Below this line
 
 ### WELCOME
-To use the bgscripts.bashrc, use this command:
-. bp
-That will source-load the Bgscripts Profile.
+The bgscripts and bgscripts-core packages are designed to bring the bgstack15 working environment to a server. Many scripts (shell and python3) are provided, as well as a complete bashrc.
 
-### NOTES
+To use the bgscripts.bashrc in your terminal, use this command:
+. bp
+
+### SCRIPT NOTES
+For descriptions of each individual script in this package, please read /usr/share/doc/bgscripts/SCRIPTS.txt
+
+### OS-SPECIFIC NOTES
 On Ubuntu, the mailutils package provides sendmail, which send.sh needs to operate properly.
 
 ### REFERENCE
@@ -40,6 +44,9 @@ command: rpm --showrc
 https://superuser.com/questions/1017959/how-to-know-if-i-am-using-systemd-on-my-linux
 
 Terminal title https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-from-the-command-line/
+
+Beep in terminal https://askubuntu.com/questions/19906/beep-in-shell-script-not-working
+https://unix.stackexchange.com/questions/71064/automate-modprobe-command-at-boot-time-on-fedora#71069
 
 ### CHANGELOG
 bgscripts 1.1-9
