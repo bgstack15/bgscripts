@@ -26,15 +26,17 @@
 #    2017-04-19 Added htmlize. Modified to only run if dot-sourced
 #    2017-04-29 Added VISUAL and EDITOR.
 #    2017-06-28 Added permtitle.
+#    2017-07-19 Adjust exit logic on --fcheck to not exit if it was dot-sourced.
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
 #    permtitle https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-from-the-command-line/
 # Improve:
-pversion="2017-06-28a"
-echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && exit
+pversion="2017-07-19a"
+__dot_sourced=1; test "$( readlink -f $0 2>/dev/null )" = "/usr/share/bgscripts/bgscripts.bashrc" && __dot_sourced=0
+echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && { test "${__dot_sourced}" = "0" && exit || return; }
 
-if test "$( readlink -f $0 2>/dev/null )" = "/usr/share/bgscripts/bgscripts.bashrc";
+if test "${__dot_sourced}" = "0";
 then
    echo "Please dot-source this script. Aborted." 1>&2
    exit 1

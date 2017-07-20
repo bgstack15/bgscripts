@@ -15,8 +15,12 @@ The bgscripts and bgscripts-core packages are designed to bring the bgstack15 wo
 To use the bgscripts.bashrc in your terminal, use this command:
 . bp
 
-### SCRIPT NOTES
-For descriptions of each individual script in this package, please read /usr/share/doc/bgscripts/SCRIPTS.txt
+### OTHER README FILES
+For descriptions of each individual script in this package, please read /usr/share/doc/bgscripts/SCRIPTS.txt.
+
+For the description of the framework.sh library and associate files, read /usr/share/doc/bgscripts/FRAMEWORK.txt.
+
+For notes on the bgscripts.bashrc and its sub-files, read /usr/share/doc/bgscripts/BGSCRIPTS-BASHRC.txt.
 
 ### OS-SPECIFIC NOTES
 On Ubuntu, the mailutils package provides sendmail, which send.sh needs to operate properly.
