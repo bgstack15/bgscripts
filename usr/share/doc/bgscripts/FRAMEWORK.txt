@@ -1,8 +1,100 @@
+######################################################
 ### framework.sh
 
 Framework is the main library of shell functions and run-time and environment variables needed by many of the scripts in the bgscripts and bgscripts-core packages.
 
 Only functions that provide external value will be described in this document.
 
+#### BEHAVIOR
+ --fcheck
+Outputs the version number of framework and exits.
+
+#### FUNCTIONS
+
+##### getval
+Getval is used during the parameter parsing to grab the next positional parameter.
+Examples:
+case ${flag} in
+   "c" | "conf" | "conffile" | "config" ) getval; conffile="${tempval}";;
+esac
+This snippet is from the parseFlag() section of the template. If you call the template script with a -c flag:
+./ftemplate.sh -c /etc/special.conf
+The /etc/special.conf will be read by getval, and here it will be assigned to $conffile.
+
+##### debuglev
+Debuglev returns true if the debug level is equal to or higher than the called number.
+
+If your script was called with:
+./myscript.sh -d 5
+Then the debug level is set to 5. You could write an expression:
+debuglev 4 && echo "Debug level is 4 or higher."
+This command would then execute, and the same is true for ./myscript.sh -d 4.
+It will skip the echo if you called ./myscript.sh -d 3.
+
+You can use the logical NOT operator, the exclamation mark ! to invert the operation.
+If your script was called with:
+./myscript.sh -d 6
+And your logic includes:
+! debuglev 6 && echo "Debugging is set to level 5 or below."
+It will not display the message.
+
+##### fisnum
+Framework, is number.
+Call fisnum:
+fisnum $1 && echo "$1 is a number!"
+
+The logic was shared on Stack Overflow years ago. Basically if anything in the string is not a numeral from 0 to 9, then the function returns false.
+
+Examples:
+a=fish
+fisnum $a && echo "Can do addition with $a."
+! fisnum $a && echo "How do you expect to perform arithmetic with ${a}?" && exit 1
+
+b=5
+fisnum $b && echo "Thank you for providing a number for variable ${b}."
+
+##### Fistruthy
+Framework; is truthy.
+
+If a variable contains a 'yes,' '1,' 'y,' 'true,' or 'always,' then return true. Otherwise, return false.
+
+Comparing a given variable to a truthy value is needed all the time in writing scripts. Unifying the logic into a single function reduces the need to rewrite code.
+
+Examples:
+a=7.5
+fistruthy "${a}" && echo "This will not appear because 7.5 does not fit in the bounds of a 'true' value, for the purposes of the function."
+
+b=True
+fistruthy "${b}" && echo "This will appear."
+
+######################################################
 ### ftemplate.sh
-WORKHERE 2017-07-19 20:09
+
+Ftemplate is the template file for a new shell script. It is copied and modified by the newscript.sh script.
+
+This is a template. Feel free to modify/delete any portions to suit your needs. Use it to get your work done as you see fit. Do not feel bound by any limitations present in the template; just make it work the way you need it to.
+
+It calls framework in a dynamic way:
+# DETERMINE LOCATION OF FRAMEWORK
+while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170608; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+./framework.sh
+${scriptdir}/framework.sh
+~/bin/bgscripts/framework.sh
+~/bin/framework.sh
+~/bgscripts/framework.sh
+~/framework.sh
+/usr/local/bin/bgscripts/framework.sh
+/usr/local/bin/framework.sh
+/usr/bin/bgscripts/framework.sh
+/usr/bin/framework.sh
+/bin/bgscripts/framework.sh
+/usr/share/bgscripts/framework.sh
+EOFLOCATIONS
+test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
+
+The provided list of filenames is what the script searches for. As soon as it finds an executable file, that returns a version number greater than or equal to the number specified, then it will assign that as the library location and exit the loop.
+
+The list of filenames can be modified to suit your purpose. If framework is being embedded in a custom location or package, you can add its full path to this list.
+
+######################################################
+### newscriptsh

@@ -62,12 +62,12 @@ Caches the original value so calling permtitle without any parameters resets it.
 Examples:
 permtitle "remoteuser@farawaydevice"; ssh remoteuser@farawaydevice.example.com; permtitle;
 
-#### bashrc.d/rhel.bashrc
+### bashrc.d/rhel.bashrc
 update-repo allows you to list updates for just one specific respository. Includes bash autocompletion of respository names.
 Example:
 update-repo smith122rpm
 
 Other bash autocompletions, including for bounce.sh.
 
-#### bashrc.d/debian.bashrc
+### bashrc.d/debian.bashrc
 update-repo allows you to download update filelists for just one specific debian source list.
