@@ -367,7 +367,10 @@ fi
 %verify(link) /usr/bin/updateval
 %verify(link) /usr/bin/dli
 %doc %attr(444, -, -) /usr/share/doc/bgscripts/version.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/BGSCRIPTS-BASHRC.txt
 %doc %attr(444, -, -) /usr/share/doc/bgscripts/packaging.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/SCRIPTS.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/FRAMEWORK.txt
 %doc %attr(444, -, -) /usr/share/doc/bgscripts/README.txt
 /usr/share/bgscripts/beep.sh
 /usr/share/bgscripts/title.sh
@@ -440,7 +443,7 @@ fi
 /usr/share/bgscripts/toucher.sh
 
 %changelog
-* Tue Jul 21 2017 B Stack <bgstack15@gmail.com> 1.2-16
+* Fri Jul 21 2017 B Stack <bgstack15@gmail.com> 1.2-16
 - Updated content. See doc/README.txt.
 
 * Tue Jul 11 2017 B Stack <bgstack15@gmail.com> 1.2-15
