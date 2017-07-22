@@ -318,7 +318,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Updated bounce.sh to include any network card as seen by ip -o link show
 - Fixed rpm spec /etc/sudoers.d/ file permissions
 
-2017-07-19 B Stack <bgstack15@gmail.com> 1.2-16
+2017-07-21 B Stack <bgstack15@gmail.com> 1.2-16
 - Rearranged doc/ directory and contents.
 - Rearranged build/ and inc/ directories to make more sense.
 - Added documentation for many files and scripts.

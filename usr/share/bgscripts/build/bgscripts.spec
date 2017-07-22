@@ -440,6 +440,9 @@ fi
 /usr/share/bgscripts/toucher.sh
 
 %changelog
+* Tue Jul 21 2017 B Stack <bgstack15@gmail.com> 1.2-16
+- Updated content. See doc/README.txt.
+
 * Tue Jul 11 2017 B Stack <bgstack15@gmail.com> 1.2-15
 - Fix /etc/sudoers.d/ files to be chmod 0440
 - Updated content. See docs/README.txt.
