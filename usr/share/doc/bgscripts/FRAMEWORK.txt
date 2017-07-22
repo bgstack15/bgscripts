@@ -6,6 +6,7 @@ Framework is the main library of shell functions and run-time and environment va
 Only functions that provide external value will be described in this document.
 
 #### BEHAVIOR
+
  --fcheck
 Outputs the version number of framework and exits.
 
@@ -67,8 +68,115 @@ fistruthy "${a}" && echo "This will not appear because 7.5 does not fit in the b
 b=True
 fistruthy "${b}" && echo "This will appear."
 
+##### setval
+   # call: setval 0 value1 value2 value3 ... <<EOFOPTIONS
+   # /bin/foo1 --optforfoo1
+   # /usr/bin/foo2 --optforfoo2
+   # EOFOPTIONS
+   #              ^ 0 = soft fail, 1 = critical-fail
+
+Use setval to search for a file and set any extra options based on which file it finds.
+
+Examples:
+setval 0 backupscript bup_option1 bup_option2 bup_option3 <<EOFOPTIONS
+/usr/bin/backupscript.sh -l -t -f
+/usr/bin/oldbup.sh --long --title
+/usr/bin/rsync -avz --ignore-missing
+EOFOPTIONS
+If it finds /usr/bin/backupscript.sh, then it will set $backupscript to /usr/bin/backupscript.sh, bup_option1 to "-l," bup_option2 to "-t" et al.
+The 0 means it will set the value of $backupscript to "fail" if it cannot find any of the listed items. If the value is a 1, then the $backupscript will be set to "critical-fail." It is expected that the script will check for these values and respond accordingly.
+
+##### flecho
+Framework log echo.
+This version attempts to combine the lecho (log echo) and plecho (pipe log echo) options into one shell function.
+It tries to read stdin and if it finds any, it will apply the log echo function to the stream.
+It also takes any parameters and adds those to the output.
+
+Examples:
+cat file1 | flecho "this string is prepended"
+
+##### fsudo
+Framework sudo. Simply find and execute sudo with all parameters passed to it.
+
+##### fwhich
+Framework which.
+Returns the fully qualified file path of the passed filename. It simply executes:
+
+    readlink -f "$@"
+
+##### ferror
+Framework error
+Print parameters to standard error. It simply executes:
+
+    echo "$@" 1>&2
+
+##### prepend
+Prepends the parameters to the stream.
+Example:
+cat file | prepend "But first... "
+
+##### append
+Appends the parameters to the stream.
+Example:
+cat file | append " x 100!"
+
+##### setdebug
+Sets the debug level. This function integrates tightly with the parseFlag() section of the ftemplate file.
+
+Setdebug should be used in the parseFlag() function like:
+case ${flag} in
+   "d" | "debug" | "DEBUG" | "dd" ) setdebug; ferror "debug level ${debug}";;
+esac
+
+##### isvalidip
+Checks if the parameter is a valid IPv4 address.
+# call: isvalidip ${input} && echo yes
+
+##### getconf
+Reads the file as a parameter and finds all variables in it that are not yet defined in the current environment and then evaluates them.
+This function was designed to work with the Unix-like behaviors of using environment variables and simple config files.
+
+Examples:
+Take example.conf:
+EXAMPLE_STRING="muffin"
+EXAMPLE_PHRASE="flashy spreadsheets"
+
+With a variable already defined of EXAMPLE_STRING=cheesesticks, the function:
+get_conf example.conf
+Will add to the environment the value EXAMPLE_PHRASE="flashy spreadsheets."
+
+##### define_if_new
+# call: define_if_new IFW_IN_LOG_FILE "/var/log/messages"
+If the first parameter evaluates to null string, then define the first parameter with a value of the second parameter.
+
+Examples:
+define_if_new LOG_FILE=/var/log/application.log
+
+#### VARIABLES
+today
+now
+server
+thistty
+thisip
+thisos
+thisflavor
+thisflavorversion
+scriptdir
+scriptfile
+scripttrim
+thisppid
+cronpid
+is_cronjob
+stdin_piped
+stdout_piped
+stderr_piped
+stdin_local
+is_root
+
 ######################################################
 ### ftemplate.sh
+
+#### BEHAVIOR
 
 Ftemplate is the template file for a new shell script. It is copied and modified by the newscript.sh script.
 
@@ -95,6 +203,8 @@ test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 &&
 The provided list of filenames is what the script searches for. As soon as it finds an executable file, that returns a version number greater than or equal to the number specified, then it will assign that as the library location and exit the loop.
 
 The list of filenames can be modified to suit your purpose. If framework is being embedded in a custom location or package, you can add its full path to this list.
+
+
 
 ######################################################
 ### newscriptsh
