@@ -1,4 +1,4 @@
-# deb core postinst 2017-07-11
+# deb core postinst 2017-07-21
 {
 if test "$1" = "configure";
 then
@@ -9,5 +9,8 @@ then
       systemctl daemon-reload &
    fi
    systemctl --no-reload preset dnskeepalive.service || :
+
+   # install symlink for doc
+   test ! -h /usr/share/bgscripts/doc && ln -s ../doc/bgscripts /usr/share/bgscripts/doc
 fi
 } 1>/dev/null 2>&1

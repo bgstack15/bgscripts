@@ -79,8 +79,8 @@ rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/" "${rpmbuilddir}/SOUR
 # if you copy-paste this, be sure to define package, version
 debdir=~/deb
 sub1="core"
-debiandirmain="${package}-${version}/usr/share/${package}/docs/debian-${package}"
-debiandirsub1="${package}-${version}/usr/share/${package}/docs/debian-${package}-${sub1}"
+debiandirmain="${package}-${version}/usr/share/${package}/build/debian-${package}"
+debiandirsub1="${package}-${version}/usr/share/${package}/build/debian-${package}-${sub1}"
 cd "${debdir}/${package}-${version}"
 "${debdir}/${package}-${version}/usr/share/${package}/build/get-files" deb | xargs md5sum > "${debdir}/${debiandirmain}/md5sums"
 "${debdir}/${package}-${version}/usr/share/${package}/build/get-files-${sub1}" deb | xargs md5sum > "${debdir}/${debiandirsub1}/md5sums"

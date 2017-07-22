@@ -1,5 +1,4 @@
 6a89bcbbba300220685eb9caeea3bf7d  usr/bin/rdp
-b4a13f2e92d70b0529a7af5b0e312dc8  usr/share/bgscripts/inc/get-files
 b36acca8339f7b6cd60e34f0cdf7f8d8  usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-48.png
 7c45c261b771aa17b6e6b041a52119f4  usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce.svg
 6ff00402a518544df38bec6cd28e669b  usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-32.png
@@ -54,4 +53,5 @@ f69e5a790c11af39eb81f04419377616  usr/share/bgscripts/gui/resize.desktop
 cb9ff522401617627d35d463c7768ae1  usr/share/bgscripts/gui/rdp.desktop
 e8656747ab5089c74a77e1c8d548decf  usr/share/bgscripts/gui/x-rdp.xml
 424fcaf063eec40882a41012668aeb79  usr/share/bgscripts/gui/resize.sh
+4a81507b9c9e925f5442f70703375477  usr/share/bgscripts/build/get-files
 022c07f3b877730c394b10549331ec4f  etc/bgscripts/rdp.conf
