@@ -13,6 +13,7 @@
 #    2016-10-24 adding stanza() and (stanza) types
 #    2017-01-11 moved whole package to /usr/share/bgscripts
 #    2017-06-12 rewrote whole detection and update sections
+#    2017-08-22 updated: if infile is symlink, set infile to link destination
 # Usage:
 #   updateval.py /etc/rc.conf "^ntpd_enable=.*" 'ntpd_enable="YES"' --apply
 # Reference:
@@ -26,7 +27,7 @@
 #    idea: be able to specify comment types
 
 import re, shutil, os, argparse, sys
-updatevalversion="2017-01-12a"
+updatevalversion="2017-08-22a"
 
 def debuglev(_numbertocheck):
    # if _numbertocheck <= debuglevel then return truthy
@@ -37,6 +38,12 @@ def debuglev(_numbertocheck):
    except Exception as e:
       pass
    return _debuglev
+
+def readlinkf(_inpath):
+   if os.path.islink(infile):
+      return os.path.join(os.path.dirname(_inpath),os.readlink(_inpath))
+   else:
+      return _inpath
 
 # Define default variables
 stanza_delim=['[',']','none']
@@ -72,8 +79,12 @@ which_stanza=args.stanza
 stanza_regex=args.stanzaregex
 beginning=args.beginning
 
-wasfixed = False
 outfile = infile + ".updateval-new"
+wasfixed = False
+
+# Detect if infile is symlink
+infile=readlinkf(infile)
+if debuglev(6): print('canonical file is',infile)
 
 # Derive stanza delimiters
 # It might be [newstanza] or ## Heading but it'll probably just be the []
