@@ -40,12 +40,14 @@ bounce_nics() {
    for _word in $@;
    do
       debuglev 2 && ferror "Bouncing ${_word}"
-      fsudo ifdown "${_word}"
+      #fsudo ifdown "${_word}"
+      fsudo ip link set "${_word}" down
    done
    sleep "${DELAY}"
    for _word in $@;
    do
-      fsudo ifup "${_word}"
+      #fsudo ifup "${_word}"
+      fsudo ip link set "${_word}" up
    done
 }
 
