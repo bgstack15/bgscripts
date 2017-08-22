@@ -322,3 +322,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Rearranged doc/ directory and contents.
 - Rearranged build/ and inc/ directories to make more sense.
 - Added documentation for many files and scripts.
+
+2017-08-22 B Stack <bgstack15@gmail.com> 1.2-17
+
