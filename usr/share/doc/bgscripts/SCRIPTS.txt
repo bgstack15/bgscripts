@@ -67,7 +67,8 @@ usage: changelog.sh [-duV] [-f] [-i infile] [-o outfile] [ rpm | (deb|dpkg) ] [ 
 Displays output to terminal and still includes the color ANSI escape codes, while sending on to the pipe stdout the output excluding the color ANSI escape codes.
 This script is useful for when a process contains colorized output and you want to keep it colorized, but capture into a log just the plain text.
 
-usage: some-program | ctee.sh [-duV] [outfile1]
+usage: some-program | ctee.sh [-aduV] [outfile1]
+ -a append  Append to given file, do not overwrite.
  -d debug   Throws error. For debugging, edit value \$devtty in the script.
  -u usage   Show this usage block.
  -V version Show script version number.

@@ -19,8 +19,9 @@ cteeversion="2017-03-16a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
-usage: some-program | ctee.sh [-duV] [outfile1]
+usage: some-program | ctee.sh [-aduV] [outfile1]
 version ${cteeversion}
+ -a append  Append to given file, do not overwrite.
  -d debug   Throws error. For debugging, edit value \$devtty in the script.
  -u usage   Show this usage block.
  -V version Show script version number.
