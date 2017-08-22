@@ -9,6 +9,7 @@
 # History: 
 #    2017-04-20 suppressed error "bup: /etc/resolv.conf does not exist."
 #    2017-05-24 added extra cleanup of temp file during loop to see if this reduces clutter in /tmp directory
+#    2017-08-22 Suppressed error message on bup
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    https://github.com/kvz/nsfailover/blob/master/nsfailover.sh
@@ -263,7 +264,7 @@ fi
          debuglev 1 && log "no changes required"
       else
          log "changed nameserver priority to: ${neworder}"
-         /usr/bin/bup "${DNSK_RESOLVCONF}" 2>/dev/null
+         /usr/bin/bup "${DNSK_RESOLVCONF}" 1>/dev/null 2>&1
          {
             grep -viE "^nameserver " "${DNSK_RESOLVCONF}"
             for word in ${neworder};
