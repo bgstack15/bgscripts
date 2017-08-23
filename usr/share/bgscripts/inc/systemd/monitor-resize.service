@@ -1,0 +1,23 @@
+# File: /usr/lib/systemd/system/monitor-resize.service
+#       when enabled, /etc/systemd/system/monitor-resize.service
+# bgstack15@gmail.com 2017-08-23
+[Unit]
+Description=monitor-resize
+DefaultDependencies=no
+Requires=multi-user.target
+After=multi-user.target
+
+ConditionPathExists=/usr/share/bgscripts/gui/monitor-resize.sh
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=-/etc/sysconfig/monitor-resize
+ExecStart=/usr/share/bgscripts/gui/monitor-resize.sh
+Restart=on-abort
+StandardOutput=syslog
+StandardError=syslog
+#ExecStopPost=/usr/share/bgscripts/gui/monitor-resize.sh --clean
+
+[Install]
+WantedBy=graphical.target
