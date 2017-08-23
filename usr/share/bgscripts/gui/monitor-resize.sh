@@ -8,11 +8,14 @@
 # Package: bgscripts
 # History: 
 # Usage: 
+#   use as a systemd unit.
+# A child process can be specifically spawned:
+# sudo ./monitor-resize.sh --display :0 --user bgirton --child -c /home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-17/etc/bgscripts/monitor-resize.conf  --instance 5
 # Reference: ftemplate.sh 2017-06-08a; framework.sh 2017-06-08a
 # Improve:
 # modes of operation:
 #    master daemon process
-#    instance
+#  x instance
 fiversion="2017-06-08a"
 monitorresizeversion="2017-08-23a"
 
@@ -66,6 +69,12 @@ CTRLZ() {
    # use with: trap "CTRLZ" 18
    # useful for controlling the ctrl+z keystroke
    :
+}
+
+clean_monitorresize_child() {
+   rm -f "${tmpfilechild}" 2>/dev/null
+   trap "" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+   exit 0
 }
 
 parseFlag() {
@@ -257,6 +266,7 @@ debuglev 5 && {
          #su - "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}"
 
          # set traps
+         trap "clean_monitorresize_child" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
          # perform checks
          while true;
@@ -268,7 +278,7 @@ debuglev 5 && {
             } 2>/dev/null )"
             if ! test "$( cat "${tmpfilechild}" )" = "${requestedsize}";
             then
-               printf "%s\n" "Child ${childinstance} ${childuser}${childdisplay} requested size: ${requestedsize}" | flecho
+               flecho "Child ${childinstance} ${childuser}${childdisplay} requested size: ${requestedsize}"
                su - "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}"
                printf "%s" "${requestedsize}" > "${tmpfilechild}"
             fi
