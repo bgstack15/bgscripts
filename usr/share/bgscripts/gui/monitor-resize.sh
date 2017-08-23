@@ -8,14 +8,11 @@
 # Package: bgscripts
 # History: 
 # Usage: 
-#   use as a systemd unit.
-# A child process can be specifically spawned:
-# sudo ./monitor-resize.sh --display :0 --user bgirton --child -c /home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-17/etc/bgscripts/monitor-resize.conf  --instance 5
+#    Use as a systemd unit. The main daemon mode is just ./monitor-resize.sh
+#    A child process can be specifically spawned:
+#    sudo ./monitor-resize.sh --display :0 --user bgstack15 --child -c /home/bgstack15/rpmbuild/SOURCES/bgscripts-1.2-17/etc/bgscripts/monitor-resize.conf --instance 5
 # Reference: ftemplate.sh 2017-06-08a; framework.sh 2017-06-08a
 # Improve:
-# modes of operation:
-#    master daemon process
-#  x instance
 fiversion="2017-06-08a"
 monitorresizeversion="2017-08-23a"
 
@@ -51,12 +48,26 @@ childerror() {
    fistruthy "${_isfatal}" && exit "${_exitcode}"
 }
 
+get_displays() {
+   # Reference: https://bgstack15.wordpress.com/2017/09/06/find-running-x-sessions/
+   { ps -eo pid,command | awk '/-session/ {print $1}' | while read thispid; do cat /proc/${thispid}/environ | tr '\0' '\n' | grep "DISPLAY" | sed -e "s/^/${thispid} $( stat -c '%U' /proc/${thispid}/comm ) $( basename $( readlink -f /proc/${thispid}/exe ) ) /;"; done; } 2>/dev/null | grep -iE "xfce|cinnamon"
+}
+
 # DEFINE TRAPS
 
 clean_monitorresize() {
    # use at end of entire script if you need to clean up tmpfiles
-   #rm -f ${tmpfile} 1>/dev/null 2>&1
-   :
+
+   # send kill signals to children
+   cat "${tmpfilepids}" 2>/dev/null | while read thispid junk;
+   do
+      kill -15 "${thispid}"
+   done
+
+   rm -f "${tmpfilemaster}" "${tmpfilemasterold}" "${tmpfilemasteractions}" "${tmpfilepids}" 2>/dev/null
+   rm -f /tmp/kill_monitor-resize.tmp 2>/dev/null
+   trap "" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+   exit 0
 }
 
 CTRLC() {
@@ -73,8 +84,14 @@ CTRLZ() {
 
 clean_monitorresize_child() {
    rm -f "${tmpfilechild}" 2>/dev/null
-   trap "" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+   trap "" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 16 17 18 19 20
    exit 0
+}
+
+trap_sigterm_child() {
+   # use with: trap "trap_sigterm_child" 15
+   echo "Child ${childinstance} terminated by daemon."
+   clean_monitorresize_child
 }
 
 parseFlag() {
@@ -124,7 +141,7 @@ logfile=${scriptdir}/${scripttrim}.${today}.out
 mode=0  # mode=1 is for children processes
 define_if_new interestedparties "bgstack15@gmail.com"
 # SIMPLECONF
-define_if_new default_conffile ~/rpmbuild/SOURCES/bgscripts-1.2-17/etc/bgscripts/monitor-resize.conf
+define_if_new default_conffile /etc/bgscripts/monitor-resize.conf
 define_if_new defuser_conffile ~/.config/bgscripts/monitor-resize.conf
 
 # REACT TO OPERATING SYSTEM TYPE
@@ -166,8 +183,6 @@ validateparams - "$@"
 #   exit 2
 #fi
 
-# CONFIGURE VARIABLES AFTER PARAMETERS
-
 # LOAD CONFIG FROM SIMPLECONF
 # This section follows a simple hierarchy of precedence, with first being used:
 #    1. parameters and flags
@@ -184,37 +199,12 @@ fi
 test -f "${defuser_conffile}" && get_conf "${defuser_conffile}"
 test -f "${default_conffile}" && get_conf "${default_conffile}"
 
-## START READ CONFIG FILE TEMPLATE
-#oIFS="${IFS}"; IFS="$( printf '\n' )"
-#infiledata=$( ${sed} ':loop;/^\/\*/{s/.//;:ccom;s,^.[^*]*,,;/^$/n;/^\*\//{s/..//;bloop;};bccom;}' "${infile1}") #the crazy sed removes c style multiline comments
-#IFS="${oIFS}"; infilelines=$( echo "${infiledata}" | wc -l )
-#{ echo "${infiledata}"; echo "ENDOFFILE"; } | {
-#   while read line; do
-#   # the crazy sed removes leading and trailing whitespace, blank lines, and comments
-#   if test ! "${line}" = "ENDOFFILE";
-#   then
-#      line=$( echo "${line}" | sed -e 's/^\s*//;s/\s*$//;/^[#$]/d;s/\s*[^\]#.*$//;' )
-#      if test -n "${line}";
-#      then
-#         debuglev 8 && ferror "line=\"${line}\""
-#         if echo "${line}" | grep -qiE "\[.*\]";
-#         then
-#            # new zone
-#            zone=$( echo "${line}" | tr -d '[]' )
-#            debuglev 7 && ferror "zone=${zone}"
-#         else
-#            # directive
-#            varname=$( echo "${line}" | awk -F= '{print $1}' )
-#            varval=$( echo "${line}" | awk -F= '{$1=""; printf "%s", $0}' | sed 's/^ //;' )
-#            debuglev 7 && ferror "${zone}${varname}=\"${varval}\""
-#            # simple define variable
-#            eval "${zone}${varname}=\${varval}"
-#         fi
-#         ## this part is untested
-#         #read -p "Please type something here:" response < ${thistty}
-#         #echo "${response}"
-#      fi
-#   else
+# CONFIGURE VARIABLES AFTER PARAMETERS
+define_if_new MONITOR_RESIZE_DELAY=2
+define_if_new MONITOR_RESIZE_CHILD=/usr/share/bgscripts/gui/monitor-resize.sh
+define_if_new MONITOR_RESIZE_CHILD_FLAG=--child
+define_if_new MONITOR_RESIZE_COMMAND=/usr/share/bgscripts/gui/resize.sh
+define_if_new MONITOR_RESIZE_TEMP_DIR=/tmp/bgscripts
 
 ## REACT TO BEING A CRONJOB
 #if test ${is_cronjob} -eq 1;
@@ -223,11 +213,6 @@ test -f "${default_conffile}" && get_conf "${default_conffile}"
 #else
 #   [ ]
 #fi
-
-# SET TRAPS
-#trap "CTRLC" 2
-#trap "CTRLZ" 18
-#trap "clean_monitorresize" 0
 
 # DEBUG SIMPLECONF
 debuglev 5 && {
@@ -242,7 +227,71 @@ debuglev 5 && {
    case "${mode}" in
       0)
          # master daemon
+         # every 10*DELAY seconds, check for running processes and add children if necessary.
+         # if told to stop, then send signal 15 to children.
+         # keep list of running children, by pid.
+         
+         # make temp file
+         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
+         tmpfilemaster="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.master.$$.XXXXXX )"
+         tmpfilemasterold="${tmpfilemaster}.old"; touch "${tmpfilemasterold}"
+         tmpfilemasteractions="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.actions.$$.XXXXXX )"
+         tmpfilepids="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.pids.$$.XXXXXX )"
+
+         # SET TRAPS
+         #trap "CTRLC" 2
+         #trap "CTRLZ" 18
+         trap "clean_monitorresize" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+
+         while ! test -f /tmp/kill_monitor-resize.tmp;
+         do
+
+            # generate list of displays
+            get_displays | cut -d' ' -f2,4 > "${tmpfilemaster}"
+            debuglev 8 && cat "${tmpfilemaster}"
+
+            # compare to old list
+            if ! test "$( cat "${tmpfilemaster}" 2>/dev/null )" = "$( cat "${tmpfilemasterold}" 2>/dev/null )";
+            then
+               # display
+               diff -s "${tmpfilemaster}" "${tmpfilemasterold}" 2>/dev/null | sed -r -e '1d' -e 's/^</Added/;' -e 's/^>/Removed/;'
+               diff -s "${tmpfilemaster}" "${tmpfilemasterold}" 2>/dev/null | sed -r -e '1d' -e 's/^</Added/;' -e 's/^>/Removed/;' > "${tmpfilemasteractions}"
+            fi
+
+            # spawn child processes based on changes
+            cat "${tmpfilemasteractions}" | while read thisaction thisuser thisdisplay;
+            do
+               tmpdisplay="$( echo "${thisdisplay}" | sed 's/DISPLAY=//;' )"
+               case "${thisaction}" in
+                  Added)
+                     "${MONITOR_RESIZE_CHILD}" "${MONITOR_RESIZE_CHILD_FLAG}" --display "${tmpdisplay}" --user "${thisuser}" --instance "${RANDOM}" -c "${conffile}" &
+                     debuglev 2 && printf "%s %s %s %s\n" "$!" "${thisuser}" "${tmpdisplay}"
+                     printf "%s %s %s %s\n" "$!" "${thisuser}" "${tmpdisplay}" >> "${tmpfilepids}"
+                     ;;
+                  Removed)
+                     thisline="$( grep -iE "${thisuser} ${tmpdisplay}" "${tmpfilepids}" 2>/dev/null )"
+                     if test -n "${thisline}"
+                     then
+                        thispid="$( printf "%s\n" "${thisline}" | awk '{print $1}' )"
+                        kill -15 "${thispid}" && sed -i -r -e "/^${thisline}$/d" "${tmpfilepids}" && \
+                           debuglev 2 && printf "%s\n" "${thisline}"
+                     fi
+                     ;;
+               esac
+            done
+
+            # loop file
+            cat "${tmpfilemaster}" > "${tmpfilemasterold}"
+            cat /dev/null > "${tmpfilemasteractions}"
+
+            sleep "$( printf '%s*3\n' "${MONITOR_RESIZE_DELAY}" | bc )"
+         done
+
+         rm -f /tmp/kill_monitor-resize.tmp
+         ferror "${scriptfile}: Ultimate kill switch used."
+         exit 0
          ;;
+#############################################################3
       1)
          # child mode
          debuglev 9 && ferror "Mode: child, pid $$, instance ${childinstance}"
@@ -266,20 +315,21 @@ debuglev 5 && {
          #su - "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}"
 
          # set traps
-         trap "clean_monitorresize_child" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+         trap "clean_monitorresize_child" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 16 17 18 19 20
+         trap "trap_sigterm_child" 15
 
          # perform checks
          while true;
          do
             #requestedsize="$( { DISPLAY=${childdisplay} xrandr --current | head -n3 | tail -n1 | awk '{print $1}'; } 2>/dev/null )"
-            getsize_command="xrandr --current | head -n3 | tail -n1 | awk '{print $1}'"
+            #getsize_command="xrandr --current | head -n3 | tail -n1 | awk '{print $1}'"
             requestedsize="$( {
-               su - "${childuser}" -c "DISPLAY=${childdisplay} xrandr --current | head -n3 | tail -n1 | awk '{print \$1}'";
+               su - "${childuser}" -c "DISPLAY=${childdisplay} xrandr --current 2>/dev/null | head -n3 | tail -n1 | awk '{print \$1}'";
             } 2>/dev/null )"
             if ! test "$( cat "${tmpfilechild}" )" = "${requestedsize}";
             then
-               flecho "Child ${childinstance} ${childuser}${childdisplay} requested size: ${requestedsize}"
-               su - "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}"
+               printf "Child ${childinstance} ${childuser}${childdisplay} requested size: ${requestedsize}\n"
+               su - "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}" 2>/dev/null
                printf "%s" "${requestedsize}" > "${tmpfilechild}"
             fi
          
@@ -298,7 +348,3 @@ debuglev 5 && {
 
 # EMAIL LOGFILE
 #${sendsh} ${sendopts} "${server} ${scriptfile} out" ${logfile} ${interestedparties}
-
-## STOP THE READ CONFIG FILE
-#exit 0
-#fi; done; }
