@@ -16,7 +16,8 @@ find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
    \( \
       -regex '.*gui.*' -o \
       -regex '.*get-files$' -o \
-      -regex '.*rdp.*' \
+      -regex '.*rdp.*' -o \
+      -regex '.*monitor-resize.*' \
    \) \
    | sed -r -e '
 s/^/\//
