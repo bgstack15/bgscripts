@@ -1,4 +1,4 @@
-# deb postrm 2017-03-24
+# deb postrm 2017-08-23
 if test "$1" = "remove";
 then
 {
@@ -60,6 +60,13 @@ then
       done
 
    }
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 fi
+
+if test "$1" -ge 1;
+then
+   # Package upgrade, not uninstall
+   systemctl try-restart monitor-resize.service 1>/dev/null 2>&1 || :
+fi
+
 exit 0

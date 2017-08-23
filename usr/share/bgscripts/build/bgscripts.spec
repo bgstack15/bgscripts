@@ -50,7 +50,7 @@ rsync -a . %{buildroot}/ --exclude='**/.*.swp' --exclude='**/.git'
 rm -rf %{buildroot}
 
 %post
-# rpm post 2017-06-08
+# rpm post 2017-08-23
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -103,7 +103,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       gtk-update-icon-cache %{_datarootdir}/icons/${word} &
    done
 
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 
 # Deploy desktop files
 {
@@ -117,7 +117,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       desktop-file-install %{_datarootdir}/%{name}/gui/resize.desktop
    fi
 
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 
 # Add mimetype and set default application
 for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
@@ -142,12 +142,29 @@ do
    done <<'EOW'
 application/x-rdp
 EOW
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 done
+
+# deploy systemd files
+{
+if test "$1" -ge 1;
+then
+   # Initial installation
+
+   if test "$( ps --no-headers -o comm 1 )" = "systemd";
+   then
+      install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/systemd/monitor-resize.service" || :
+      install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/systemd/80-monitor-resize.preset" || :
+      systemctl daemon-reload &
+   fi
+   systemctl --no-reload preset monitor-resize.service || :
+
+fi
+} 1>/dev/null 2>&1 &
 exit 0
 
 %preun
-# rpm preun 2017-03-24
+# rpm preun 2017-08-23
 if test "$1" = "0";
 then
 {
@@ -160,12 +177,18 @@ then
          su "${user}" -c "xdg-mime uninstall %{_datarootdir}/%{name}/gui/x-rdp.xml &"
       }
    done
-} 1>/dev/null 2>&1
+
+   # remove systemd files
+   systemctl --no-reload disable --now monitor-resize.service || :
+   rm -f %{_unitdir}/monitor-resize.service || :
+   rm -f %{_presetdir}/80-monitor-resize.preset || :
+
+} 1>/dev/null 2>&1 &
 fi
 exit 0
 
 %postun
-# rpm postun 2017-03-24
+# rpm postun 2017-08-23
 if test "$1" = "0";
 then
 {
@@ -227,8 +250,15 @@ then
       done
 
    }
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 fi
+
+if test "$1" -ge 1;
+then
+   # Package upgrade, not uninstall
+   systemctl try-restart monitor-resize.service 1>/dev/null 2>&1 || :
+fi
+
 exit 0
 
 %post core

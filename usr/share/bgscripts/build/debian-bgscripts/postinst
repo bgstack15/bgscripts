@@ -1,4 +1,4 @@
-# deb postinst 2017-06-08
+# deb postinst 2017-08-23
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -51,7 +51,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       gtk-update-icon-cache /usr/share/icons/${word} &
    done
 
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 
 # Deploy desktop files
 {
@@ -65,7 +65,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       desktop-file-install /usr/share/bgscripts/gui/resize.desktop
    fi
 
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 
 # Add mimetype and set default application
 for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
@@ -90,6 +90,23 @@ do
    done <<'EOW'
 application/x-rdp
 EOW
-} 1>/dev/null 2>&1
+} 1>/dev/null 2>&1 &
 done
+
+# deploy systemd files
+{
+if test "$1" -ge 1;
+then
+   # Initial installation
+   
+   if test "$( ps --no-headers -o comm 1 )" = "systemd";
+   then
+      install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/monitor-resize.service" || :
+      install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/systemd/80-monitor-resize.preset" || :
+      systemctl daemon-reload &
+   fi
+   systemctl --no-reload preset monitor-resize.service || :
+
+fi
+} 1>/dev/null 2>&1 &
 exit 0
