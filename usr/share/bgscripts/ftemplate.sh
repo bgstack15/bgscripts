@@ -8,9 +8,9 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-06-08a; framework.sh 2017-06-08a
+# Reference: ftemplate.sh 2017-08-23a; framework.sh 2017-06-08a
 # Improve:
-fiversion="2017-06-08a"
+fiversion="2017-08-23a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
@@ -151,7 +151,7 @@ validateparams - "$@"
 #then
 #   get_conf "${conffile}"
 #else
-#   if test "${conffile}" = "${default_conffile}" || test "${conffile}" = "${defuser_conffile}"; then :; else ferror "${scriptfile}: Ignoring conf file which is not found: ${conffile}."; fi
+#   if test "${conffile}" = "${default_conffile}" || test "${conffile}" = "${defuser_conffile}"; then :; else test -n "${conffile}" && ferror "${scriptfile}: Ignoring conf file which is not found: ${conffile}."; fi
 #fi
 #test -f "${defuser_conffile}" && get_conf "${defuser_conffile}"
 #test -f "${default_conffile}" && get_conf "${default_conffile}"
