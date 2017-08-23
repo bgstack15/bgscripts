@@ -358,3 +358,7 @@ updateval.py /etc/rc.conf "^ntpd_enable=.*" 'ntpd_enable="YES"' --apply
 In stanza '[section]', set value example=bar. If example is not found, insert example=bar at the beginning of the stanza.
 updateval.py -b -s '[section]' '^example=.*' 'example=bar'
 
+######################################################
+### monitor-resize.sh
+Monitor-resize is a daemon that monitors the X displays and tells them to resize if the display size has changed. This is useful on virtual machines.
+The program is written in Bourne shell, and uses /proc filesystem to collect information it needs. 
