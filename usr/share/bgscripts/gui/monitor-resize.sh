@@ -151,18 +151,6 @@ case $( uname -s ) in
    *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
 esac
 
-# REACT TO ROOT STATUS
-case ${is_root} in
-   1) # proper root
-      : ;;
-   sudo) # sudo to root
-      : ;;
-   "") # not root at all
-      ferror "${scriptfile}: 5. Please run as root or sudo. Aborted."
-      exit 5
-      ;;
-esac
-
 # SET CUSTOM SCRIPT AND VALUES
 #setval 1 sendsh sendopts<<EOFSENDSH      # if $1="1" then setvalout="critical-fail" on failure
 #/usr/share/bgscripts/send.sh -hs     #                setvalout maybe be "fail" otherwise
@@ -226,13 +214,26 @@ debuglev 5 && {
    # determine mode
    case "${mode}" in
       0)
+
+         # REACT TO ROOT STATUS
+         case ${is_root} in
+            1) # proper root
+               : ;;
+            sudo) # sudo to root
+               : ;;
+            "") # not root at all
+               ferror "${scriptfile}: 5. Please run as root or sudo. Aborted."
+               exit 5
+               ;;
+         esac
+
          # master daemon
          # every 10*DELAY seconds, check for running processes and add children if necessary.
          # if told to stop, then send signal 15 to children.
          # keep list of running children, by pid.
          
          # make temp file
-         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
+         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null; chmod 2777 "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
          tmpfilemaster="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.master.$$.XXXXXX )"
          tmpfilemasterold="${tmpfilemaster}.old"; touch "${tmpfilemasterold}"
          tmpfilemasteractions="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.actions.$$.XXXXXX )"
@@ -264,7 +265,7 @@ debuglev 5 && {
                tmpdisplay="$( echo "${thisdisplay}" | sed 's/DISPLAY=//;' )"
                case "${thisaction}" in
                   Added)
-                     "${MONITOR_RESIZE_CHILD}" "${MONITOR_RESIZE_CHILD_FLAG}" --display "${tmpdisplay}" --user "${thisuser}" --instance "${RANDOM}" -c "${conffile}" &
+                     su "${thisuser}" -c "${MONITOR_RESIZE_CHILD} ${MONITOR_RESIZE_CHILD_FLAG} --display ${tmpdisplay} --user ${thisuser} --instance ${RANDOM} -c ${conffile}" &
                      debuglev 2 && printf "%s %s %s %s\n" "$!" "${thisuser}" "${tmpdisplay}"
                      printf "%s %s %s %s\n" "$!" "${thisuser}" "${tmpdisplay}" >> "${tmpfilepids}"
                      ;;
@@ -321,15 +322,14 @@ debuglev 5 && {
          # perform checks
          while true;
          do
-            #requestedsize="$( { DISPLAY=${childdisplay} xrandr --current | head -n3 | tail -n1 | awk '{print $1}'; } 2>/dev/null )"
-            #getsize_command="xrandr --current | head -n3 | tail -n1 | awk '{print $1}'"
             requestedsize="$( {
-               su - "${childuser}" -c "DISPLAY=${childdisplay} xrandr --current 2>/dev/null | head -n3 | tail -n1 | awk '{print \$1}'";
+               DISPLAY=${childdisplay} xrandr --current 2>/dev/null | head -n3 | tail -n1 | awk '{print $1}';
             } 2>/dev/null )"
             if ! test "$( cat "${tmpfilechild}" )" = "${requestedsize}";
             then
                printf "Child ${childinstance} ${childuser}${childdisplay} requested size: ${requestedsize}\n"
-               su - "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}" 2>/dev/null
+               #su "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}" 2>/dev/null
+               DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND} 2>/dev/null
                printf "%s" "${requestedsize}" > "${tmpfilechild}"
             fi
          
