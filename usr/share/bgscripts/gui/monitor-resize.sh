@@ -9,8 +9,8 @@
 # History: 
 # Usage: 
 #    Use as a systemd unit. The main daemon mode is just ./monitor-resize.sh
-#    A child process can be specifically spawned:
-#    sudo ./monitor-resize.sh --display :0 --user bgstack15 --child -c /home/bgstack15/rpmbuild/SOURCES/bgscripts-1.2-17/etc/bgscripts/monitor-resize.conf --instance 5
+#    A child process can be specifically spawned, as the user in question.
+#    ./monitor-resize.sh --display :0 --user bgstack15 --child -c /home/bgstack15/rpmbuild/SOURCES/bgscripts-1.2-17/etc/bgscripts/monitor-resize.conf --instance 5
 # Reference: ftemplate.sh 2017-06-08a; framework.sh 2017-06-08a
 # Improve:
 fiversion="2017-06-08a"
@@ -30,7 +30,7 @@ Return values:
  2 Count or type of flaglessvals is incorrect
  3 Incorrect OS type
  4 Unable to find dependency
- 5 Not run as root or sudo
+ 5 Daemon was not run as root or sudo
  6 Child parameters are invalid
 ENDUSAGE
 }
@@ -64,10 +64,12 @@ clean_monitorresize() {
       kill -15 "${thispid}"
    done
 
+   # clean temporary files
    rm -f "${tmpfilemaster}" "${tmpfilemasterold}" "${tmpfilemasteractions}" "${tmpfilepids}" 2>/dev/null
    rm -f /tmp/kill_monitor-resize.tmp 2>/dev/null
    trap "" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
    exit 0
+
 }
 
 CTRLC() {
@@ -228,12 +230,15 @@ debuglev 5 && {
          esac
 
          # master daemon
-         # every 10*DELAY seconds, check for running processes and add children if necessary.
          # if told to stop, then send signal 15 to children.
          # keep list of running children, by pid.
          
-         # make temp file
-         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null; chmod 2777 "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
+         # make temp directory
+         test -n "${MONITOR_RESIZE_TEMP_DIR}" && ! test -d "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
+         chmod 2777 "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
+         chown root:root "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
+
+         # make temp files
          tmpfilemaster="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.master.$$.XXXXXX )"
          tmpfilemasterold="${tmpfilemaster}.old"; touch "${tmpfilemasterold}"
          tmpfilemasteractions="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.actions.$$.XXXXXX )"
@@ -309,11 +314,10 @@ debuglev 5 && {
          debuglev 5 && {
             echo "display ${childdisplay} user ${childuser} instance ${childinstance}"
          }
-         # make temp file
-         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
-         tmpfilechild="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.$$.XXXXXX )"
 
-         #su - "${childuser}" -c "DISPLAY=${childdisplay} ${MONITOR_RESIZE_COMMAND}"
+         # make temp files
+         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null; chm
+         tmpfilechild="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.$$.XXXXXX )"
 
          # set traps
          trap "clean_monitorresize_child" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 16 17 18 19 20
