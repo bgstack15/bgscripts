@@ -361,4 +361,6 @@ updateval.py -b -s '[section]' '^example=.*' 'example=bar'
 ######################################################
 ### monitor-resize.sh
 Monitor-resize is a daemon that monitors the X displays and tells them to resize if the display size has changed. This is useful on virtual machines.
-The program is written in Bourne shell, and uses /proc filesystem to collect information it needs. 
+The program is written in Bourne shell, and uses /proc filesystem to collect information it needs. This tool represents a new architecture in my repertoire: a master-child forking process with control via signals.
+
+Use monitor-resize by enabling and starting monitor-resize.service.
