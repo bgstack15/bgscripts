@@ -1,4 +1,4 @@
-# deb prerm 2017-03-24
+# deb prerm 2017-08-23
 if test "$1" = "remove";
 then
 {
@@ -11,6 +11,12 @@ then
          su "${user}" -c "xdg-mime uninstall /usr/share/bgscripts/gui/x-rdp.xml &"
       }
    done
+
+   # remove systemd files
+   systemctl --no-reload disable --now monitor-resize.service || :
+   rm -f /lib/systemd/system/monitor-resize.service || :
+   rm -f /lib/systemd/system-preset/80-monitor-resize.preset || :
+
 } 1>/dev/null 2>&1
 fi
 exit 0
