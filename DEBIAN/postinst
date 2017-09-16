@@ -1,4 +1,4 @@
-# deb postinst 2017-08-23
+# deb postinst 2017-09-16
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -103,9 +103,8 @@ then
    then
       install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/monitor-resize.service" || :
       install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/systemd/80-monitor-resize.preset" || :
-      systemctl daemon-reload &
+      { systemctl daemon-reload || : ; systemctl --no-reload preset monitor-resize.service || : ; } &
    fi
-   systemctl --no-reload preset monitor-resize.service || :
 
 fi
 } 1>/dev/null 2>&1 &
