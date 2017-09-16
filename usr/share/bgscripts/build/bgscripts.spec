@@ -155,7 +155,10 @@ then
    then
       install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/systemd/monitor-resize.service" || :
       install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/systemd/80-monitor-resize.preset" || :
-      { systemctl daemon-reload || : ; systemctl --no-reload preset monitor-resize.service || : ; } &
+      __thisfunction() {
+         systemctl daemon-reload; systemctl --no-reload preset monitor-resize.service;
+      }
+      __thisfunction &
    fi
 
 fi
@@ -163,10 +166,10 @@ fi
 exit 0
 
 %preun
-# rpm preun 2017-08-23
+# rpm preun 2017-09-16
+{
 if test "$1" = "0";
 then
-{
    # total uninstall
 
    # Remove mimetype definitions
@@ -182,12 +185,12 @@ then
    rm -f %{_unitdir}/monitor-resize.service || :
    rm -f %{_presetdir}/80-monitor-resize.preset || :
 
-} 1>/dev/null 2>&1 &
 fi
+} 1>/dev/null 2>&1 &
 exit 0
 
 %postun
-# rpm postun 2017-08-23
+# rpm postun 2017-09-16
 if test "$1" = "0";
 then
 {
@@ -252,16 +255,17 @@ then
 } 1>/dev/null 2>&1 &
 fi
 
+{
 if test "$1" -ge 1;
 then
    # Package upgrade, not uninstall
-   systemctl try-restart monitor-resize.service 1>/dev/null 2>&1 || :
+   systemctl try-restart monitor-resize.service || :
 fi
-
+} 1>/dev/null 2>&1
 exit 0
 
 %post core
-# post core 2017-09-16
+# rpm core post 2017-09-16
 # References:
 #    https://fedoraproject.org/wiki/Packaging:Scriptlets
 #    https://fedoraproject.org/wiki/Changes/systemd_file_triggers
@@ -275,30 +279,42 @@ then
    then
       install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/systemd/dnskeepalive.service" || :
       install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/systemd/80-dnskeepalive.preset" || :
-      { systemctl daemon-reload || : ; systemctl --no-reload preset dnskeepalive.service || : ; } &
+      __thisfunction() {
+         systemctl daemon-reload; systemctl --no-reload preset dnskeepalive.service;
+      }
+      __thisfunction &
    fi
+
 fi
 } 1>/dev/null 2>&1
+exit 0
 
 %preun core
-# preun core 2017-06-08
+# rpm core preun 2017-06-08
 {
 if test "$1" -eq 0;
 then
-   # Package removal, not upgrade
+   # total uninstall
+
+   # remove systemd files
    systemctl --no-reload disable --now dnskeepalive.service || :
    rm -f %{_unitdir}/dnskeepalive.service || :
    rm -f %{_presetdir}/80-dnskeepalive.preset || :
+
 fi
 } 1>/dev/null 2>&1
+exit 0
 
 %postun core
-# postun core 2017-04-29
+# rpm core postun 2017-09-16
+{
 if test "$1" -ge 1;
 then
    # Package upgrade, not uninstall
-   systemctl try-restart dnskeepalive.service 1>/dev/null 2>&1 || :
+   systemctl try-restart dnskeepalive.service || :
 fi
+} 1>/dev/null 2>&1
+exit 0
 
 %files
 %dir /usr/share/bgscripts/gui

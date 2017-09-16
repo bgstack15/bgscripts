@@ -2,6 +2,7 @@
 {
 if test "$1" = "configure";
 then
+   # Initial installation
    if test "$( ps --no-headers -o comm 1 )" = "systemd";
    then
       install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/dnskeepalive.service" || :
@@ -12,8 +13,9 @@ then
       __thisfunction &
    fi
 
-   # install symlink for doc
+   # install symlink for doc, only for deb
    test ! -h /usr/share/bgscripts/doc && ln -s ../doc/bgscripts /usr/share/bgscripts/doc
+
 fi
 } 1>/dev/null 2>&1
 exit 0

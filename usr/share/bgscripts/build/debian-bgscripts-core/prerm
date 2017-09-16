@@ -10,7 +10,7 @@ then
    rm -f /lib/systemd/system/dnskeepalive.service || :
    rm -f /lib/systemd/system-preset/80-dnskeepalive.preset || :
 
-   # remove doc symlink
+   # remove doc symlink, only for deb
    test -L /usr/share/bgscripts/doc && unlink /usr/share/bgscripts/doc
 
 fi
