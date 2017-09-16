@@ -50,7 +50,7 @@ rsync -a . %{buildroot}/ --exclude='**/.*.swp' --exclude='**/.git'
 rm -rf %{buildroot}
 
 %post
-# rpm post 2017-08-23
+# rpm post 2017-09-16
 # Deploy icons
 which xdg-icon-resource 1>/dev/null 2>&1 && {
 
@@ -155,9 +155,8 @@ then
    then
       install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/systemd/monitor-resize.service" || :
       install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/systemd/80-monitor-resize.preset" || :
-      systemctl daemon-reload &
+      { systemctl daemon-reload || : ; systemctl --no-reload preset monitor-resize.service || : ; } &
    fi
-   systemctl --no-reload preset monitor-resize.service || :
 
 fi
 } 1>/dev/null 2>&1 &
@@ -262,7 +261,7 @@ fi
 exit 0
 
 %post core
-# post core 2017-07-11
+# post core 2017-09-16
 # References:
 #    https://fedoraproject.org/wiki/Packaging:Scriptlets
 #    https://fedoraproject.org/wiki/Changes/systemd_file_triggers
@@ -276,9 +275,8 @@ then
    then
       install -m 0644 -o root -p -t "%{_unitdir}" "%{_datarootdir}/%{name}/inc/systemd/dnskeepalive.service" || :
       install -m 0644 -o root -p -t "%{_presetdir}" "%{_datarootdir}/%{name}/inc/systemd/80-dnskeepalive.preset" || :
-      systemctl daemon-reload &
+      { systemctl daemon-reload || : ; systemctl --no-reload preset dnskeepalive.service || : ; } &
    fi
-   systemctl --no-reload preset dnskeepalive.service || :
 fi
 } 1>/dev/null 2>&1
 
