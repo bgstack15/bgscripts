@@ -27,6 +27,7 @@
 #    2017-04-29 Added VISUAL and EDITOR.
 #    2017-06-28 Added permtitle.
 #    2017-07-19 Adjust exit logic on --fcheck to not exit if it was dot-sourced.
+#    2017-09-16 Removed legacy stuff intended for 1p2 and added ~/.bcrc
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
@@ -77,7 +78,6 @@ unset _noos _noflavor
 # REACT TO OS # SIMPLE VARIABLES
 case "${thisos}" in
    FreeBSD)
-      export PATH=/mnt/scripts:${PATH}
       export PS1="[\u@\h|\$( pwd )]\\$ "
       export PAGER=less
       _lscolorstring="-FG "
@@ -86,7 +86,6 @@ case "${thisos}" in
       alias vi='vim'
       ;;
    Linux|*)
-      export PATH=/mnt/scripts:${PATH}
       export PS1="[\u@\h|\$( pwd )]\\$ "
       export sdir=/mnt/scripts
       alias sudo="/usr/bin/sudo"
@@ -103,6 +102,7 @@ set -o vi
 export today="$( date '+%Y-%m-%d' )"
 export VISUAL=vi
 export EDITOR="$VISUAL"
+test -f ~/.bcrc && export BC_ENV_ARGS=~/.bcrc
 
 # SIMPLE ALIASES
 alias where='printf "%s\n%s\n" "$( id )" "$( pwd )"'
@@ -125,10 +125,6 @@ function cdmnt {
    cdmntdir=/mnt/scripts
    dirname="$@"; [[ "$dirname" = "now" ]] && dirname="$( date "+%Y-%m" )"
    [[ -d "${cdmntdir}/${dirname}" ]] && cd "${cdmntdir}/${dirname}" || cd ${sdir}
-}
-function dsmci {
-   #Tivoli TSM one-liner for when a backup failed overnight (oneliner)
-   echo "i\nquit" | sudo dsmc; exit
 }
 function newest {
    # call: newest . filename
@@ -191,6 +187,3 @@ tty -s 1>/dev/null 2>&1 && ! echo " $@ " | grep -qiE -- "\s--noclear\s" 1>/dev/n
 
 # LOCAL PROFILE IF FOUND
 case "${thisos}" in Linux|FreeBSD) [[ -f ~/.bashrc.local ]] && . ~/.bashrc.local;; esac
-
-# CD
-#[[ -d "${sdir}" ]] 2>/dev/null && cd "${sdir}" 2>/dev/null
