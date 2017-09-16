@@ -327,3 +327,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Changed bounce.sh to use "ip link set ens3 down" instead of ifdown ens3.
 - Fixed updateval.py to update canonical path of symlinks.
 - Added monitor-resize.sh daemon
+
+2017-09-16 B Stack <bgstack15@gmail.com> 1.2-18
+- 
