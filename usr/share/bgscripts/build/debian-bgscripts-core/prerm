@@ -1,11 +1,18 @@
-# deb core prerm 2017-06-08
+# deb core prerm 2017-09-16
 # Reference: https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html
 {
 if test "$1" = "remove";
 then
-   # Package  removal, not upgrade
+   # total uninstall
+
+   # remove systemd files
    systemctl --no-reload disable --now dnskeepalive.service || :
    rm -f /lib/systemd/system/dnskeepalive.service || :
    rm -f /lib/systemd/system-preset/80-dnskeepalive.preset || :
+
+   # remove doc symlink
+   test -L /usr/share/bgscripts/doc && unlink /usr/share/bgscripts/doc
+
 fi
 } 1>/dev/null 2>&1
+exit 0

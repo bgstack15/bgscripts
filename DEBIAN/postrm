@@ -63,10 +63,11 @@ then
 } 1>/dev/null 2>&1 &
 fi
 
-if test "$1" -ge 1;
+{
+if test "$1" = "upgrade";
 then
    # Package upgrade, not uninstall
-   systemctl try-restart monitor-resize.service 1>/dev/null 2>&1 || :
+   systemctl try-restart monitor-resize.service || :
 fi
-
+} 1>/dev/null 2>&1
 exit 0

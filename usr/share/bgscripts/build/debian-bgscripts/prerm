@@ -1,7 +1,7 @@
-# deb prerm 2017-08-23
+# deb prerm 2017-09-16
+{
 if test "$1" = "remove";
 then
-{
    # total uninstall
 
    # Remove mimetype definitions
@@ -17,6 +17,6 @@ then
    rm -f /lib/systemd/system/monitor-resize.service || :
    rm -f /lib/systemd/system-preset/80-monitor-resize.preset || :
 
-} 1>/dev/null 2>&1
 fi
+} 1>/dev/null 2>&1
 exit 0

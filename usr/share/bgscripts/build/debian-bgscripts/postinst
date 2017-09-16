@@ -103,7 +103,10 @@ then
    then
       install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/monitor-resize.service" || :
       install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/systemd/80-monitor-resize.preset" || :
-      { systemctl daemon-reload || : ; systemctl --no-reload preset monitor-resize.service || : ; } &
+      __thisfunction() {
+         systemctl daemon-reload; systemctl --no-reload preset monitor-resize.service;
+      }
+      __thisfunction &
    fi
 
 fi

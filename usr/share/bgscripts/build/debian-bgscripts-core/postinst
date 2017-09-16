@@ -6,10 +6,14 @@ then
    then
       install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/dnskeepalive.service" || :
       install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/systemd/80-dnskeepalive.preset" || :
-      { systemctl daemon-reload || : ; systemctl --no-reload preset dnskeepalive.service || : ; } &
+      __thisfunction() {
+         systemctl daemon-reload; systemctl --no-reload preset dnskeepalive.service;
+      }
+      __thisfunction &
    fi
 
    # install symlink for doc
    test ! -h /usr/share/bgscripts/doc && ln -s ../doc/bgscripts /usr/share/bgscripts/doc
 fi
 } 1>/dev/null 2>&1
+exit 0
