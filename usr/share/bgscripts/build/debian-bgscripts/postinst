@@ -95,7 +95,7 @@ done
 
 # deploy systemd files
 {
-if test "$1" -ge 1;
+if test "$1" = "configure";
 then
    # Initial installation
    
