@@ -7,6 +7,7 @@
 # Purpose: Automatically resizes spice and vnc virtual displays
 # Package: bgscripts
 # History: 
+#    2017-09-16 Very minor bugfix
 # Usage: 
 #    Use as a systemd unit. The main daemon mode is just ./monitor-resize.sh
 #    A child process can be specifically spawned, as the user in question.
@@ -14,7 +15,7 @@
 # Reference: ftemplate.sh 2017-06-08a; framework.sh 2017-06-08a
 # Improve:
 fiversion="2017-06-08a"
-monitorresizeversion="2017-08-23a"
+monitorresizeversion="2017-09-16b"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -32,6 +33,7 @@ Return values:
  4 Unable to find dependency
  5 Daemon was not run as root or sudo
  6 Child parameters are invalid
+ 7 Already running, or problem with pidfile.
 ENDUSAGE
 }
 
@@ -65,8 +67,11 @@ clean_monitorresize() {
    done
 
    # clean temporary files
-   rm -f "${tmpfilemaster}" "${tmpfilemasterold}" "${tmpfilemasteractions}" "${tmpfilepids}" 2>/dev/null
-   rm -f /tmp/kill_monitor-resize.tmp 2>/dev/null
+   rm -f "${tmpfilemaster}" "${tmpfilemasterold}" "${tmpfilemasteractions}" "${tmpfilepids}" /tmp/kill_monitor-resize.tmp 1>/dev/null 2>&1
+
+   # clean pidfile
+   rm -f "${pidfile}" 1>/dev/null 2>&1
+
    trap "" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
    exit 0
 
@@ -110,6 +115,7 @@ parseFlag() {
       "display" ) getval; childdisplay="${tempval}";;
       "user" ) getval; childuser="${tempval}";;
       "instance" ) getval; childinstance="${tempval}";;
+      "systemd" ) nopidfile=1;;
    esac
    
    debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: ${flag} = ${tempval}" || ferror "flag: ${flag}"; }
@@ -195,6 +201,7 @@ define_if_new MONITOR_RESIZE_CHILD=/usr/share/bgscripts/gui/monitor-resize.sh
 define_if_new MONITOR_RESIZE_CHILD_FLAG=--child
 define_if_new MONITOR_RESIZE_COMMAND=/usr/share/bgscripts/gui/resize.sh
 define_if_new MONITOR_RESIZE_TEMP_DIR=/tmp/bgscripts
+define_if_new MONITOR_RESIZE_PIDFILE=/var/run/monitor_resize.pid
 
 ## REACT TO BEING A CRONJOB
 #if test ${is_cronjob} -eq 1;
@@ -204,12 +211,33 @@ define_if_new MONITOR_RESIZE_TEMP_DIR=/tmp/bgscripts
 #   [ ]
 #fi
 
+# EXIT IF PIDFILE EXISTS AND IS POPULATED
+if ! fistruthy "${nopidfile}" && test -e "${pidfile}";
+then
+   if /bin/ps -ef | awk '/monitor-re[s]ize/{print $2}' | grep -qiE "$( cat "${pidfile}" )";
+   then
+      ferror "Already running (pid $( cat "${pidfile}" )). Aborted."
+      exit 7
+   else
+      ferror "Previous instance did not exit cleanly."
+   fi
+fi
+
 # DEBUG SIMPLECONF
 debuglev 5 && {
    ferror "Using values"
    # used values: EX_(OPT1|OPT2|VERBOSE)
    set | grep -iE "^MONITOR_RESIZE_" 1>&2
 }
+
+# CREATE PIDFILE
+if ! fistruthy "${nopidfile}" && ! touch "${pidfile}";
+then
+   ferror "Could not create pidfile ${pidfile}. Aborted."
+   exit 7
+else
+   echo "$$" > "${pidfile}"
+fi
 
 # MAIN LOOP
 #{
@@ -316,7 +344,7 @@ debuglev 5 && {
          }
 
          # make temp files
-         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null; chm
+         test -n "${MONITOR_RESIZE_TEMP_DIR}" && mkdir "${MONITOR_RESIZE_TEMP_DIR}" 2>/dev/null
          tmpfilechild="$( mktemp -p "${MONITOR_RESIZE_TEMP_DIR}" tmp.$$.XXXXXX )"
 
          # set traps
