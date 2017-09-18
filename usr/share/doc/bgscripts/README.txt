@@ -328,5 +328,8 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Fixed updateval.py to update canonical path of symlinks.
 - Added monitor-resize.sh daemon
 
-2017-09-16 B Stack <bgstack15@gmail.com> 1.2-18
-- 
+2017-09-17 B Stack <bgstack15@gmail.com> 1.2-18
+- Updated monitor-resize:
+-  Fixed minor bug
+-  Added pidfile management
+- bashrc: added ~/.bcrc

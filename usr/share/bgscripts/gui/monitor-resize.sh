@@ -70,7 +70,7 @@ clean_monitorresize() {
    rm -f "${tmpfilemaster}" "${tmpfilemasterold}" "${tmpfilemasteractions}" "${tmpfilepids}" /tmp/kill_monitor-resize.tmp 1>/dev/null 2>&1
 
    # clean pidfile
-   rm -f "${pidfile}" 1>/dev/null 2>&1
+   rm -f "${MONITOR_RESIZE_PIDFILE}" 1>/dev/null 2>&1
 
    trap "" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
    exit 0
@@ -211,18 +211,6 @@ define_if_new MONITOR_RESIZE_PIDFILE=/var/run/monitor_resize.pid
 #   [ ]
 #fi
 
-# EXIT IF PIDFILE EXISTS AND IS POPULATED
-if ! fistruthy "${nopidfile}" && test -e "${pidfile}";
-then
-   if /bin/ps -ef | awk '/monitor-re[s]ize/{print $2}' | grep -qiE "$( cat "${pidfile}" )";
-   then
-      ferror "Already running (pid $( cat "${pidfile}" )). Aborted."
-      exit 7
-   else
-      ferror "Previous instance did not exit cleanly."
-   fi
-fi
-
 # DEBUG SIMPLECONF
 debuglev 5 && {
    ferror "Using values"
@@ -230,20 +218,32 @@ debuglev 5 && {
    set | grep -iE "^MONITOR_RESIZE_" 1>&2
 }
 
-# CREATE PIDFILE
-if ! fistruthy "${nopidfile}" && ! touch "${pidfile}";
-then
-   ferror "Could not create pidfile ${pidfile}. Aborted."
-   exit 7
-else
-   echo "$$" > "${pidfile}"
-fi
-
 # MAIN LOOP
 #{
    # determine mode
    case "${mode}" in
       0)
+
+         # EXIT IF PIDFILE EXISTS AND IS POPULATED
+         if ! fistruthy "${nopidfile}" && test -e "${MONITOR_RESIZE_PIDFILE}";
+         then
+            if /bin/ps -ef | awk '/monitor-re[s]ize/{print $2}' | grep -qiE "$( cat "${MONITOR_RESIZE_PIDFILE}" )";
+            then
+               ferror "Already running (pid $( cat "${MONITOR_RESIZE_PIDFILE}" )). Aborted."
+               exit 7
+            else
+               ferror "Previous instance did not exit cleanly."
+            fi
+         fi
+
+         # CREATE PIDFILE
+         if ! fistruthy "${nopidfile}" && ! touch "${MONITOR_RESIZE_PIDFILE}";
+         then
+            ferror "Could not create pidfile ${MONITOR_RESIZE_PIDFILE}. Aborted."
+            exit 7
+         else
+            echo "$$" > "${MONITOR_RESIZE_PIDFILE}"
+         fi
 
          # REACT TO ROOT STATUS
          case ${is_root} in
