@@ -19,7 +19,7 @@ b4cc845cee6fc3cead2a85741e710efc  usr/bin/shares
 d8a42e38106d64752215c03d72d7bf98  usr/share/doc/bgscripts/packaging.txt
 84d03bedd90188b32195d40b56ef9b04  usr/share/doc/bgscripts/FRAMEWORK.txt
 d2cf4d16b1fcbe9cd3a4244f9b2fed47  usr/share/doc/bgscripts/version.txt
-8d531d9a1286891b99ccb034d5b4dd1f  usr/share/doc/bgscripts/README.txt
+4f4863490214e327b81bd521a7f4a22f  usr/share/doc/bgscripts/README.txt
 5daff69046c2869281eb807bc5894e97  usr/share/bgscripts/changelog.sh
 d7a92124070354344b3bd17a345c3f30  usr/share/bgscripts/lecho.sh
 f3038f4929db898b0fb92c3a8be48ccf  usr/share/bgscripts/ctee.sh
@@ -56,7 +56,7 @@ c97aac10ec0225b6d48a4f9b7908a8d3  usr/share/bgscripts/updateval.sh
 b087a576059c0adf97c4c117d593f8cf  usr/share/bgscripts/build/debian-bgscripts/postrm
 6d4f4fa8a596c49e4c1ef0166c66d15f  usr/share/bgscripts/build/debian-bgscripts/rules
 c9fe26803224f6282056d7d318c77cb1  usr/share/bgscripts/build/debian-bgscripts/control
-224d04e5a2027b9f4f1ca7f027d14152  usr/share/bgscripts/build/debian-bgscripts/md5sums
+e8f88fee10e5e0575de15dfc90d1b9ea  usr/share/bgscripts/build/debian-bgscripts/md5sums
 d41d8cd98f00b204e9800998ecf8427e  usr/share/bgscripts/build/debian-bgscripts/preinst
 8ac8ef71a88ab493ba93f7ba3e98a7b9  usr/share/bgscripts/build/debian-bgscripts/changelog
 3ef9d190aca78ff744b8c0a02074a77f  usr/share/bgscripts/build/debian-bgscripts/conffiles
@@ -70,7 +70,7 @@ cf267333c8000369b306301e8e6722cb  usr/share/bgscripts/build/debian-bgscripts/pos
 c38b08d9b4f37e7561ad39cd26290e73  usr/share/bgscripts/build/debian-bgscripts-core/postrm
 6d4f4fa8a596c49e4c1ef0166c66d15f  usr/share/bgscripts/build/debian-bgscripts-core/rules
 45437ee6691f205a4389819d709f7df0  usr/share/bgscripts/build/debian-bgscripts-core/control
-05bf56b610840bc578b7064a1f5b416a  usr/share/bgscripts/build/debian-bgscripts-core/md5sums
+c67e1c7321dc08943ae8899a6eda173c  usr/share/bgscripts/build/debian-bgscripts-core/md5sums
 d41d8cd98f00b204e9800998ecf8427e  usr/share/bgscripts/build/debian-bgscripts-core/preinst
 8ec6b01b367c88d679c4dc980bcc1646  usr/share/bgscripts/build/debian-bgscripts-core/changelog
 90b0c8b53fcd20b2e54ac22d871eda2d  usr/share/bgscripts/build/debian-bgscripts-core/conffiles
@@ -78,7 +78,7 @@ e68ca3fc502f1cd2e733dec844f56551  usr/share/bgscripts/build/debian-bgscripts-cor
 f199ef12d5ed4f385315c1d367adf076  usr/share/bgscripts/build/debian-bgscripts-core/prerm
 7043ed04d3487a322418c94bb3c2a4ba  usr/share/bgscripts/build/localize_git.sh
 be8ba27fd4b6813ab34d1e305c00cca0  usr/share/bgscripts/build/pack
-f0f37159b7c811571b545249abc9aea5  usr/share/bgscripts/build/bgscripts.spec
+4a05859e9138f7094d34d5ecd3b79fa4  usr/share/bgscripts/build/bgscripts.spec
 c6c72cae1f45330048a4924345b0d7b6  usr/share/bgscripts/build/files-for-versioning.txt
 b4cc845cee6fc3cead2a85741e710efc  usr/share/bgscripts/shares.sh
 5774d0d4128362e96ebb3f98fa786b42  usr/share/bgscripts/fl.sh
