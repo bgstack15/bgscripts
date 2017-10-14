@@ -52,7 +52,7 @@ childerror() {
 
 get_displays() {
    # Reference: https://bgstack15.wordpress.com/2017/09/06/find-running-x-sessions/
-   { ps -eo pid,command | awk '/-session/ {print $1}' | while read thispid; do cat /proc/${thispid}/environ | tr '\0' '\n' | grep "DISPLAY" | sed -e "s/^/${thispid} $( stat -c '%U' /proc/${thispid}/comm ) $( basename $( readlink -f /proc/${thispid}/exe ) ) /;"; done; } 2>/dev/null | grep -iE "xfce|cinnamon"
+   { ps -eo pid,command | awk '/session/ {print $1}' | while read thispid; do cat /proc/${thispid}/environ | tr '\0' '\n' | grep "DISPLAY" | sed -e "s/^/${thispid} $( stat -c '%U' /proc/${thispid}/comm ) $( basename $( readlink -f /proc/${thispid}/exe ) ) /;"; done; } 2>/dev/null | grep -iE "xfce|cinnamon|lxsess"
 }
 
 # DEFINE TRAPS

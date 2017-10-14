@@ -339,3 +339,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Silenced errors for update-repo bash autocompletion
 - Updated framework.sh
 -  Added function convert_to_seq
+- Updated monitor-resize.sh: added ability to detect LXDE
