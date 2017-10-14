@@ -24,7 +24,7 @@ _update_repo() {
 _repo_lists() {
    local cur
    _init_completion || return
-   COMPREPLY=( $( grep -hoiE -- "^\[.*\]" /etc/yum.repos.d/* | tr -d '[]' | grep -E "^${2:-.*}" ) )
+   COMPREPLY=( $( grep -hoiE -- "^\[.*\]" /etc/yum.repos.d/* 2>/dev/null | tr -d '[]' | grep -E "^${2:-.*}" ) )
    return 0
 } &&
 complete -F _repo_lists -o filenames update-repo
