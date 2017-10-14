@@ -5,7 +5,7 @@
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
 # Package: bgscripts 1.2-19
-# History: fv2017-06-08a=fi2017-08-23a
+# History: fv2017-10-14a=fi2017-08-23a
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
 #    2016-07-12a fixed thisos and thisflavor; added thisflavorversion
@@ -20,10 +20,12 @@
 #       Fixed the parameter parsing where it uses echo. It was choking on "-n" because echo uses that.
 #    2017-04-17a Cleaned up fwhich. General cleanup of functions
 #    2017-06-08a Added tweak to get_conf
+#    2017-10-14a Added convert_to_seq function
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
+#    convert_to_seq https://gist.github.com/bgstack15/99a4bcf6618294986de33e94b4e65746
 # Improve: 
-fversion="2017-06-08a"
+fversion="2017-10-14a"
 
 # DEFINE FUNCTIONS
 
@@ -203,6 +205,12 @@ EOFLECHOSCRIPTS
          myflecho "$@"
       fi
    fi
+}
+
+convert_to_seq() {
+   {
+      printf "${@}" | xargs -n1 -d',' | tr '-' ' ' | awk 'NF == 2 { system("/bin/seq "$1" "$2); } NF != 2 { print $1; }' | xargs
+   } 2>/dev/null
 }
 
 fsudo() {

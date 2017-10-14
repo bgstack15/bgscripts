@@ -95,6 +95,16 @@ It also takes any parameters and adds those to the output.
 Examples:
 cat file1 | flecho "this string is prepended"
 
+##### convert_to_seq
+Convert to sequence.
+Takes parameters and converts comma-separated numbers and sets of numbers and turns it all into space-delimited sequence.
+
+Examples:
+convert_to_seq '1,4-7,55'
+1 4 5 6 7 55
+convert_to_seq '25,8,15-20'
+25 8 15 16 17 18 19 20
+
 ##### fsudo
 Framework sudo. Simply find and execute sudo with all parameters passed to it.
 

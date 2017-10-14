@@ -335,3 +335,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - bashrc: added ~/.bcrc
 
 2017-10-14 B Stack <bgstack15@gmail.com> 1.2-19
+- Fixed htmlize
+- Silenced errors for update-repo bash autocompletion
+- Updated framework.sh
+-  Added function convert_to_seq
