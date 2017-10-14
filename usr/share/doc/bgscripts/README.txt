@@ -333,3 +333,5 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  Fixed minor bug
 -  Added pidfile management
 - bashrc: added ~/.bcrc
+
+2017-10-14 B Stack <bgstack15@gmail.com> 1.2-19
