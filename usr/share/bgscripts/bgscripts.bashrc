@@ -162,7 +162,7 @@ function ccat {
 }
 
 function htmlize {
-   $( which sed ) -r -e 's/</\&lt/g;' -e 's/>/\&gt;/g;' -e 's/\&/\&amp;/g;'
+   $( which sed ) -r -e 's/\&/\&amp;/g;' -e 's/</\&lt;/g;' -e 's/>/\&gt;/g;'
 }
 
 permtitle() {
