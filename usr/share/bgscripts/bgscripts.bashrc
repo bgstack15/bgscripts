@@ -28,7 +28,7 @@
 #    2017-06-28 Added permtitle.
 #    2017-07-19 Adjust exit logic on --fcheck to not exit if it was dot-sourced.
 #    2017-09-16 Removed legacy stuff intended for 1p2 and added ~/.bcrc
-#    2017-11-11 Added FreeBSD support
+#    2017-11-11 Added FreeBSD support. Moved bounce bash autocompletion out of OS-specific sections into main bashrc.
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
@@ -125,7 +125,9 @@ function cx { chmod +x "$@"; }
 function now { date "+%Y-%m-%d %T"; }
 function vir { vi -R "$@"; }
 function own { sudo chown ${USER}:"$( id -ng $USER )" "$@"; }
-function sshp { ssh -o PreferredAuthentications=password,keyboard-interactive -o PubkeyAuthentication=no -o GSSAPIAuthentication=no "$@"; }
+function sshg { ssh -o PreferredAuthentications=gssapi-keyex,gssapi-with-mic  -o PubkeyAuthentication=no -o PasswordAuthentication=no -o GSSAPIAuthentication=yes "$@"; }
+function sshk { ssh -o PreferredAuthentications=publickey                     -o PubkeyAuthentication=yes -o PasswordAuthentication=no -o GSSAPIAuthentication=no "$@"; }
+function sshp { ssh -o PreferredAuthentications=password,keyboard-interactive -o PubkeyAuthentication=no -o PasswordAuthentication=yes -o GSSAPIAuthentication=no "$@"; }
 
 # COMPLEX FUNCTIONS
 function cdmnt {
@@ -191,6 +193,50 @@ tty -s 1>/dev/null 2>&1 && ! echo " $@ " | grep -qiE -- "\s--noclear\s" 1>/dev/n
    clear
    tty
 }
+
+# BASH AUTOCOMPLETION
+# for bounce.sh
+_bounce_autocomplete() {
+   local cur prev words cword;
+   _init_completion || return
+   _tmpfile1="$( mktemp )"
+   case "${prev}" in
+      -n|--network)
+         _available_interfaces; echo "${COMPREPLY[@]}" > "${_tmpfile1}"
+         ;;
+      -s|--service)
+         _services; echo "${COMPREPLY[@]}" >> "${_tmpfile1}"
+         ;;
+      -m|--mount)
+         awk '$3 ~ /cifs|nfs/{print $2}' /etc/fstab >> "${_tmpfile1}"
+         ;;
+      *)
+         printf -- "-m\n-n\n-s\n--network\n--service\n--mount" >> "${_tmpfile1}"
+         ;;
+   esac
+   COMPREPLY=($( compgen -W "$( cat ${_tmpfile1} )" -- "$cur" ))
+   command rm -rf "${_tmpfile1}" 1>/dev/null 2>&1
+   return 0
+} &&
+complete -F _bounce_autocomplete bounce
+
+_pack() {
+        # Bash autocompletion for the pack command. This finds the different build goals available in the current pack file.
+        local cur prev words cword;
+        _init_completion || return
+        local thisfile=./pack; test "${cword}" = "1" && printf "${prev}\n" | grep -qE 'pack$' 2>/dev/null && thisfile="${prev}";
+
+        # debugging info
+        #local devtty=/dev/pts/2
+        #printf "cur=%s\tprev=%s\twords=%s\tcword=%s\n" "${cur}" "${prev}" "${words}" "${cword}" > "${devtty}"
+        #printf "${COMP_WORDS}\tCOMPWORD=${COMP_WORD}\n" > "${devtty}"
+
+        # only provide options for the first word
+        printf "${prev}\n" | grep -qE "pack$" &&
+        COMPREPLY=( $( compgen -W "$( grep -E '^\s*[[:alpha:]]*)' "${thisfile}" | grep -v -E 'unknown' | sed -r -e 's/\s*//g;' -e 's/[^[:alpha:]]//g;' )" -- "${cur}" ) )
+        return 0
+} &&
+complete -F _pack -o default pack
 
 # LOCAL PROFILE IF FOUND
 case "${thisos}" in Linux|FreeBSD) [[ -f ~/.bashrc.local ]] && . ~/.bashrc.local;; esac
