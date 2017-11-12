@@ -13,9 +13,9 @@
 
 # template: [2014-07-08 14:43:45]picard@enterprise "$@"
 myplecho() {
-   mplserver=$( hostname -s ); mplnow=$( date '+%Y-%m-%d %T' )
+   local mplserver=$( hostname -s ); local mplnow=$( date '+%Y-%m-%d %T' )
    while test -z "$1" && test -n "$@"; do shift; done
-   sisko="$@"
+   local sisko="$@"
    test -z "$sisko" && \
       printf "[%19s]%s@%s\n" "$mplnow" "$USER" "$mplserver" || \
       printf "[%19s]%s@%s: %s\n" "$mplnow" "$USER" "$mplserver" "${sisko#" *"}" ;

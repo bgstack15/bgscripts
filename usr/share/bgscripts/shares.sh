@@ -7,11 +7,12 @@
 # Package: 
 # History: 
 #    2017-04-16 Added >/dev/null to umount and mount commands. Added SECONDS for delay for remounting.
+#    2017-11-11a Added FreeBSD location support
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 # Improve:
 fiversion="2017-01-17a"
-sharesversion="2017-04-04a"
+sharesversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -51,7 +52,7 @@ CTRLC() {
 
 CTRLZ() {
    #trap "CTRLZ" 18
-   [ ] #useful for controlling the ctrl+z keystroke
+   : #useful for controlling the ctrl+z keystroke
 }
 
 parseFlag() {
@@ -86,14 +87,15 @@ ${scriptdir}/framework.sh
 /usr/bin/bgscripts/framework.sh
 /usr/bin/framework.sh
 /bin/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
-   Linux) [ ];;
-   FreeBSD) [ ];;
+   Linux) : ;;
+   FreeBSD) : ;;
    *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
 esac
 
@@ -117,13 +119,13 @@ SECONDS=2
 ## REACT TO ROOT STATUS
 #case ${is_root} in
 #   1) # proper root
-#      [ ] ;;
+#      : ;;
 #   sudo) # sudo to root
-#      [ ] ;;
+#      : ;;
 #   "") # not root at all
 #      #ferror "${scriptfile}: 5. Please run as root or sudo. Aborted."
 #      #exit 5
-#      [ ]
+#      :
 #      ;;
 #esac
 
@@ -194,9 +196,9 @@ fi
 ## REACT TO BEING A CRONJOB
 #if test ${is_cronjob} -eq 1;
 #then
-#   [ ]
+#   :
 #else
-#   [ ]
+#   :
 #fi
 
 # SET TRAPS
@@ -255,8 +257,6 @@ trap "clean_shares" 0
             debuglev 1 && echo "remounting ${word}";
             fsudo umount -l "${word}" & 1>/dev/null 2>&1
          done < "${tempfile1}"
-
-  
 
          # mount shares
          while read word;

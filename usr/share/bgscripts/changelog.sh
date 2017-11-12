@@ -6,6 +6,7 @@
 # Purpose: 
 # Package: 
 # History: 
+#    2017-11-11a Added FreeBSD location support
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    date format https://www.debian.org/doc/debian-policy/ch-source.html#s-dpkgchangelog
@@ -17,7 +18,7 @@
 #  x -f force and ignore sanity check
 #  x auto-select output type based on thisflavor.
 fiversion="2017-01-17a"
-changelogversion="2017-01-30a"
+changelogversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -138,6 +139,7 @@ parseFlag() {
 
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4

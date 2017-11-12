@@ -6,11 +6,12 @@
 # Purpose: To simplify making a new script file
 # History: 
 #    2017-06-08a updated chmod and vi calls to use which chmod and which vi
+#    2017-11-11a Added FreeBSD support
 # Usage: 
 # Reference: 
 # Improve:
 fiversion="2014-12-03a"
-newscriptversion="2017-06-08a"
+newscriptversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -58,6 +59,7 @@ ${scriptdir}/framework.sh
 /usr/bin/bgscripts/framework.sh
 /usr/bin/framework.sh
 /bin/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "$frameworkscript" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
@@ -81,7 +83,6 @@ logfile=${scriptdir}/${scripttrim}.${today}.out
 interestedparties="root"
 #myeditor=/usr/bin/vi # works on CentOS
 now=$( date "+%Y-%m-%d %T" )
-      chmodcmd=$( which chmod )
 
 # DETERMINE LOCATION OF TEMPLATE
 setval 1 infile <<EOFINFILE
@@ -96,6 +97,7 @@ ${scriptdir}/ftemplate.sh
 /usr/bin/bgscripts/ftemplate.sh
 /usr/bin/ftemplate.sh
 /bin/bgscripts/ftemplate.sh
+/usr/local/share/bgscripts/ftemplate.sh
 /usr/share/bgscripts/ftemplate.sh
 EOFINFILE
 [ ];
@@ -136,7 +138,7 @@ myscripttrim="${scriptdashless%.sh}"
    sed "s!SCRIPTNAME!${outfile}!g;s/SCRIPTTRIM/${myscripttrim}/g;s/INSERTDATE/${today}/g;s/INSERTLONGDATE/${now}/g;" < ${infile} > ${outfile}
 
    # keep file permissions as template. We are assuming Framework maintains valid file perms for its template file.
-   ${chmodcmd} --ref "${infile}" "${outfile}"
+   fchmodref "${infile}" "${outfile}"
 
    # load my editor with the file
    ${myeditor} "${outfile}"

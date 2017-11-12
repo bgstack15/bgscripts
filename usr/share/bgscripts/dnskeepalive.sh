@@ -10,13 +10,14 @@
 #    2017-04-20 suppressed error "bup: /etc/resolv.conf does not exist."
 #    2017-05-24 added extra cleanup of temp file during loop to see if this reduces clutter in /tmp directory
 #    2017-08-22 Suppressed error message on bup
+#    2017-08-22 Added FreeBSD location support
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    https://github.com/kvz/nsfailover/blob/master/nsfailover.sh
 # Improve:
 # Dependencies:
 fiversion="2017-01-17a"
-dnskeepaliveversion="2017-05-24a"
+dnskeepaliveversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -127,6 +128,7 @@ parseFlag() {
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
 /home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-9/usr/share/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
@@ -163,6 +165,15 @@ case ${is_root} in
       exit 5
       ;;
 esac
+
+# SET CUSTOM SCRIPT AND VALUES
+setval 1 bupscript<<EOFBUPSCRIPT
+/usr/local/bin/bup
+/usr/bin/bup
+/usr/local/share/bgscripts/bup.sh
+/usr/share/bgscripts/bup.sh
+EOFBUPSCRIPT
+test "${setvalout}" = "critical-fail" && ferror "${scripttrim}: 4. bup not found. Aborted." && exit 4
 
 # VALIDATE PARAMETERS
 # objects before the dash are options, which get filled with the optvals
@@ -231,7 +242,7 @@ fi
    }
    while test -n "${DNSK_ENABLED}" && fistruthy "${DNSK_ENABLED}";
    do
-      bupfile="$( /usr/bin/bup -d "${DNSK_RESOLVCONF}" | cut -d' ' -f4 )"
+      bupfile="$( ${bupscript} -d "${DNSK_RESOLVCONF}" | cut -d' ' -f4 )"
       goodorder=
       badorder=
 
@@ -264,7 +275,7 @@ fi
          debuglev 1 && log "no changes required"
       else
          log "changed nameserver priority to: ${neworder}"
-         /usr/bin/bup "${DNSK_RESOLVCONF}" 1>/dev/null 2>&1
+         ${bupscript} "${DNSK_RESOLVCONF}" 1>/dev/null 2>&1
          {
             grep -viE "^nameserver " "${DNSK_RESOLVCONF}"
             for word in ${neworder};

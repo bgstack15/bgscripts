@@ -8,6 +8,7 @@
 # Package: bgscripts
 # History: 
 #    2017-09-16 Very minor bugfix
+#    2017-11-11a Add OS check to stop on FreeBSD
 # Usage: 
 #    Use as a systemd unit. The main daemon mode is just ./monitor-resize.sh
 #    A child process can be specifically spawned, as the user in question.
@@ -15,7 +16,7 @@
 # Reference: ftemplate.sh 2017-06-08a; framework.sh 2017-06-08a
 # Improve:
 fiversion="2017-06-08a"
-monitorresizeversion="2017-09-16b"
+monitorresizeversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -155,7 +156,7 @@ define_if_new defuser_conffile ~/.config/bgscripts/monitor-resize.conf
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
    Linux) [ ];;
-   FreeBSD) [ ];;
+   FreeBSD) ferror "${scriptfile}: 3. Not designed to work in FreeBSD. Aborted." && exit 3;;
    *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
 esac
 

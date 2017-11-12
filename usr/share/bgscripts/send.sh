@@ -10,6 +10,7 @@
 #   send.sh 2014-10-06 edition, which was a rewrite of the 2014-06-06/2014-08-13 original edition
 #    2017-05-24 Commented out the htmlize misc error
 #    2017-06-28 Updated the help text to include -f from
+#    2017-11-11a Added FreeBSD location support
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    using a linux sendmail-hook wrapper script: http://stackoverflow.com/questions/2591755/how-send-html-mail-using-linux-command-line
@@ -17,7 +18,7 @@
 #    replaced sendmail-hook wrapper with new method: http://unix.stackexchange.com/questions/15405/how-do-i-send-html-email-using-linux-mail-command
 # Improve:
 fiversion="2017-01-17a"
-sendversion="2017-06-28a"
+sendversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -168,12 +169,12 @@ clean_send() {
 
 CTRLC() {
    #trap "CTRLC" 2
-   [ ] #useful for controlling the ctrl+c keystroke
+   : #useful for controlling the ctrl+c keystroke
 }
 
 CTRLZ() {
    #trap "CTRLZ" 18
-   [ ] #useful for controlling the ctrl+z keystroke
+   : #useful for controlling the ctrl+z keystroke
 }
 
 parseFlag() {
@@ -206,14 +207,15 @@ ${scriptdir}/framework.sh
 /usr/bin/bgscripts/framework.sh
 /usr/bin/framework.sh
 /bin/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
-   Linux) [ ];;
-   FreeBSD) [ ];;
+   Linux) : ;;
+   FreeBSD) : ;;
    *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
 esac
 
@@ -238,13 +240,13 @@ sender=mail
 ## REACT TO ROOT STATUS
 #case ${is_root} in
 #   1) # proper root
-#      [ ] ;;
+#      : ;;
 #   sudo) # sudo to root
-#      [ ] ;;
+#      : ;;
 #   "") # not root at all
 #      #ferror "${scriptfile}: 5. Please run as root or sudo. Aborted."
 #      #exit 5
-#      [ ]
+#      :
 #      ;;
 #esac
 
@@ -305,9 +307,9 @@ validateparams - "$@"
 ## REACT TO BEING A CRONJOB
 #if test ${is_cronjob} -eq 1;
 #then
-#   [ ]
+#   :
 #else
-#   [ ]
+#   :
 #fi
 
 # SET TRAPS

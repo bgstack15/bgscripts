@@ -7,11 +7,12 @@
 # Purpose: To provide a single conf and command for backing up important conf files
 # Package: bgscripts
 # History: 
+#    2017-11-11a Added FreeBSD support
 # Usage: host-bup
 # Reference: ftemplate.sh 2017-05-24a; framework.sh 2017-05-24a
 # Improve:
 fiversion="2017-05-24a"
-hostbupversion="2017-05-24a"
+hostbupversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -41,19 +42,19 @@ ENDUSAGE
 
 clean_hostbup() {
    rm -f ${tmpfile1} > /dev/null 2>&1
-   [ ] #use at end of entire script if you need to clean up tmpfiles
+   : #use at end of entire script if you need to clean up tmpfiles
 }
 
 CTRLC() {
    #trap "CTRLC" 2
-   [ ] #useful for controlling the ctrl+c keystroke
+   : #useful for controlling the ctrl+c keystroke
    clean_hostbup
    trap '' 0; exit
 }
 
 CTRLZ() {
    #trap "CTRLZ" 18
-   [ ] #useful for controlling the ctrl+z keystroke
+   : #useful for controlling the ctrl+z keystroke
 }
 
 parseFlag() {
@@ -86,6 +87,7 @@ ${scriptdir}/framework.sh
 /usr/bin/bgscripts/framework.sh
 /usr/bin/framework.sh
 /bin/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
@@ -106,21 +108,21 @@ conffile="${default_conffile}"
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
-   Linux) [ ];;
-   FreeBSD) [ ];;
+   Linux) : ;;
+   FreeBSD) : ;;
    *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
 esac
 
 ## REACT TO ROOT STATUS
 #case ${is_root} in
 #   1) # proper root
-#      [ ] ;;
+#      : ;;
 #   sudo) # sudo to root
-#      [ ] ;;
+#      : ;;
 #   "") # not root at all
 #      #ferror "${scriptfile}: 5. Please run as root or sudo. Aborted."
 #      #exit 5
-#      [ ]
+#      :
 #      ;;
 #esac
 
@@ -199,9 +201,9 @@ IFS="${oIFS}"; infilelines=$( echo "${infiledata}" | wc -l )
 ## REACT TO BEING A CRONJOB
 #if test ${is_cronjob} -eq 1;
 #then
-#   [ ]
+#   :
 #else
-#   [ ]
+#   :
 #fi
 
 # SET TRAPS

@@ -7,12 +7,13 @@
 # Purpose: To make it easy to restart items regardless of type
 # Package: bgscripts
 # History: 
+#    2017-11-11a Added FreeBSD support
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 # Improve:
 #   possibly take _available_interfaces from typeset -f on a fedora 25 system
 fiversion="2017-01-17a"
-bounceversion="2017-05-03a"
+bounceversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -53,7 +54,7 @@ bounce_nics() {
 
 bounce_dirs() {
    # network shares
-   /usr/share/bgscripts/shares.sh -s "${DELAY}" -r $@
+   ${sharesscript} -s "${DELAY}" -r $@
 }
 
 bounce_services() {
@@ -117,6 +118,7 @@ ${scriptdir}/framework.sh
 /usr/bin/bgscripts/framework.sh
 /usr/bin/framework.sh
 /bin/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
@@ -153,6 +155,13 @@ tmpfile1="$( mktemp )"
 #      [ ]
 #      ;;
 #esac
+
+# SET CUSTOM SCRIPT AND VALUES
+setval 1 sharesscript <<EOFSHARESSCRIPT
+/usr/local/share/bgscripts/shares.sh
+/usr/share/bgscripts/shares.sh
+EOFSHARESSCRIPT
+test "${setvalout}" = "critical-fail" && ferror "${scripttrim}: 4. shares.sh not found. Aborted." && exit 4
 
 # VALIDATE PARAMETERS
 # objects before the dash are options, which get filled with the optvals
@@ -193,7 +202,7 @@ then
    bounce_dirs ${fallopts}
 else
    # check if systemd service
-   { find /usr/lib/systemd/system/ -regextype grep -regex '.*\.service' | sed -r -e 's#.*\/##;' | sort | uniq > "${tmpfile1}"; } 2>/dev/null
+   { find /lib/systemd/system/ -regextype grep -regex '.*\.service' | sed -r -e 's#.*\/##;' | sort | uniq > "${tmpfile1}"; } 2>/dev/null
    _issystemdservice=0
    for word in ${fallopts};
    do

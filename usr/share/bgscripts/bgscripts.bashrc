@@ -28,13 +28,14 @@
 #    2017-06-28 Added permtitle.
 #    2017-07-19 Adjust exit logic on --fcheck to not exit if it was dot-sourced.
 #    2017-09-16 Removed legacy stuff intended for 1p2 and added ~/.bcrc
+#    2017-11-11 Added FreeBSD support
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
 #    permtitle https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-from-the-command-line/
 # Improve:
-pversion="2017-07-19a"
-__dot_sourced=1; test "$( readlink -f $0 2>/dev/null )" = "/usr/share/bgscripts/bgscripts.bashrc" && __dot_sourced=0
+pversion="2017-11-11a"
+__dot_sourced=1; readlink -f $0 2>/dev/null | grep -qiE "\/usr\/.*share\/bgscripts\/bgscripts\.bashrc" && __dot_sourced=0
 echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && { test "${__dot_sourced}" = "0" && exit || return; }
 
 if test "${__dot_sourced}" = "0";
@@ -71,8 +72,16 @@ _noos=0; _noflavor=0;
 echo " $@ " | grep -qiE -- "\s--nodeps" 1>/dev/null 2>&1 && { _noos=1; _noflavor=1; }
 echo " $@ " | grep -qiE -- "\s--noos" 1>/dev/null 2>&1 && _noos=1
 echo " $@ " | grep -qiE -- "\s--noflavor" 1>/dev/null 2>&1 && _noflavor=1
-test "${_noos}" = "0" && test -f "/usr/share/bgscripts/bashrc.d/${thisos}.bashrc" && . "/usr/share/bgscripts/bashrc.d/${thisos}.bashrc"
-test "${_noflavor}" = "0" && test -f "/usr/share/bgscripts/bashrc.d/${thisflavor}.bashrc" && . "/usr/share/bgscripts/bashrc.d/${thisflavor}.bashrc"
+if test "${_noos}" = "0";
+then
+   test -f "/usr/share/bgscripts/bashrc.d/${thisos}.bashrc" && . "/usr/share/bgscripts/bashrc.d/${thisos}.bashrc"
+   test -f "/usr/local/share/bgscripts/bashrc.d/${thisos}.bashrc" && . "/usr/local/share/bgscripts/bashrc.d/${thisos}.bashrc"
+fi
+if test "${_noflavor}" = "0";
+then
+   test -f "/usr/share/bgscripts/bashrc.d/${thisflavor}.bashrc" && . "/usr/share/bgscripts/bashrc.d/${thisflavor}.bashrc"
+   test -f "/usr/local/share/bgscripts/bashrc.d/${thisflavor}.bashrc" && . "/usr/local/share/bgscripts/bashrc.d/${thisflavor}.bashrc"
+fi
 unset _noos _noflavor
 
 # REACT TO OS # SIMPLE VARIABLES
@@ -81,13 +90,11 @@ case "${thisos}" in
       export PS1="[\u@\h|\$( pwd )]\\$ "
       export PAGER=less
       _lscolorstring="-FG "
-      export sdir=/mnt/scripts
       alias sudo="/usr/local/bin/sudo"
       alias vi='vim'
       ;;
    Linux|*)
       export PS1="[\u@\h|\$( pwd )]\\$ "
-      export sdir=/mnt/scripts
       alias sudo="/usr/bin/sudo"
       disownstring="disown"
       _lscolorstring="-F --color=auto "
@@ -148,7 +155,7 @@ function newer {
 function cdnewest {
    # call: cdnewest [-d] /test/sysadmin/bin/bgirton
    [[ "${1}" = "-d" ]] && { displayonly=1; shift; } || displayonly=0
-   newdir="$( /usr/bin/sudo find "${1:-.}"/* -prune -type d 2>/dev/null | xargs /opt/freeware/bin/stat -c "%Y %n" 2>/dev/null | sort -nr | head -n 1 | cut -d " " -f 2-; )"
+   newdir="$( /usr/bin/sudo find "${1:-.}"/* -prune -type d 2>/dev/null | xargs stat -c "%Y %n" 2>/dev/null | sort -nr | head -n 1 | cut -d " " -f 2-; )"
    [[ "${displayonly}" = "0" ]] && cd ${newdir} || {
       whichdir="$( cd $( dirname "${newdir}" ); pwd )"
       echo "${whichdir}/$( basename "${newdir##./}" )"
@@ -167,7 +174,7 @@ function htmlize {
 
 permtitle() {
    test -z "${__permtitle_file}" && {
-      __permtitle_file="$( mktemp -p /tmp tmp.$$.XXXXX )"
+      __permtitle_file="$( mktemp tmp.$$.XXXXX )"
       echo "${PROMPT_COMMAND}" > "${__permtitle_file}"
    }   
    case "${@}" in

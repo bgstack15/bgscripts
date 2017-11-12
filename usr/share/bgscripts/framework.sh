@@ -5,7 +5,7 @@
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
 # Package: bgscripts 1.3-0
-# History: fv2017-10-14a=fi2017-08-23a
+# History: fv2017-11-11a=fi2017-11-11a
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
 #    2016-07-12a fixed thisos and thisflavor; added thisflavorversion
@@ -21,11 +21,12 @@
 #    2017-04-17a Cleaned up fwhich. General cleanup of functions
 #    2017-06-08a Added tweak to get_conf
 #    2017-10-14a Added convert_to_seq function
+#    2017-11-11a Added FreeBSD support
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
 #    convert_to_seq https://gist.github.com/bgstack15/99a4bcf6618294986de33e94b4e65746
 # Improve: 
-fversion="2017-10-14a"
+fversion="2017-11-11a"
 
 # DEFINE FUNCTIONS
 
@@ -175,6 +176,7 @@ ${scriptdir}/plecho.sh
 /usr/bin/plecho.sh
 /usr/bin/plecho
 /bin/bgscripts/plecho.sh
+/usr/local/share/bgscripts/plecho.sh
 /usr/share/bgscripts/plecho.sh
 EOFLECHOSCRIPTS
       lechoscriptvalid="${setvalout}"
@@ -265,6 +267,7 @@ ${scriptdir}/send.sh -hs
 /usr/bin/send.sh -hs
 /usr/send.sh -hs
 /bin/bgscripts/send.sh -hs
+/usr/local/share/bgscripts/send.sh -hs
 /usr/share/bgscripts/send.sh -hs
 /usr/bin/mail -s
 EOFSENDSH
@@ -317,6 +320,20 @@ define_if_new() {
    # call: define_if_new IFW_IN_LOG_FILE "/var/log/messages"
    eval thisval="\${${1}}"
    test -z "${thisval}" && eval "$1"=\"$2\"
+}
+
+fchmodref() {
+   # call: ffchmodref "${oldfile}" "${newfile}"
+   local oldfile="${1}"
+   local newfile="${2}"
+   case "${thisos}" in
+      Linux)
+         chmod --reference "${oldfile}" "${newfile}" 
+         ;;
+      FreeBSD)
+         chmod $( stat -f '%p' "${oldfile}" ) "${newfile}"
+         ;;
+   esac
 }
 
 # INITIALIZE VARIABLES

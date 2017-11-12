@@ -8,10 +8,12 @@
 # History: 2015-11-23 adjusted for bgscripts.rpm
 #    2016-08-03 converted to /bin/sh for portability
 #    2017-01-11 moved whole package to /usr/share/bgscripts
+#    2017-11-11a Added FreeBSD support
 # Usage: 
 # Reference: 
 # Improve:
-fiversion="2017-01-11a"
+#fiversion="2017-01-11a"
+bupversion="2017-11-11a"
 
 # DEFINE FUNCTIONS
 usage() {
@@ -107,6 +109,7 @@ parseFlag() {
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( $flocation --fcheck )" -ge 20170111; then frameworkscript=$flocation; break; fi; done <<EOFLOCATIONS
 ./framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "$frameworkscript" && echo "$0: framework not found. Aborted." 1>&2 && exit 4

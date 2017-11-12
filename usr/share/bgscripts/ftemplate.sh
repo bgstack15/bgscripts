@@ -8,9 +8,9 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-08-23a; framework.sh 2017-06-08a
+# Reference: ftemplate.sh 2017-11-11a; framework.sh 2017-11-11a
 # Improve:
-fiversion="2017-08-23a"
+fiversion="2017-11-11a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
@@ -69,7 +69,7 @@ parseFlag() {
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170608; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20171111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
 ~/bin/bgscripts/framework.sh
@@ -81,6 +81,7 @@ ${scriptdir}/framework.sh
 /usr/bin/bgscripts/framework.sh
 /usr/bin/framework.sh
 /bin/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
@@ -100,28 +101,29 @@ define_if_new defuser_conffile ~/.config/SCRIPTTRIM/SCRIPTTRIM.conf
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
-   Linux) [ ];;
-   FreeBSD) [ ];;
+   Linux) : ;;
+   FreeBSD) : ;;
    *) echo "${scriptfile}: 3. Indeterminate OS: $( uname -s )" 1>&2 && exit 3;;
 esac
 
 ## REACT TO ROOT STATUS
 #case ${is_root} in
 #   1) # proper root
-#      [ ] ;;
+#      : ;;
 #   sudo) # sudo to root
-#      [ ] ;;
+#      : ;;
 #   "") # not root at all
 #      #ferror "${scriptfile}: 5. Please run as root or sudo. Aborted."
 #      #exit 5
-#      [ ]
+#      :
 #      ;;
 #esac
 
 # SET CUSTOM SCRIPT AND VALUES
-#setval 1 sendsh sendopts<<EOFSENDSH      # if $1="1" then setvalout="critical-fail" on failure
-#/usr/share/bgscripts/send.sh -hs     #                setvalout maybe be "fail" otherwise
-#/usr/local/bin/send.sh -hs               # on success, setvalout="valid-sendsh"
+#setval 1 sendsh sendopts<<EOFSENDSH     # if $1="1" then setvalout="critical-fail" on failure
+#/usr/local/share/bgscripts/send.sh -hs  # setvalout maybe be "fail" otherwise
+#/usr/share/bgscripts/send.sh -hs        # on success, setvalout="valid-sendsh"
+#/usr/local/bin/send.sh -hs
 #/usr/bin/mail -s
 #EOFSENDSH
 #test "${setvalout}" = "critical-fail" && ferror "${scriptfile}: 4. mailer not found. Aborted." && exit 4
@@ -191,9 +193,9 @@ validateparams - "$@"
 ## REACT TO BEING A CRONJOB
 #if test ${is_cronjob} -eq 1;
 #then
-#   [ ]
+#   :
 #else
-#   [ ]
+#   :
 #fi
 
 # SET TRAPS
@@ -210,7 +212,7 @@ validateparams - "$@"
 
 # MAIN LOOP
 #{
-   [ ]
+   :
 #} | tee -a ${logfile}
 
 # EMAIL LOGFILE

@@ -7,6 +7,7 @@
 # Purpose: Shows colorized output but saves to file the plain text
 # Package: bgscripts
 # History: 
+#    2017-11-11a Added FreeBSD location support
 # Usage: Always needs stdin from a pipe.
 #    If a command wants to send uncolored stdout to tee, use unbuffer.
 #    unbuffer ls -lF --color=always | ctee
@@ -15,7 +16,7 @@
 #   remove color: http://www.commandlinefu.com/commands/view/3584/remove-color-codes-special-characters-with-sed
 # Improve:
 fiversion="2017-01-17a"
-cteeversion="2017-03-16a"
+cteeversion="2017-11-11a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -56,6 +57,7 @@ parseFlag() {
 
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4
