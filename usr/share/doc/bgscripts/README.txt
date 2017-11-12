@@ -345,3 +345,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Bump to version 1.3-0
 - Rearranged python scripts
 - Added FreeBSD support
+- Added mp4tomp3.sh
+- Added pwhashgen.py
+- framework: added fchmodref function
+- ftemplate: rearranged section 'CONFIGURE VARIABLES AFTER PARAMS'

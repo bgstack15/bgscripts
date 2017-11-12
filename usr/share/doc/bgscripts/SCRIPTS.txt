@@ -364,3 +364,18 @@ Monitor-resize is a daemon that monitors the X displays and tells them to resize
 The program is written in Bourne shell, and uses /proc filesystem to collect information it needs. This tool represents a new architecture in my repertoire: a master-child forking process with control via signals.
 
 Use monitor-resize by enabling and starting monitor-resize.service.
+
+######################################################
+### mp4tomp3.sh
+mp4tomp3.sh wraps around the ffmpeg (or avconv) utility. It accepts an mp4 file and calculates the highest bitrate to convert the audio to mp3 for you, and then converts it.
+
+Examples:
+
+./mp4tomp3.sh "Ace of Base - The Sign.MP4"
+
+######################################################
+### pwhashgen.py
+Pwhashgen accepts a single parameter, or will prompt you, and generates a sha-512 hash suitable for /etc/shadow.
+
+$ ./pwhashgen.py '123456'
+$6$lN7SmaBJyR9icKt.$TkWJrzxzQb7szjPSMNtu1K16bcXMH9VwmWZoryhD4QDzs7HgEULRpBhdYi5wuBUdbBBznnA3l0/J0Ck3zu5GJ1

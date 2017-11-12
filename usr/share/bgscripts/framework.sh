@@ -323,7 +323,7 @@ define_if_new() {
 }
 
 fchmodref() {
-   # call: ffchmodref "${oldfile}" "${newfile}"
+   # call: fchmodref "${oldfile}" "${newfile}"
    local oldfile="${1}"
    local newfile="${2}"
    case "${thisos}" in
