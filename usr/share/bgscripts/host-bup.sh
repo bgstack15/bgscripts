@@ -227,11 +227,11 @@ define_if_new HOSTBUP_DRYRUN "${hostbup_main_dryrun}"
 #{
 
    # Check against hostname
-   if ! test "$( hostname --fqdn )" = "${hostbup_main_hostname}";
+   if ! test "$( hostname -f )" = "${hostbup_main_hostname}";
    then
       if ! test "${HOSTBUP_FORCE}";
       then
-         ferror "${scripttrim}: 2. Current hostname $( hostname --fqdn ) does not match conffile hostname ${hostbup_main_hostname}."
+         ferror "${scripttrim}: 2. Current hostname $( hostname -f ) does not match conffile hostname ${hostbup_main_hostname}."
          ferror "Override this with the --force option. Aborted."
          exit 2
       fi
