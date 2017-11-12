@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 # Filename: scrub.py
 # Location: /usr/share/bgscripts/
 # Author: bgstack15@gmail.com
