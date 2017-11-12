@@ -2,6 +2,7 @@
 
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 ../framework.sh
 usr/share/bgscripts/framework.sh
@@ -125,7 +126,7 @@ tar -zcf "${package}-${version}".master.tgz "${package}-${version}"/
 # if you copy-paste this, be sure to define package, version
 cd ~/deb 2>/dev/null || cd ~/rpmbuild/SOURCES
 cd "$( find . -name "*scrub.txt" | grep -iE "${package}-${version}\/" | xargs dirname )"
-/usr/share/bgscripts/scrub.py
+/usr/share/bgscripts/py/scrub.py
 
       ;;
    unknown)

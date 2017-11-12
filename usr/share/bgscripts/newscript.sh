@@ -6,7 +6,7 @@
 # Purpose: To simplify making a new script file
 # History: 
 #    2017-06-08a updated chmod and vi calls to use which chmod and which vi
-#    2017-11-11a Added FreeBSD support
+#    2017-11-11a Added FreeBSD support. Updated to use fchmodref instead of chmod
 # Usage: 
 # Reference: 
 # Improve:

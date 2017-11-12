@@ -140,8 +140,6 @@ validateparams - "$@"
 #   exit 2
 #fi
 
-# CONFIGURE VARIABLES AFTER PARAMETERS
-
 ## LOAD CONFIG FROM SIMPLECONF
 ## This section follows a simple hierarchy of precedence, with first being used:
 ##    1. parameters and flags
@@ -157,6 +155,8 @@ validateparams - "$@"
 #fi
 #test -f "${defuser_conffile}" && get_conf "${defuser_conffile}"
 #test -f "${default_conffile}" && get_conf "${default_conffile}"
+
+# CONFIGURE VARIABLES AFTER PARAMETERS
 
 ## START READ CONFIG FILE TEMPLATE
 #oIFS="${IFS}"; IFS="$( printf '\n' )"
