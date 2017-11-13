@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Filename: scrub.py
-# Location: /usr/share/bgscripts/
+# Location: /usr/share/bgscripts/py/
 # Author: bgstack15@gmail.com
 # Startdate: 2016-09-28
 # Title: Script that Simultaneously Copies and Scrubs a Directory

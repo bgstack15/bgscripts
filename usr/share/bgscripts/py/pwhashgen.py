@@ -15,6 +15,7 @@ from __future__ import print_function
 import crypt, getpass, sys;
 
 pwhashgenpyversion="2017-11-11a"
+
 if len(sys.argv) >= 2:
    thisraw=str(sys.argv[1]);
 else:

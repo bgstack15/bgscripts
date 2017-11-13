@@ -1,35 +1,25 @@
 #!/usr/bin/env python3
-# File: /usr/share/bgscripts/dli.py
+# File: /usr/share/bgscripts/py/dli.py
 # Author: bgstack15@gmail.com
 # Startdate: 2016-12-08 10:31
 # Title: Python Script that Performs Faster Package Lookups
 # Purpose: Provides faster dnf installed/available searches
 # History:
+#    2017-11-12a Changed to use bgs python lib
 # Usage:
 # Reference:
 #    subprocess get stdout http://stackoverflow.com/questions/6706953/python-using-subprocess-to-call-sed/6707003#6707003
 #    http://stackoverflow.com/questions/5574702/how-to-print-to-stderr-in-python/14981125#14981125
 # Improve:
 #    find way to use the latest file, instead of making one for today
-
 from __future__ import print_function
 import argparse, datetime, os, sys, subprocess, re
 from distutils.spawn import find_executable
-dlipyversion="2016-12-08a"
+from bgs import debuglev, eprint
+
+dlipyversion="2017-11-12a"
 
 # Define functions
-def eprint(*args, **kwargs):
-   print(*args, file=sys.stderr, **kwargs)
-
-def debuglev(_numbertocheck):
-   # if _numbertocheck <= debuglevel then return truthy
-   _debuglev = False
-   try:
-      if int(_numbertocheck) <= int(debuglevel):
-         _debuglev = True
-   except Exception as e:
-      pass
-   return _debuglev
 
 # Default default variables
 refresh = False
@@ -63,19 +53,19 @@ if args.available: aori = "available"
 refresh = args.refresh
 if args.searchstring: searchstring = args.searchstring
 
-if debuglev(10): print(searchstring)
+if debuglev(10,debuglevel): print(searchstring)
 
 # Determine filename
 thisfile = fileprefix + "." + aori + "." + today + ".log"
-if debuglev(5): eprint("Using file " + thisfile)
+if debuglev(5,debuglevel): eprint("Using file " + thisfile)
 
 # Determine yum or dnf
 #print(os.environ)
 if find_executable("dnf", os.getenv('PATH', '/usr/bin:/bin:/sbin')):
-   if debuglev(8): eprint("Using dnf.")
+   if debuglev(8,debuglevel): eprint("Using dnf.")
    # which is default already so NOP
 elif find_executable("yum", os.getenv('PATH', '/usr/bin:/bin:/sbin')):
-   if debuglev(8): eprint("Using yum.")
+   if debuglev(8,debuglevel): eprint("Using yum.")
    command_dnf = "yum"
 else:
    eprint("Error: cannot find dnf or yum. Aborted.")
@@ -83,13 +73,13 @@ else:
 
 # Refresh file if needed
 if refresh == True or not os.path.isfile(thisfile):
-   if debuglev(3): eprint("Refreshing file.")
+   if debuglev(3,debuglevel): eprint("Refreshing file.")
    # execute dnf list installed > thisfile
    # execute command_dnf list aori > thisfile
    with open(thisfile, "w") as outfile:
       sub = subprocess.call([command_dnf,'-q','list',aori], stdout=outfile)
 else:
-   if debuglev(3): eprint("File exists.")
+   if debuglev(3,debuglevel): eprint("File exists.")
 
 # Grep file if flaglessvals were given
 if len(searchstring) > 0:
