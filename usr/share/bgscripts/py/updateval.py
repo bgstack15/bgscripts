@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-# File: /usr/share/bgscripts/lib/updatevalue.py
+# File: /usr/share/bgscripts/py/updatevalue.py
 # Author: bgstack15@gmail.com
 # Startdate: 2016-10-11 15:59
-# Title: Python Library For Updating Lines in a File
+# Title: Python Script that Updates/Adds Value version 2
 # Purpose: Allows idempotent and programmatic modifications to config files
 # Package: bgscripts
 # History:
