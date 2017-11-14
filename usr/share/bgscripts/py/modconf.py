@@ -9,7 +9,7 @@
 # History:
 #    2017-11-03 Turned updateval into a library named uvlib
 # Usage:
-#   updateval.py /etc/rc.conf "^ntpd_enable=.*" 'ntpd_enable="YES"' --apply
+#   modconf.py /etc/rc.conf "^ntpd_enable=.*" 'ntpd_enable="YES"' --apply
 # Reference:
 #    /usr/share/bgscripts/updateval.sh
 #    https://stackoverflow.com/questions/29935276/inspect-getargvalues-throws-exception-attributeerror-tuple-object-has-no-a#29935277
@@ -20,7 +20,7 @@
 import re, shutil, os, argparse, sys
 import inspect, json
 from uvlib import updateval
-updatevalversion="2017-11-03a"
+updatevalversion="2017-11-13a"
 
 def caller_args():
    frame = inspect.currentframe()
@@ -49,18 +49,22 @@ def manipulatevalue(infile,variable,item,action,itemdelim=",",variabledelim="=",
    regex=''
    result=''
    if action == "remove":
-      # this one works almost perfectly. Just need to investigate when variable = equals, has, space
-      regex='^(\s*' + variable + '\s*' + variabledelim + '.*?)(' + itemdelim + item + '\b|' + item + itemdelim +'|' + item + '\s*$)((.*?)|\s*$)'
-      result=r'\1\4'
+      # this one very well
+      regex='^(?:(?:(\s*' + variable + '\s*' + variabledelim + '.*?)(' + itemdelim + item + '\b|' + item + itemdelim +'|' + itemdelim + item + '\s*$))|(?:(' + variable + '\s*' + variabledelim + '\s*)' + item + '\s*$))((.*?)|\s*$)'
+      result=r'\g<1>\g<4>\g<3>'
    elif action == "add":
       regex='^(\s*' + variable + '\s*' + variabledelim + '\s*)(?!.*' + item + '(' + itemdelim + '|\b|$))(.*?)$'
-      result=r'\1' + item + itemdelim + r'\3'
+      result=r'\g<1>' + item + itemdelim + r'\g<3>'
    elif action == "empty":
       regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
-      result=r'\1'
+      result=r'\g<1>'
    elif action == "set":
       #WORKHERE was halfway through typing this
-      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*)'
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
+      result=r'\g<1>' + item
+   elif action == "gone":
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
+      result=''
 
    print(json.dumps(locals(),indent=3,separators=(',',': ')))
 
