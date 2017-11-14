@@ -14,8 +14,7 @@
 #    /usr/share/bgscripts/updateval.sh
 #    https://stackoverflow.com/questions/29935276/inspect-getargvalues-throws-exception-attributeerror-tuple-object-has-no-a#29935277
 # Improve:
-#    idea: use argparse "nargs" optional input file to use stdin piping/redirection!
-#    idea: be able to specify comment types
+#    
 
 import re, shutil, os, argparse, sys
 import inspect, json
@@ -35,6 +34,7 @@ parser.add_argument("variable", default="")
 parser.add_argument("item", default="")
 parser.add_argument("-d","--itemdelim", default=",")
 parser.add_argument("-v","--variabledelim", default="=")
+parser.add_argument("-c","--comment", default="#")
 args = parser.parse_args()
 
 if args.item:
@@ -44,7 +44,7 @@ if args.item:
    item=args.item
 
 # action=add,remove,empty,set,gone
-def manipulatevalue(infile,variable,item,action,itemdelim=",",variabledelim="=",verbose=False,apply=False):
+def manipulatevalue(infile,variable,item,action,itemdelim=",",variabledelim="=",verbose=False,apply=False,comment='#'):
    #print caller_args()
    regex=''
    result=''
@@ -59,15 +59,14 @@ def manipulatevalue(infile,variable,item,action,itemdelim=",",variabledelim="=",
       regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
       result=r'\g<1>'
    elif action == "set":
-      #WORKHERE was halfway through typing this
       regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
       result=r'\g<1>' + item
-   elif action == "gone":
-      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
-      result=''
+   elif action == "gone" or action == "comment":
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*.*)$'
+      result=comment + r'\g<1>'
 
    print(json.dumps(locals(),indent=3,separators=(',',': ')))
 
    updateval(infile=infile,verbose=verbose,apply=apply,regex=regex,result=result,modifyonly=True)
 
-manipulatevalue(infile=infile,verbose=True,variable=variable,item=item,action=action,itemdelim=args.itemdelim,variabledelim=args.variabledelim)
+manipulatevalue(infile=infile,verbose=True,variable=variable,item=item,action=action,itemdelim=args.itemdelim,variabledelim=args.variabledelim,comment=args.comment)
