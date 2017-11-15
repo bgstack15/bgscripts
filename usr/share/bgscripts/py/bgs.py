@@ -17,6 +17,7 @@
 #    https://stackoverflow.com/questions/30781962/import-module-from-specific-folder/30782090#30782090
 #    caller_args https://stackoverflow.com/questions/29935276/inspect-getargvalues-throws-exception-attributeerror-tuple-object-has-no-a#29935277
 # Improve:
+from __future__ import print_function
 import os, sys, inspect
 
 bgspyversion="2017-11-14a"

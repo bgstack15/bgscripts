@@ -341,9 +341,9 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  Added function convert_to_seq
 - Updated monitor-resize.sh: added ability to detect LXDE
 
-* Sat Nov 11 2017 B Stack <bgstack15@gmail.com> 1.3-0
+* Tue Nov 14 2017 B Stack <bgstack15@gmail.com> 1.3-0
 - Bump to version 1.3-0
-- Rearranged python scripts
+- Rearranged python scripts and libs
 - Added FreeBSD support
 - Added mp4tomp3.sh
 - Added pwhashgen.py
