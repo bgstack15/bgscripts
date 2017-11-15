@@ -15,16 +15,19 @@ from __future__ import print_function
 import argparse
 import uvlib
 
-updatevalversion="2017-11-14a"
+updatevalversion="2017-11-14b"
 
 parser = argparse.ArgumentParser()
-parser.add_argument("infile", default="")
+parser.add_argument("-d","--debug", nargs='?', default=0, type=int, choices=range(0,11), help="Set debug level.")
+parser.add_argument("-v","--verbose",help="displays output",      action="store_true",default=False)
+parser.add_argument("-a","--apply",  help="perform substitution", action="store_true",default=False)
+parser.add_argument("-V","--version", action="version", version="%(prog)s " + updatevalversion)
+parser.add_argument("infile", default="", help="file to use")
 parser.add_argument("action", default="", help='[ add | remove | set | gone | empty ]')
 parser.add_argument("variable", default="")
 parser.add_argument("item", default="")
-parser.add_argument("-d","--debug", nargs='?', default=0, type=int, choices=range(0,11), help="Set debug level.")
 parser.add_argument("-i","--itemdelim", default=",", help="default = \",\"")
-parser.add_argument("-v","--variabledelim", default="=", help="default = \"=\"")
+parser.add_argument("-l","--variabledelim", default="=", help="default = \"=\"")
 parser.add_argument("-c","--comment", default="#", help="Comment character, default = \"#\"")
 args = parser.parse_args()
 
@@ -35,20 +38,14 @@ if args.debug is None:
    debuglevel = 10
 elif args.debug:
    debuglevel = args.debug
-   debuglevel = debug
 
-if args.item:
-   infile=args.infile
-   action=args.action
-   variable=args.variable
-   item=args.item
-
-uvlib.manipulatevalue(infile=infile,
-                      verbose=True,
-                      variable=variable,
-                      item=item,
-                      action=action,
+uvlib.manipulatevalue(infile=args.infile,
+                      verbose=args.verbose,
+                      variable=args.variable,
+                      item=args.item,
+                      action=args.action,
                       itemdelim=args.itemdelim,
                       variabledelim=args.variabledelim,
                       comment=args.comment,
-                      debug=debuglevel)
+                      debug=debuglevel,
+                      apply=args.apply)

@@ -19,6 +19,7 @@
 #    re.escape http://stackoverflow.com/questions/17830198/convert-user-input-strings-to-raw-string-literal-to-construct-regular-expression/17830394#17830394
 # Improve:
 #    idea: use argparse "nargs" optional input file to use stdin piping/redirection!
+#    fix action ADD where user asks to add the item that is already present and at the end of the list.
 import re, shutil, os
 import bgs, json
 
@@ -210,8 +211,11 @@ def manipulatevalue(infile,variable,item,action,itemdelim=",",variabledelim="=",
       result=r'\g<1>\g<4>\g<3>'
       addline=''
    elif action == "add":
-      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*)(?!.*' + item + '(' + itemdelim + '|\b|$))(.*?)$'
-      result=r'\g<1>' + item + itemdelim + r'\g<3>'
+      # WORKHERE ./modconf.py -d8 -v ~/sexample add MYVAL 10xa
+      #regex='^(\s*' + variable + '\s*' + variabledelim + '\s*)(?!.*' + item + '(' + itemdelim + '|\b|$))(.*?)$'
+      #result=r'\g<1>' + item + itemdelim + r'\g<3>'
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*)((?!.*' + item + '(' + itemdelim + '|\b|$))|((.*(?!' + itemdelim +'))'+ item + '(' + itemdelim + '|$)))(.*?)$'
+      result=r'\g<1>\g<5>' + item + itemdelim + r'\g<7>'
       addline=variable+variabledelim+item
    elif action == "empty":
       regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
@@ -228,4 +232,4 @@ def manipulatevalue(infile,variable,item,action,itemdelim=",",variabledelim="=",
    else:
       raise Exception('Unknown action '+action)
    if bgs.debuglev(8,debug): bgs.eprint(json.dumps(locals(),indent=3,separators=(',',': ')))
-   updateval(infile=infile,verbose=verbose,apply=apply,regex=regex,result=result,addline=addline)
+   updateval(infile=infile,verbose=verbose,apply=apply,regex=regex,result=result,addline=addline,debug=debug)
