@@ -2,29 +2,23 @@
 # File: /usr/share/bgscripts/py/updatevalue.py
 # Author: bgstack15@gmail.com
 # Startdate: 2016-10-11 15:59
-# Title: Python Script that Updates/Adds Value version 2
+# Title: Python Script that Updates/Adds Value version 2.5
 # Purpose: Allows idempotent and programmatic modifications to config files
 # Package: bgscripts
 # History:
+#    2016-10-11 converted shell script into a basic python version 1
 #    2017-11-03 testing modifications for making a different wrapper
-#    2017-11-12 modified to only wrap around the uvlib python library
+#    2017-11-14a v 2.5 modified to only wrap around the uvlib python library
 # Usage:
 #   updateval.py /etc/rc.conf "^ntpd_enable=.*" 'ntpd_enable="YES"' --apply
 # Reference:
-#    original updateval.sh
-#    re.sub from http://stackoverflow.com/questions/5658369/how-to-input-a-regex-in-string-replace-in-python/5658377#5658377
-#    shutil.copy2 http://pythoncentral.io/how-to-copy-a-file-in-python-with-shutil/
-#    keepalive (python script) from keepalive-1.0-5
-#    re.escape http://stackoverflow.com/questions/17830198/convert-user-input-strings-to-raw-string-literal-to-construct-regular-expression/17830394#17830394
-#    https://stackoverflow.com/questions/29935276/inspect-getargvalues-throws-exception-attributeerror-tuple-object-has-no-a#29935277
 # Improve:
 #    idea: use argparse "nargs" optional input file to use stdin piping/redirection!
 #    idea: be able to specify comment types
-
-import re, shutil, os, argparse, sys
+import argparse
 import bgs, uvlib
 
-updatevalversion="2017-11-12a"
+updatevalversion="2017-11-14a"
 
 # Parse parameters
 parser = argparse.ArgumentParser(description="Idempotent value updater for a file",epilog="If searchstring is not found, deststring will be inserted to infile")
@@ -66,5 +60,4 @@ uvlib.updateval(infile,
                 debug=debuglevel,
                 stanza=which_stanza,
                 stanzaregex=stanza_regex,
-                atbeginning=beginning,
-                modifyonly=False)
+                atbeginning=beginning)

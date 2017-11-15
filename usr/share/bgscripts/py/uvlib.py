@@ -17,17 +17,14 @@
 #    shutil.copy2 http://pythoncentral.io/how-to-copy-a-file-in-python-with-shutil/
 #    keepalive (python script) from keepalive-1.0-5
 #    re.escape http://stackoverflow.com/questions/17830198/convert-user-input-strings-to-raw-string-literal-to-construct-regular-expression/17830394#17830394
-#    https://stackoverflow.com/questions/29935276/inspect-getargvalues-throws-exception-attributeerror-tuple-object-has-no-a#29935277
 # Improve:
 #    idea: use argparse "nargs" optional input file to use stdin piping/redirection!
-#    idea: be able to specify comment types
+import re, shutil, os
+import bgs, json
 
-import re, shutil, os, argparse, sys
-import bgs
+uvlibpyversion="2017-11-14b"
 
-uvlibpyversion="2017-11-12a"
-
-def updateval(infile,regex,result,verbose=False,apply=False,debug=0,stanza="",stanzaregex="",atbeginning=False,modifyonly=False):
+def updateval(infile,regex,result,verbose=False,apply=False,debug=0,stanza="",stanzaregex="",atbeginning=False,addline="MyUnMatchedSTR1NG"):
    def readlinkf(_inpath):
       if os.path.islink(infile):
          return os.path.join(os.path.dirname(_inpath),os.readlink(_inpath))
@@ -78,7 +75,7 @@ def updateval(infile,regex,result,verbose=False,apply=False,debug=0,stanza="",st
    elif "regex" in stanza_delim[2]:
       regex_headings = re.compile( stanza_delim[0] )
    else:
-      regex_headings = re.compile( "WGLIWJLGJSDKFJLWJIEGLJWLJlwgi28P" )
+      regex_headings = re.compile( "MyUnMatchedSTR1NG" )
    regex_ws = re.compile(re.escape(which_stanza))
    try:
       regex_ws_straight = re.compile(which_stanza)
@@ -121,7 +118,7 @@ def updateval(infile,regex,result,verbose=False,apply=False,debug=0,stanza="",st
       # check if matches the main search
       if regex_ss.match(inline):
          if which_stanza=="" or this_stanza==stanzacount:
-            if bgs.debuglev(2,debuglevel): bgs.print("Match line:", inline)
+            if bgs.debuglev(2,debuglevel): bgs.eprint("Match line:", inline)
             match_line=linecount
 
    # Be ready to add to end of file
@@ -138,11 +135,15 @@ def updateval(infile,regex,result,verbose=False,apply=False,debug=0,stanza="",st
    elif beginning:
       action_string="insert"
       action_line=beginning_line
+      if addline != 'MyUnMatchedSTR1NG':
+         destinationstring=addline
    else:
       action_string="insert"
       action_line=insert_line
+      if addline != 'MyUnMatchedSTR1NG':
+         destinationstring=addline
 
-   if action_string=="insert" and modifyonly:
+   if action_string=="insert" and destinationstring=='':
       action_string="none"
 
    # Debug section
@@ -150,6 +151,8 @@ def updateval(infile,regex,result,verbose=False,apply=False,debug=0,stanza="",st
       bgs.eprint("match_line:",match_line)
       bgs.eprint("beginning_line:",beginning_line)
       bgs.eprint("insert_line:",insert_line)
+      bgs.eprint("destinationstring:",destinationstring)
+      bgs.eprint("addline:",addline)
    if bgs.debuglev(1,debuglevel):
       bgs.eprint("Action %s at line: %s" % (action_string,action_line))
 
@@ -194,3 +197,35 @@ def updateval(infile,regex,result,verbose=False,apply=False,debug=0,stanza="",st
       os.remove(outfile)
    except Exception as e:
       pass
+
+#############################################################
+# action=add,remove,empty,set,gone
+def manipulatevalue(infile,variable,item,action,itemdelim=",",variabledelim="=",verbose=False,apply=False,comment='#',debug=0):
+   if bgs.debuglev(10,debug): bgs.eprint(bgs.caller_args())
+   regex=''
+   result=''
+   addline='addline'
+   if action == "remove":
+      regex='^(?:(?:(\s*' + variable + '\s*' + variabledelim + '.*?)(' + itemdelim + item + '\b|' + item + itemdelim +'|' + itemdelim + item + '\s*$))|(?:(' + variable + '\s*' + variabledelim + '\s*)' + item + '\s*$))((.*?)|\s*$)'
+      result=r'\g<1>\g<4>\g<3>'
+      addline=''
+   elif action == "add":
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*)(?!.*' + item + '(' + itemdelim + '|\b|$))(.*?)$'
+      result=r'\g<1>' + item + itemdelim + r'\g<3>'
+      addline=variable+variabledelim+item
+   elif action == "empty":
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
+      result=r'\g<1>'
+      addline=variable+variabledelim
+   elif action == "set":
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*).*$'
+      result=r'\g<1>' + item
+      addline=variable + variabledelim + item
+   elif action == "gone" or action == "comment":
+      regex='^(\s*' + variable + '\s*' + variabledelim + '\s*.*)$'
+      result=comment + r'\g<1>'
+      addline=''
+   else:
+      raise Exception('Unknown action '+action)
+   if bgs.debuglev(8,debug): bgs.eprint(json.dumps(locals(),indent=3,separators=(',',': ')))
+   updateval(infile=infile,verbose=verbose,apply=apply,regex=regex,result=result,addline=addline)
