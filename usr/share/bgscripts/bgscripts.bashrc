@@ -233,7 +233,8 @@ _pack() {
 
         # only provide options for the first word
         printf "${prev}\n" | grep -qE "pack$" &&
-        COMPREPLY=( $( compgen -W "$( grep -E '^\s*[[:alpha:]]*)' "${thisfile}" | grep -v -E 'unknown' | sed -r -e 's/\s*//g;' -e 's/[^[:alpha:]]//g;' )" -- "${cur}" ) )
+        #COMPREPLY=( $( compgen -W "$( grep -E -- '\s*[[:alpha:]]+\)\s*$' "${thisfile}" | grep -v -E 'unknown' | sed -r -e 's/\s*//g;' -e 's/[^[:alpha:]]//g;' )" -- "${cur}" ) )
+        COMPREPLY=( $( compgen -W "$( grep -E -- '\s*[[:alpha:]]+\)\s*$' "${thisfile}" | grep -v -E 'unknown' | sed -r -e 's/[^[:alpha:]]//g;' )" -- "${cur}" ) )
         return 0
 } &&
 complete -F _pack -o default pack

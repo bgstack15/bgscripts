@@ -17,6 +17,7 @@ type="";
 case "${thisflavor}" in
    redhat|rhel|centos|fedora|korora) type=rpm;;
    debian|ubuntu) type=dpkg;;
+   GENERIC) type=freebsd;;
    *) type=targz;;
 esac
 
@@ -27,7 +28,7 @@ pack utility version 2017-04-29a-bgscripts
 usage: pack [ rpm | deb | tar | scrub ] [ --debug | -d {0-10} ]
 Provides a single command for building a package. This script is customized to each package.
 optional arguments:
- [ rpm | deb | tar | scrub ]    Build that type of package. Scrub calls the scrub.py script.
+ [ rpm | deb | tar | scrub | bsd ]    Build that type of package. Scrub calls the scrub.py script.
                                 The default depends on the local os flavor. This system is "${thisflavor}"
  [ --debug {0-10} | -d {0-10} ] Display package type to build and exit. Debuglev not implemented here.
 EOF
@@ -42,6 +43,7 @@ package="$( echo "${fullname}" | sed -e "s/-${version}//;" )"
 
 echo " $@ " | grep -qiE -- "rpm|rhel|redhat|centos|fedora|korora" 1>/dev/null 2>&1 && type=rpm
 echo " $@ " | grep -qiE -- "debian|ubuntu|deb\s|dpkg" 1>/dev/null 2>&1 && type=dpkg
+echo " $@ " | grep -qiE -- "freebsd|\bbsd\b" 1>/dev/null 2>&1 && type=freebsd
 echo " $@ " | grep -qiE -- "tar|tgz|gz" 1>/dev/null 2>&1 && type=targz
 echo " $@ " | grep -qiE -- "scrub" 1>/dev/null 2>&1 && type=scrub
 
@@ -118,6 +120,32 @@ rm -rf "${debdir}/${package}-${version}-work.tgz" "${debdir}/${package}"
 cd ~/deb 2>/dev/null || cd ~/rpmbuild/SOURCES
 rm -rf ./"${package}-${version}".master.tgz
 tar -zcf "${package}-${version}".master.tgz "${package}-${version}"/
+
+      ;;
+   freebsd)
+
+########## PACKAGING in a freebsd-ready package-1.0-0-freebsd.tgz
+# will be able to be unzipped to /usr/local
+# if you copy-paste this, be sure to define package, version
+devdir=~/dev
+cd "$( find ~ -maxdepth 3 -type d -name "${package}-${version}" 2>/dev/null | head -n1 )"
+sourcedir="$( readlink -f . )"
+builddir="${devdir}/${package}-${version}-freebsd"
+#echo "sourcedir=${sourcedir}"
+#echo "builddir=${builddir}"
+#echo '---------------------'
+mkdir -p "${builddir}/usr/local" 
+rsync -rlptgoD "${sourcedir}/" "${builddir}" --exclude='.git*' --exclude 'DEBIAN' --exclude '__pycache__'
+mv "${builddir}/usr/"* "${builddir}/usr/local" 2>&1 | grep -vE 'to a subdirectory of itself' 1>&2
+for word in etc include info lib libdata libexec man sbin share var ;
+do
+   test -d "${builddir}/${word}" && mv "${builddir}/${word}" "${builddir}/usr/local"
+done
+sudo chown 0:0 -R "${builddir}"
+cd "${builddir}" ; sudo tar -zcf "${devdir}/${package}-${version}-freebsd.tgz" usr/
+cd "${devdir}" ; sudo rm -rf "${builddir}"
+outfile="$( find "${devdir}/${package}-${version}-freebsd.tgz" 2>/dev/null )"
+test -f "${outfile}" && echo "freebsd tarball built at ${outfile}"
 
       ;;
    scrub)
