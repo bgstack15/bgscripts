@@ -5,3 +5,4 @@ build/debian-bgscripts/control
 build/debian-bgscripts-core/control
 framework.sh
 doc/packaging.txt
+../../../README.md

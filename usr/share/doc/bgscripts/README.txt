@@ -349,3 +349,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Added pwhashgen.py
 - framework: added fchmodref function
 - ftemplate: rearranged section 'CONFIGURE VARIABLES AFTER PARAMS'
+
+* Sat Jan  6 2018 B Stack <bgstack15@gmail.com> 1.3-1
+- Bump to version 1.3-1
