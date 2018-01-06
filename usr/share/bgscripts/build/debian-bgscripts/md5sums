@@ -1,4 +1,5 @@
 6a89bcbbba300220685eb9caeea3bf7d  usr/bin/rdp
+1f81d753c0d5162012abdc631bff6f58  usr/share/bgscripts/gui/mp4tomp3.sh
 b36acca8339f7b6cd60e34f0cdf7f8d8  usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-Numix-48.png
 7c45c261b771aa17b6e6b041a52119f4  usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce.svg
 6ff00402a518544df38bec6cd28e669b  usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-elementary-xfce-32.png
@@ -48,7 +49,8 @@ a258a62f13e5ca6afa5b1e1d83004782  usr/share/bgscripts/gui/icons/apps/rdp-Lubuntu
 455dac918befb29fab8d7d575f610237  usr/share/bgscripts/gui/icons/apps/rdp-circle-64.png
 68e874088a734c46ce7e7f346cbe4b1f  usr/share/bgscripts/gui/icons/apps/rdp-circle-24.png
 d7941812d66d95776ce4ac791d27ba9c  usr/share/bgscripts/gui/icons/apps/rdp-clear-64.png
-933bbe4f201f24bfbed0d4b713e33574  usr/share/bgscripts/gui/monitor-resize.sh
+b20589eebe801563952e27bfd683469a  usr/share/bgscripts/gui/monitor-resize.sh
+f2dacc5ca98475ed39a5fbe641c79f94  usr/share/bgscripts/gui/hwset.sh
 f69e5a790c11af39eb81f04419377616  usr/share/bgscripts/gui/resize.desktop
 6a89bcbbba300220685eb9caeea3bf7d  usr/share/bgscripts/gui/rdp.sh
 cb9ff522401617627d35d463c7768ae1  usr/share/bgscripts/gui/rdp.desktop
