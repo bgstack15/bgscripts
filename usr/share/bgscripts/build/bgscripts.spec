@@ -45,6 +45,7 @@ bgscripts is the gui components of the bgscripts suite, including rdp.sh.
 %install
 rm -rf %{buildroot}
 rsync -a . %{buildroot}/ --exclude='**/.*.swp' --exclude='**/.git'
+%{buildroot}%{_datarootdir}/%{name}/py/switchpyver.sh
 
 %clean
 rm -rf %{buildroot}
