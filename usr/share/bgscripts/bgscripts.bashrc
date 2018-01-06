@@ -29,12 +29,13 @@
 #    2017-07-19 Adjust exit logic on --fcheck to not exit if it was dot-sourced.
 #    2017-09-16 Removed legacy stuff intended for 1p2 and added ~/.bcrc
 #    2017-11-11 Added FreeBSD support. Moved bounce bash autocompletion out of OS-specific sections into main bashrc.
+#    2018-01-06 Update htmlize and lsd. Add xdg-what
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
 #    permtitle https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-from-the-command-line/
 # Improve:
-pversion="2017-11-11a"
+pversion="2018-01-06a"
 __dot_sourced=1; readlink -f $0 2>/dev/null | grep -qiE "\/usr\/.*share\/bgscripts\/bgscripts\.bashrc" && __dot_sourced=0
 echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && { test "${__dot_sourced}" = "0" && exit || return; }
 
@@ -118,7 +119,7 @@ alias where='printf "%s\n%s\n" "$( id )" "$( pwd )"'
 unalias ll 1>/dev/null 2>&1
 function psg { ps -ef | grep -E "$1" | grep -viE "grep -.*E.* $1"; }
 function lsf { ls -l ${_lscolorstring}"$@" | grep '^\-'; }
-function lsd { ls -l ${_lscolorstring}"$@" | grep '^d'; }
+function lsd { find "${@}" -maxdepth 1 -mindepth 1 -type d -print | sed -r -e 's/\.(\/|$)//;/^\s*$/d;' | xargs ls -ld ${_lscolorstring} ; }
 function ll { ls -l ${_lscolorstring}"$@"; }
 function lr { ls ${_lscolorstring}-ltr "$@"; }
 function cx { chmod +x "$@"; }
@@ -171,7 +172,7 @@ function ccat {
 }
 
 function htmlize {
-   $( which sed ) -r -e 's/\&/\&amp;/g;' -e 's/</\&lt;/g;' -e 's/>/\&gt;/g;'
+   $( which sed ) -r -e 's/&lt;/\xCAlt;/g;' -e 's/&gt;/\xCAgt;/g;' -e 's/\&amp;/\&amp;amp;/g;' -e 's/\xCA([lg])t;/\&amp;\1t;/g;' ;
 }
 
 permtitle() {
@@ -192,6 +193,11 @@ permtitle() {
 tty -s 1>/dev/null 2>&1 && ! echo " $@ " | grep -qiE -- "\s--noclear\s" 1>/dev/null 2>&1 && {
    clear
    tty
+}
+
+xdg-what() {
+   local tf="${1}"
+   xdg-mime query default "$( xdg-mime query filetype "${tf}" )"
 }
 
 # BASH AUTOCOMPLETION
