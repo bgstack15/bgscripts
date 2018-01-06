@@ -40,6 +40,8 @@ psg = ps -ef | grep $1
 ll = ls -l
 vir = vi -R
 own = chown $USER:${thisusersprimarygroup}
+sshg = ssh with only gssapi (kerberos) auth.
+sshk = ssh with only public key auth.
 sshp = ssh with only password auth. Useful for ensuring a documented password is correct, or gssapi auth hangs.
 
 #### COMPLEX FUNCTIONS
@@ -61,6 +63,11 @@ Modifies the PROMPT_COMMAND with your string, so the terminal window title is ch
 Caches the original value so calling permtitle without any parameters resets it.
 Examples:
 permtitle "remoteuser@farawaydevice"; ssh remoteuser@farawaydevice.example.com; permtitle;
+
+xdg-what
+Wraps around xdg-mime query default $( xdg-mime query filetype "$1" ) so you can find out what program will be called by xdg-open.
+Examples:
+xdg-what /usr/share/icons/48x48/libreoffice.svg
 
 ### bashrc.d/rhel.bashrc
 update-repo allows you to list updates for just one specific respository. Includes bash autocompletion of respository names.

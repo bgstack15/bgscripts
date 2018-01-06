@@ -13,7 +13,6 @@
 # Reference:
 #    import lib regardless of py2 and py3 status https://stackoverflow.com/questions/67631/how-to-import-a-module-givne-the-full-path#67692
 # Improve:
-#    Fix the -B beginning of line part.
 from __future__ import print_function
 import argparse, sys
 
@@ -25,7 +24,7 @@ from uvlib import manipulatevalue
 #   code=compile(f.read(),uvlib_file, 'exec')
 #   exec(code, globals(), locals())
 
-updatevalversion="2018-01-05a"
+updatevalversion="2018-01-06a"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d","--debug", nargs='?', default=0, type=int, choices=range(0,11), help="Set debug level.")

@@ -352,3 +352,9 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 * Sat Jan  6 2018 B Stack <bgstack15@gmail.com> 1.3-1
 - Bump to version 1.3-1
+- Rewrite modconf.py for full functionality
+- Add switchpyver.sh which swaps symlinks in the bgscripts/py directory to the correct python version
+- Add list-active-repos.sh
+- bashrc: update htmlize, lsd
+- bashrc: add xdg-what
+- Update documentation

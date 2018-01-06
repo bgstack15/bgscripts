@@ -277,88 +277,6 @@ Contents of the example file go here.
 EOF
 
 ######################################################
-### updateval.sh
-The legacy version of updateval.py. The shell version is no longer recommended for use.
-
-######################################################
-### dli.py
-DLI stands for "dnf list installed." It provides a quick command which caches the output of "dnf list installed" for the day, so you can search the installed packages.
-
-Dli saves the output to a file of pattern ~/dnf.installed.YYYY-MM-DD.log.
-
-usage: dli <-i|-a> [-dV] [packagename]
- -i installed  List installed packages.
- -a available  List available packages.
- -r refresh    Force a refresh of an existing file for today.
- -d debug      Set debug level to a number between 0-10.
- -V version
- packagename   Regex to search in the output. Appends .* and prepends .*
- 
-Examples:
-List all packages that are installed, and load them into vi:
-dli
-List available packages that match a regular expression:
-dli -a 'audacity'
-Force refresh of installed packages:
-dli -r
-
-######################################################
-### scrub.py
-Scrub does a copy of a whole directory structure, and replaces words with substitutes, defined by the scrub.txt file.
-This was written to provide a method of obfuscation to protect private data while preparing git repositories for publication.
-Very few of my personal projects use scrub anymore.
-
-It can be called by the 'build/pack scrub' command included in many of my packages.
-
-Scrub.py depends on a scrub.txt, nominally in /home/bgstack15/rpmbuild/SOURCES/packagename/build/scrub.txt
-
-    # for scrubpyversion 2016-11-16a or newer
-    source /home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-2
-    target /home/work/bgscripts.clean
-    ignore "tgz png gif jpg pyc pyo git swp ico"
-    # rest of the lines are "OLD WORD" "NEW WORD"
-    BSMITH	BGSTACK15
-    Bsmith	Bgstack15
-    bsmith	bgstack15
-    BRIAN	BNAME
-    Brian	Bname
-    brian	bname
-    SMITH	STACK15
-    Smith	Stack15
-    smith	stack15
-
-Scrub.py uses python libraries to read in files and perform regular expressions. Only plain text files are supported, which is why there is an option titled "ignore" which is a space separated string of the extensions to ignore in the directory tree.
-
-######################################################
-### updateval.py
-Updateval is my attempt to provide a useful regular expression replacement utility like crudini.
-The main body has been rewritten several times. The original was in Bourne shell, and the python version was rewritten once so far as of July 2017.
-
-usage: updateval.py [-dV] [-vab] <infile> <searchstring> <deststring> [-s <stanza>] [--stanzaregex <stanzaregex>]
- -d debug     Set debug level, from 0-10.
- -v verbose   Display the output.
- -a apply     Modify original file.
- infile       File to read
- searchstring Regex string to search
- deststring   The value to have in the file. Will be added if <searchstring> is not found.
- -V version
- -s stanza    Define stanza to match. Will do rudimentary detection for stanza definitions. I.e., -s "[bgscripts]" will recognize all lines with square braces as new stanza definitions, and the specific one to search for the <searchstring> will be the stanza [bgscripts].
-              Also recognizes stanza() definition.
-              If --stanzaregex is provided, then <stanza> is the specific stanza to match.
- --stanzaregex Define a custom regular expression that defines the stanza headings.
-
-It is best to try to match the whole line. If the <searchstring> is found, it will do a regular expression replacement and place the <deststring>. Experimentation with the --verbose flag is recommended until the results are predictable.
-
-It is possible to provide -s '[]' and then it will recognize square braces as new stanza definitions, and will search for <searchstring> only in the beginning sectino of the file, before any defined stanzas.
-
-Examples:
-Update file /etc/rc.conf to set ntpd_enable=YES, and add the value if it does not exist.
-updateval.py /etc/rc.conf "^ntpd_enable=.*" 'ntpd_enable="YES"' --apply
-
-In stanza '[section]', set value example=bar. If example is not found, insert example=bar at the beginning of the stanza.
-updateval.py -b -s '[section]' '^example=.*' 'example=bar'
-
-######################################################
 ### monitor-resize.sh
 Monitor-resize is a daemon that monitors the X displays and tells them to resize if the display size has changed. This is useful on virtual machines.
 The program is written in Bourne shell, and uses /proc filesystem to collect information it needs. This tool represents a new architecture in my repertoire: a master-child forking process with control via signals.
@@ -372,10 +290,3 @@ mp4tomp3.sh wraps around the ffmpeg (or avconv) utility. It accepts an mp4 file 
 Examples:
 
 ./mp4tomp3.sh "Ace of Base - The Sign.MP4"
-
-######################################################
-### pwhashgen.py
-Pwhashgen accepts a single parameter, or will prompt you, and generates a sha-512 hash suitable for /etc/shadow.
-
-$ ./pwhashgen.py '123456'
-$6$lN7SmaBJyR9icKt.$TkWJrzxzQb7szjPSMNtu1K16bcXMH9VwmWZoryhD4QDzs7HgEULRpBhdYi5wuBUdbBBznnA3l0/J0Ck3zu5GJ1
