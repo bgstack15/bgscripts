@@ -358,3 +358,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - bashrc: update htmlize, lsd
 - bashrc: add xdg-what
 - Update documentation
+
+# Sun Jan 28 2018 B Stack <bgstack15@gmail.com> 1.3-2
+- Changes
