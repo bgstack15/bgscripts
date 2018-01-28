@@ -36,9 +36,9 @@ exit 1
 }
 
 # Derive package name and version number, for my simple package versions only.
-fullname="$( pwd | sed -e 's/.*\(SOURCES\|deb\)\///;s/\/.*//;' )"
-version="$( echo "${fullname}" | grep -oiE -- "-[0-9]{0,3}\.[0-9a-zA-Z]{0,5}-[0-9]{0,4}" | sed -e 's/^-//;' )"
-shortversion="$( echo "${version}" | sed -e 's/-.*//;' )"
+fullname="$( pwd | sed -r -e 's/.*(SOURCES|deb)\///;s/\/.*//;' )"
+version="$( echo "${fullname}" | grep -oiE -- "-[0-9]{0,3}(\.[0-9a-zA-Z]{0,5})+-[0-9]{0,4}" | sed -e 's/^-//;' )"
+shortversion="$( echo "${version}" | sed -r -e 's/-.+$//;' )"
 package="$( echo "${fullname}" | sed -e "s/-${version}//;" )"
 
 echo " $@ " | grep -qiE -- "rpm|rhel|redhat|centos|fedora|korora" 1>/dev/null 2>&1 && type=rpm
