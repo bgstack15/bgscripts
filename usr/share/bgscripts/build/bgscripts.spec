@@ -45,7 +45,6 @@ bgscripts is the gui components of the bgscripts suite, including rdp.sh.
 %install
 rm -rf %{buildroot}
 rsync -a . %{buildroot}/ --exclude='**/.*.swp' --exclude='**/.git'
-%{buildroot}%{_datarootdir}/%{name}/py/switchpyver.sh
 
 %clean
 rm -rf %{buildroot}
@@ -266,7 +265,7 @@ fi
 exit 0
 
 %post core
-# rpm core post 2017-09-16
+# rpm core post 2018-01-28
 # References:
 #    https://fedoraproject.org/wiki/Packaging:Scriptlets
 #    https://fedoraproject.org/wiki/Changes/systemd_file_triggers
@@ -288,6 +287,10 @@ then
 
 fi
 } 1>/dev/null 2>&1
+
+# Prepare the python symlinks
+%{_datarootdir}/%{name}/py/switchpyver.sh 1>/dev/null 2>&1 ||:
+
 exit 0
 
 %preun core

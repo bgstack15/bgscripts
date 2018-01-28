@@ -1,4 +1,4 @@
-# deb core postinst 2017-09-16
+# deb core postinst 2018-01-28
 {
 if test "$1" = "configure";
 then
@@ -18,4 +18,8 @@ then
 
 fi
 } 1>/dev/null 2>&1
+
+# Prepare the python symlinks
+/usr/share/bgscripts/py/switchpyver.sh 1>/dev/null 2>&1 ||:
+
 exit 0
