@@ -363,3 +363,10 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Move switchpyver invocation in package maintainer scripts to the %post core and core deb postinst
 - Save output of dli to ~/.dli so it does not clutter $HOME
 - pack: use more robust calculations for fullname, version, and shortversion
+- Add new scripts:
+-  gui/screensize.sh shows width and height of main X display
+-  sizer.sh summarizes disk space usage grouped by file extension
+-  work/list-active-repos.sh shows active yum repos
+-  work/list-vnc-sessions.sh shows current Xvnc sessions so you find yours to reconnect
+-  work/sslscanner.sh summarizes the certs you get back from s_client -connect
+-  work/userinfo.sh succintly reports user access capabilities on this host
