@@ -6,10 +6,12 @@
 # Purpose: Provides faster dnf installed/available searches
 # History:
 #    2017-11-12a Changed to use bgs python lib
+#    2018-01-28a Save output to ~/.dli directory, so it does not clutter $HOME
 # Usage:
 # Reference:
 #    subprocess get stdout http://stackoverflow.com/questions/6706953/python-using-subprocess-to-call-sed/6707003#6707003
 #    http://stackoverflow.com/questions/5574702/how-to-print-to-stderr-in-python/14981125#14981125
+#    ensure directory exists https://stackoverflow.com/questions/273192/how-can-i-create-a-directory-if-it-does-not-exist#273227
 # Improve:
 #    find way to use the latest file, instead of making one for today
 from __future__ import print_function
@@ -17,13 +19,14 @@ import argparse, datetime, os, sys, subprocess, re
 from distutils.spawn import find_executable
 from bgs import debuglev, eprint
 
-dlipyversion="2017-11-12a"
+dlipyversion="2018-01-28a"
 
 # Define functions
 
 # Default default variables
 refresh = False
-fileprefix = os.path.expanduser("~") + "/dnf"
+outdir = os.path.expanduser("~") + "/.dli"
+fileprefix = outdir + "/dnf"
 thisfile = ""
 aori = "installed"
 today = datetime.date.today().isoformat()
@@ -58,6 +61,10 @@ if debuglev(10,debuglevel): print(searchstring)
 # Determine filename
 thisfile = fileprefix + "." + aori + "." + today + ".log"
 if debuglev(5,debuglevel): eprint("Using file " + thisfile)
+
+# Ensure the ~/.dli directory exists
+if not os.path.exists(outdir):
+   os.makedirs(outdir)
 
 # Determine yum or dnf
 #print(os.environ)

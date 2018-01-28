@@ -361,3 +361,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 # Sun Jan 28 2018 B Stack <bgstack15@gmail.com> 1.3-2
 - Move switchpyver invocation in package maintainer scripts to the %post core and core deb postinst
+- Save output of dli to ~/.dli so it does not clutter $HOME
