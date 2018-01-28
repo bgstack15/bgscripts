@@ -27,7 +27,7 @@ if bgs.debuglev(10,debug): bgs.eprint(bgs.caller_args())
 ### dli.py
 DLI stands for "dnf list installed." It provides a quick command which caches the output of "dnf list installed" for the day, so you can search the installed packages.
 
-Dli saves the output to a file of pattern ~/dnf.installed.YYYY-MM-DD.log.
+Dli saves the output to a file of pattern ~/.dli/dnf.installed.YYYY-MM-DD.log.
 
 usage: dli <-i|-a> [-dV] [packagename]
  -i installed  List installed packages.

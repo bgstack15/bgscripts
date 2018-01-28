@@ -290,3 +290,43 @@ mp4tomp3.sh wraps around the ffmpeg (or avconv) utility. It accepts an mp4 file 
 Examples:
 
 ./mp4tomp3.sh "Ace of Base - The Sign.MP4"
+
+
+######################################################
+### gui/screensize.sh
+screensize.sh shows the width and height of the main X display. Unfortunately if you invoke it from a shell not associated with a display, simply adding DISPLAY=:0 still does not work. Further research is needed to get it to work correctly.
+
+######################################################
+### sizer.sh
+sizer.sh accepts a directory as a parameter. It then counts the size on disk of the files, grouped by extension.
+An improvement to be made is to count the files that have no extension.
+
+Example:
+
+./sizer.sh /mnt/public/Music
+
+######################################################
+### work/list-active-repos.sh
+This script lists the repos that do not have an 'enabled=0' because I do not understand the yum repomanage commands.
+
+######################################################
+### work/list-vnc-sessions.sh
+list-vnc-sessions.sh displays all the current Xvnc sessions, with the intention to make it easier to find your existing one so you can reconnect.
+
+######################################################
+### work/sslscanner.sh
+sslscanner.sh accepts a parameter of a URL or a hostname:port combo and executes an openssl s_client --connect. It outputs a summary of the ssl certificates served.
+This is useful when you are investigating why the certificate is not trusted: Are you getting the cert you expect?
+
+######################################################
+### work/userinfo.sh
+userinfo.sh returns a few atomic pieces of information about a user:
+
+Example:
+
+./userinfo.sh bgstack15
+user: bgstack15
+getent: YES
+getent_type: sss
+can_ssh: YES
+can_sss: YES
