@@ -97,8 +97,9 @@ cd "${debdir}/${package}-${version}"
 rm -rf "${debdir}/${package}-${version}/DEBIAN" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN"
 cp -pf "${debdir}/${debiandirsub1}"/* "${debdir}/${package}-${version}/DEBIAN/"
 mkdir "${debdir}/${package}" 2>/dev/null; rm -rf "${debdir}/${package}_${shortversion}.orig.tar.gz"
-tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}_${shortversion}.orig.tar.gz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) $( find "${debdir}/${package}-${version}" -mindepth 1 -type d ! -regex '.*\/.git.*' -printf '%P\n' )
-tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}-${shortversion}.orig.tar.gz"
+tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}_${shortversion}.orig.tar.gz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN 
+#$( find "${debdir}/${package}-${version}" -mindepth 1 -type d ! -regex '.*\/.git.*' -printf '%P\n' )
+tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}_${shortversion}.orig.tar.gz"
 #pushd "${debdir}/${package}"
 #"DEBIAN/rules"
 fakeroot dpkg-deb -b "${debdir}/${package}"
@@ -110,8 +111,8 @@ rm -rf "${debdir}/${package}_${version}.orig.tar.gz" "${debdir}/${package}"
 rm -rf "${debdir}/${package}-${version}/DEBIAN" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN/"
 cp -pf "${debdir}/${debiandirmain}"/* "${debdir}/${package}-${version}/DEBIAN/"
 mkdir "${debdir}/${package}" 2>/dev/null; rm -rf "${debdir}/${package}_${shortversion}.orig.tar.gz"
-tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}_${shortversion}.orig.tar.gz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) $( find "${debdir}/${package}-${version}" -mindepth 1 -type d ! -regex '.*\/.git.*' -printf '%P\n' )
-tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}_${version}.orig.tar.gz"
+tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}_${shortversion}.orig.tar.gz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN # $( find "${debdir}/${package}-${version}" -mindepth 1 -type d ! -regex '.*\/.git.*' -printf '%P\n' )
+tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}_${shortversion}.orig.tar.gz"
 #pushd "${debdir}/${package}"
 #"DEBIAN/rules"
 fakeroot dpkg-deb -b "${debdir}/${package}"

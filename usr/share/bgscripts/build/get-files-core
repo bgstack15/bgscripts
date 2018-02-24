@@ -39,13 +39,16 @@ if test -n "${package}"; then cd ~/deb/"${package}-${version}"; else cd $( pwd |
 test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]+$//;" )"
 
 ### for deb
-find . -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
+# will be redirected to xargs -d'\0' md5sum
+find . -mindepth 1 \
    ! -type d -regextype grep \
-   ! -regex '.*hg.*' ! -regex '.*?debian-binary.*' \
-   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' ! -name 'README.md' \
+   ! -regex '.*\/\..*\.swp$' \
+   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
+   ! -regex './README.md' \
    ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
-   ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \
+   ! -regex '.*rdp.*' \
+   ! -regex '.*monitor-resize.*' \
    -printf '%P\n' \
    | sort | tr '\n' '\0'
 

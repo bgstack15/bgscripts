@@ -6,12 +6,12 @@ if test -n "${package}"; then cd ${rpmbuilddir}/SOURCES/"${package}-${version}";
 test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]+$//;" )"
 
 ### for rpm
-find * -type d -regextype grep \
+find . -type d -regextype grep \
    -regex "usr\/share\/${package}.*" \
    -regex '.*gui.*' \
    | sort \
    | sed -e 's/^/%dir \//;'
-find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
+find . -mindepth 1 ! -name "${package}.spec.$$.swp" \
    ! -type d -regextype grep \
    ! -regex '.*.swp' \
    ! -regex '.*?DEBIAN.*?' \
@@ -36,15 +36,17 @@ if test -n "${package}"; then cd ~/deb/"${package}-${version}"; else cd $( pwd |
 test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]+$//;" )"
 
 ### for deb
-# will be redirected to md5sum
+# will be redirected to xargs -d'\0' md5sum
 find . -mindepth 1 \
    ! -type d -regextype grep \
-   ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' \
-   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' ! -name 'README.md' \
+   ! -regex '.*\/\..*\.swp$' \
+   ! -regex '.\/DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
+   ! -regex '.\/README.md' \
    \( \
-      -regex '.*gui.*' -o \
+      -regex '.*\/gui\/.*' -o \
       -regex '.*get-files$' -o \
-      -regex '.*rdp.*' \
+      -regex '.*rdp.*' -o \
+      -regex '.*monitor-resize.*' \
    \) \
    -printf '%P\n' \
    | sort | tr '\n' '\0'
