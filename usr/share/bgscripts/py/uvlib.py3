@@ -11,7 +11,7 @@
 #    2018-01-05 merged in the updated manipulatevalue for modconf.py and split for different python versions
 # Usage:
 #   import uvlib
-#   uvlib.updateval(infile='/home/bgirton/sshd_example',verbose=True,apply=False,regex='^(#?\s*#?AllowUsers.*)bgirton ?(.*)',result=r'\1\2')
+#   uvlib.updateval(infile='/home/bgstack15/sshd_example',verbose=True,apply=False,regex='^(#?\s*#?AllowUsers.*)bgstack15?(.*)',result=r'\1\2')
 # Reference:
 #    original updateval.sh
 #    re.sub from http://stackoverflow.com/questions/5658369/how-to-input-a-regex-in-string-replace-in-python/5658377#5658377

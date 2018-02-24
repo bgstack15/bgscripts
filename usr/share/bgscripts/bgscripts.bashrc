@@ -1,8 +1,8 @@
 #!/bin/sh
 # File: /usr/share/bgscripts/bgscripts.bashrc
-# Author: blg
+# Author: bgstack15
 # Startdate: 2013-07-23
-# Title: Master Template for ~bgirton/.profile
+# Title: Master Template for ~bgstack15/.profile
 # Package: bgscripts
 # Purpose: To standardize my shell environments and hold central info
 # History: 2014-07-24 updated, cleaned up, organized, etc.
@@ -157,7 +157,7 @@ function newer {
    cd $olddir
 }
 function cdnewest {
-   # call: cdnewest [-d] /test/sysadmin/bin/bgirton
+   # call: cdnewest [-d] /test/sysadmin/bin/bgstack15
    [[ "${1}" = "-d" ]] && { displayonly=1; shift; } || displayonly=0
    newdir="$( /usr/bin/sudo find "${1:-.}"/* -prune -type d 2>/dev/null | xargs stat -c "%Y %n" 2>/dev/null | sort -nr | head -n 1 | cut -d " " -f 2-; )"
    [[ "${displayonly}" = "0" ]] && cd ${newdir} || {

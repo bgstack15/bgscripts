@@ -75,7 +75,7 @@ It can be called by the 'build/pack scrub' command included in many of my packag
 Scrub.py depends on a scrub.txt, nominally in /home/bgstack15/rpmbuild/SOURCES/packagename/build/scrub.txt
 
     # for scrubpyversion 2016-11-16a or newer
-    source /home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-2
+    source /home/bgstack15/rpmbuild/SOURCES/bgscripts-1.2-2
     target /home/work/bgscripts.clean
     ignore "tgz png gif jpg pyc pyo git swp ico"
     # rest of the lines are "OLD WORD" "NEW WORD"

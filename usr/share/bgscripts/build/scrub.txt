@@ -1,15 +1,15 @@
 # for scrubpyversion 2016-11-16a or newer
 # As of bgscripts-1.2-3 this file is no longer used. I simply will not scrub this package anymore. This file is kept as an example of how to use scrub.py.
-source /home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-2
+source /home/bgstack15/rpmbuild/SOURCES/bgscripts-1.2-2
 target /home/work/bgscripts.clean
 ignore "tgz png gif jpg pyc pyo git swp ico"
 # rest of the lines are "OLD WORD" "NEW WORD"
-BGIRTON	BGSTACK15
-Bgirton	Bgstack15
-bgirton bgstack15
+BSCHMIDT BGSTACK15
+Bschmidt Bgstack15
+bschmidt bgstack15
 BRIAN	BNAME
 Brian	Bname
 brian	bname
-GIRTON	STACK15
-Girton	Stack15
-girton	stack15
+SCHMIDT  STACK15
+Schmidt  Stack15
+schmidt  stack15

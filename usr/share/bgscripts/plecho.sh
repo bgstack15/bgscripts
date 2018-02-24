@@ -8,7 +8,7 @@
 # History: 2015-12-01 updated to work with stdin no matter ssh or not
 #    2016-08-03 made more portable, but the read command depends on /bin/bash
 # Usage: echo "bar" | plecho "foo"
-# Reference: /test/sysadmin/bin/bgirton/args/input.sh 2014-05-26a
+# Reference: /test/sysadmin/bin/bgstack15/args/input.sh 2014-05-26a
 # Improve: 
 
 # template: [2014-07-08 14:43:45]picard@enterprise "$@"

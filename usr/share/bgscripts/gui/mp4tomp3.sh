@@ -134,7 +134,7 @@ esac
 infile1=
 outfile1=
 logfile=${scriptdir}/${scripttrim}.${today}.out
-interestedparties="bgirton@bju.edu"
+interestedparties="bgstack15@gmail.com"
 
 ## REACT TO ROOT STATUS
 #case $is_root in

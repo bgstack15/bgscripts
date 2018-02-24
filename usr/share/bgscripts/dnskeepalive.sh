@@ -127,7 +127,7 @@ parseFlag() {
 
 # DETERMINE LOCATION OF FRAMEWORK
 while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
-/home/bgirton/rpmbuild/SOURCES/bgscripts-1.2-9/usr/share/bgscripts/framework.sh
+/home/bgstack15/rpmbuild/SOURCES/bgscripts-1.2-9/usr/share/bgscripts/framework.sh
 /usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS

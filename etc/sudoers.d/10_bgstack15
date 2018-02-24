@@ -2,5 +2,5 @@ Defaults env_keep += 'ftp_proxy'
 Defaults env_keep += 'http_proxy'
 Defaults env_keep += 'https_proxy'
 Defaults env_keep += 'no_proxy'
-User_Alias BGSTACK15S = Bgirton, bgirton, bgirton-local
+User_Alias BGSTACK15S = Bschmidt, bschmidt, bschmidt-local, Bgirton, bgirton, bgirton-local
 BGSTACK15S ALL=(ALL)	NOPASSWD: ALL

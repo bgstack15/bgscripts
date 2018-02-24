@@ -3,10 +3,12 @@
 case "${1}" in
    rpm)
 if test -n "${package}"; then cd ${rpmbuilddir}/SOURCES/"${package}-${version}"; else cd $( pwd | sed -r -e 's/(SOURCES\/[^\/]+\/).*/\1/;' ); fi
+test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]+$//;" )"
+
 
 ### for rpm
 find * -type d -regextype grep \
-   \( -regex 'usr\/share\/bgscripts.*' -o -regex 'etc\/bgscripts.*' \) \
+   \( -regex 'usr\/share\/${package}.*' -o -regex 'etc\/${package}.*' \) \
    ! -regex '.*gui.*' \
    | sed -e 's/^/%dir \//;'
 find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
@@ -31,6 +33,7 @@ s/(.*\/sudoers\.d\/.*)/%attr(440, root, root) \1/;
       ;;
    deb)
 if test -n "${package}"; then cd ~/deb/"${package}-${version}"; else cd $( pwd | sed -r -e 's/(deb\/[^\/]+\/).*/\1/;' ); fi
+test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]+$//;" )"
 
 ### for deb
 find . -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
@@ -40,7 +43,7 @@ find . -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
    ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
    ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \
-   -printf '%P '
+   -printf '%P\0'
 
       ;;
    *)
