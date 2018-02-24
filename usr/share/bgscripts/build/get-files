@@ -46,7 +46,8 @@ find . -mindepth 1 \
       -regex '.*\/gui\/.*' -o \
       -regex '.*get-files$' -o \
       -regex '.*rdp.*' -o \
-      -regex '.*monitor-resize.*' \
+      -regex '.*monitor-resize.*' -o \
+      -regex ".*debian-${package}-core\/.*" \
    \) \
    -printf '%P\n' \
    | sort | tr '\n' '\0'
