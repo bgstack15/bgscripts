@@ -7,8 +7,11 @@ test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]
 
 
 ### for rpm
-find * -type d -regextype grep \
-   \( -regex "usr\/share\/${package}.*" -o -regex "etc\/${package}.*" \) \
+find . -type d -regextype grep \
+   \( \
+      -regex "usr\/share\/${package}.*" -o \
+      -regex "etc\/${package}.*" \
+   \) \
    ! -regex '.*gui.*' \
    | sort \
    | sed -e 's/^/%dir \//;'
