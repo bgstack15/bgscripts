@@ -5,27 +5,29 @@ case "${1}" in
 if test -n "${package}"; then cd ${rpmbuilddir}/SOURCES/"${package}-${version}"; else cd $( pwd | sed -r -e 's/(SOURCES\/[^\/]+\/).*/\1/;' ); fi
 test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]+$//;" )"
 
-
 ### for rpm
 find . -type d -regextype grep \
    \( \
-      -regex "usr\/share\/${package}.*" -o \
-      -regex "etc\/${package}.*" \
+      -regex "./usr/share/${package}.*" -o \
+      -regex "./etc/${package}.*" \
    \) \
-   ! -regex '.*gui.*' \
+   ! -regex '.*/gui/.*' \
+   ! -regex ".*/debian-${package}$" \
    | sort \
-   | sed -e 's/^/%dir \//;'
-find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
+   | sed -e 's/^\.\///;' -e 's/^/%dir \//;'
+find . -mindepth 1 \
    ! -type d -regextype grep \
-   ! -regex '.*.swp' \
-   ! -regex '.*DEBIAN.*' \
-   ! -regex '.*\/gui\/.*' \
-   ! -regex '.*get-files$' \
-   ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \
-   ! -regex '.*monitor-resize.*' \
+   ! -regex ".*/\..*\.swp$" \
+   ! -regex ".*DEBIAN.*" ! -regex ".*\.swp" ! -regex ".*\.git.*" \
+   ! -regex "./README.md" \
+   ! -regex ".*/gui/.*" \
+   ! -regex ".*get-files$" \
+   ! -regex ".*rdp.*" \
+   ! -regex ".*monitor-resize.*" \
+   ! -regex ".*/debian-${package}.*" \
    | sort \
    | sed -r -e '
-s/^/\//;
+s/^\.?\/?/\//;
 s/(.*\.txt|\/usr\/share\/doc\/.*)/%doc %attr(444, -, -) \1/
 s/(.*bin.*)/%verify(link) \1/;
 s/(.*\.conf)/%config %attr(666, -, -) \1/;
@@ -45,14 +47,14 @@ test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]
 # will be redirected to xargs -d'\0' md5sum
 find . -mindepth 1 \
    ! -type d -regextype grep \
-   ! -regex '.*\/\..*\.swp$' \
-   ! -regex '.*DEBIAN.*' ! -regex '.*\.swp' ! -regex '.*\.git.*' \
-   ! -regex './README.md' \
-   ! -regex '.*\/gui\/.*' \
-   ! -regex '.*get-files$' \
-   ! -regex '.*rdp.*' \
-   ! -regex '.*monitor-resize.*' \
-   ! -regex ".*debian-${package}-core\/.*" \
+   ! -regex ".*/\..*\.swp$" \
+   ! -regex ".*DEBIAN.*" ! -regex ".*\.swp" ! -regex ".*\.git.*" \
+   ! -regex "./README.md" \
+   ! -regex ".*/gui/.*" \
+   ! -regex ".*get-files$" \
+   ! -regex ".*rdp.*" \
+   ! -regex ".*monitor-resize.*" \
+   ! -regex ".*/debian-${package}/.*" \
    -printf '%P\n' \
    | sort | tr '\n' '\0'
 

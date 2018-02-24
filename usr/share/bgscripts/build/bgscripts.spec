@@ -371,13 +371,29 @@ fi
 exit 0
 
 %files
-%dir /usr/share/bgscripts/gui
-%dir /usr/share/bgscripts/gui/icons
-%dir /usr/share/bgscripts/gui/icons/apps
-%dir /usr/share/bgscripts/gui/icons/mimetypes
 %config %attr(666, -, -) /etc/bgscripts/monitor-resize.conf
 %config %attr(666, -, -) /etc/bgscripts/rdp.conf
 %verify(link) /usr/bin/rdp
+/usr/share/bgscripts/build/debian-bgscripts/changelog
+/usr/share/bgscripts/build/debian-bgscripts/compat
+/usr/share/bgscripts/build/debian-bgscripts/conffiles
+/usr/share/bgscripts/build/debian-bgscripts/control
+/usr/share/bgscripts/build/debian-bgscripts-core/changelog
+/usr/share/bgscripts/build/debian-bgscripts-core/compat
+/usr/share/bgscripts/build/debian-bgscripts-core/conffiles
+/usr/share/bgscripts/build/debian-bgscripts-core/control
+/usr/share/bgscripts/build/debian-bgscripts-core/md5sums
+/usr/share/bgscripts/build/debian-bgscripts-core/postinst
+/usr/share/bgscripts/build/debian-bgscripts-core/postrm
+/usr/share/bgscripts/build/debian-bgscripts-core/preinst
+/usr/share/bgscripts/build/debian-bgscripts-core/prerm
+/usr/share/bgscripts/build/debian-bgscripts-core/rules
+/usr/share/bgscripts/build/debian-bgscripts/md5sums
+/usr/share/bgscripts/build/debian-bgscripts/postinst
+/usr/share/bgscripts/build/debian-bgscripts/postrm
+/usr/share/bgscripts/build/debian-bgscripts/preinst
+/usr/share/bgscripts/build/debian-bgscripts/prerm
+/usr/share/bgscripts/build/debian-bgscripts/rules
 /usr/share/bgscripts/build/get-files
 /usr/share/bgscripts/gui/hwset.sh
 /usr/share/bgscripts/gui/icons/apps/rdp-circle-16.png
@@ -445,11 +461,11 @@ exit 0
 %dir /usr/share/bgscripts
 %dir /usr/share/bgscripts/bashrc.d
 %dir /usr/share/bgscripts/build
-%dir /usr/share/bgscripts/build/debian-bgscripts
 %dir /usr/share/bgscripts/build/debian-bgscripts-core
 %dir /usr/share/bgscripts/build/testing
 %dir /usr/share/bgscripts/build/testing/debian
 %dir /usr/share/bgscripts/examples
+%dir /usr/share/bgscripts/gui
 %dir /usr/share/bgscripts/inc
 %dir /usr/share/bgscripts/inc/systemd
 %dir /usr/share/bgscripts/py
@@ -485,26 +501,6 @@ exit 0
 /usr/share/bgscripts/bgscripts.bashrc
 /usr/share/bgscripts/bounce.sh
 /usr/share/bgscripts/build/bgscripts.spec
-/usr/share/bgscripts/build/debian-bgscripts/changelog
-/usr/share/bgscripts/build/debian-bgscripts/compat
-/usr/share/bgscripts/build/debian-bgscripts/conffiles
-/usr/share/bgscripts/build/debian-bgscripts/control
-/usr/share/bgscripts/build/debian-bgscripts-core/changelog
-/usr/share/bgscripts/build/debian-bgscripts-core/compat
-/usr/share/bgscripts/build/debian-bgscripts-core/conffiles
-/usr/share/bgscripts/build/debian-bgscripts-core/control
-/usr/share/bgscripts/build/debian-bgscripts-core/md5sums
-/usr/share/bgscripts/build/debian-bgscripts-core/postinst
-/usr/share/bgscripts/build/debian-bgscripts-core/postrm
-/usr/share/bgscripts/build/debian-bgscripts-core/preinst
-/usr/share/bgscripts/build/debian-bgscripts-core/prerm
-/usr/share/bgscripts/build/debian-bgscripts-core/rules
-/usr/share/bgscripts/build/debian-bgscripts/md5sums
-/usr/share/bgscripts/build/debian-bgscripts/postinst
-/usr/share/bgscripts/build/debian-bgscripts/postrm
-/usr/share/bgscripts/build/debian-bgscripts/preinst
-/usr/share/bgscripts/build/debian-bgscripts/prerm
-/usr/share/bgscripts/build/debian-bgscripts/rules
 %doc %attr(444, -, -) /usr/share/bgscripts/build/files-for-versioning.txt
 /usr/share/bgscripts/build/get-files-core
 /usr/share/bgscripts/build/get-sources
