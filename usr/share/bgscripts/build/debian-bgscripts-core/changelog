@@ -8,21 +8,5 @@ bgscripts-core (1.1-31) stable;
   * Fixed From: field in send.sh.
   * Fixed rdp.sh debug and error messages to be more helpful and specific.
   * Separated bgscripts-core from bgscripts. This was to simplify the scriptlets for cli-only systems that don't need rdp or icons or anything of that sort.
- -- B Stack <bgstack15@gmail.com>  Wed, 25 Jan 2017 16:11:30 -0500
 
-bgscripts-core (1.1-30) stable;
-
-  * Added weak dependencies/recommends for packages zenity and freerdp for the rdp.sh application.
-  * Added deb recommends mailutils for the send.sh application.
-  * Changed default options of rdp.sh to include /cert-tofu
-  * Added README.md to the root directory for github visitors.
-  * Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.conf config files.
-  * Separated bgscripts-core from bgscripts. This was to simplify the scriptlets for cli-only systems that don't need rdp or icons or anything of that sort.
- -- B Stack <bgstack15@gmail.com>  Thu, 19 Jan 2017 16:53:22 -0500
-
-bgscripts-core (1.1-29) stable; urgency=low
-
-  * Dummy entry. All changes can be found at
-    https://github.com/bgstack15/bgscripts
-
- -- B Stack <bgstack15@gmail.com>  Wed, 18 Jan 2017 16:50:32 -0500
+ -- B Stack <bgstack15@gmail.com>  Wed, 25 Jan 2017 00:00:00 -0500

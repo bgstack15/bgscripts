@@ -1,9 +1,9 @@
-# deb core prerm 2017-09-16
+# deb core prerm 2018-02-23
 # Reference: https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html
 {
-if test "$1" = "remove";
+if test "$1" = "remove" ;
 then
-   # total uninstall
+   # Total uninstall
 
    # remove systemd files
    systemctl --no-reload disable --now dnskeepalive.service || :
@@ -15,4 +15,5 @@ then
 
 fi
 } 1>/dev/null 2>&1
+
 exit 0

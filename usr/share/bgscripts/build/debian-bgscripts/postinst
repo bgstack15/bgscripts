@@ -1,10 +1,12 @@
-# deb postinst 2017-09-16
+# deb postinst 2018-02-23
 # Deploy icons
-which xdg-icon-resource 1>/dev/null 2>&1 && {
+which xdg-icon-resource 1>/dev/null 2>&1 &&
+{
 
    # Deploy default application icons
-   for theme in hicolor locolor Numix-Circle Lubuntu;
+   for theme in hicolor locolor Numix-Circle Lubuntu ;
    do
+
       shape=square
       case "${theme}" in Numix-Circle) shape=circle;; Lubuntu) shape=Lubuntu;; esac
 
@@ -12,7 +14,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       cp -p /usr/share/bgscripts/gui/icons/apps/rdp-${shape}.svg /usr/share/icons/${theme}/scalable/apps/rdp.svg
 
       # Deploy size application icons
-      for size in 16 24 32 48 64;
+      for size in 16 24 32 48 64 ;
       do
          xdg-icon-resource install --context apps --size "${size}" --theme "${theme}" --novendor --noupdate /usr/share/bgscripts/gui/icons/apps/rdp-${shape}-${size}.png rdp &
       done
@@ -32,7 +34,7 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
       cp -p /usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-${theme}.svg /usr/share/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
 
       # Deploy size mimetype icons
-      for size in 16 24 32 48 64;
+      for size in 16 24 32 48 64 ;
       do
          xdg-icon-resource install --context mimetypes --size "${size}" --theme "${theme}" --novendor --noupdate /usr/share/bgscripts/gui/icons/mimetypes/application-x-rdp-${theme}-${size}.png application-x-rdp &
       done
@@ -67,31 +69,43 @@ which xdg-icon-resource 1>/dev/null 2>&1 && {
 
 } 1>/dev/null 2>&1 &
 
-# Add mimetype and set default application
-for user in root ${SUDO_USER} Bgirton bgirton bgirton-local;
-do
+# Mimetypes and default applications
+which xdg-mime 1>/dev/null 2>&1 &&
 {
-   ! getent passwd "${user}" && continue
-   while read line;
+   for user in $( /usr/share/bgscripts/enumerate-users.sh ) ;
    do
-      which xdg-mime && {
-         su "${user}" -c "xdg-mime install /usr/share/bgscripts/gui/x-rdp.xml"
-         su "${user}" -c "xdg-mime default rdp.desktop ${line}"
-      }
-      which gio && {
-         su "${user}" -c "gio mime ${line} rdp.desktop"
-      }
-      which update-mime-database && {
-         case "${user}" in
-            root) update-mime-database /usr/share/mime;;
-            *) su "${user}" -c "update-mime-database ~${user}/.local/share/mime";;
-         esac
-      }
-   done <<'EOW'
+
+      # Skip non-user objects
+      ! getent passwd "${user}" && continue
+
+      # Add new mimetypes 
+      su "${user}" -c "xdg-mime install /usr/share/bgscripts/gui/x-rdp.xml &" &
+
+      while read line;
+      do
+         echo "${user} ${line}"
+
+         # Assign mimetype a default application
+         su "${user}" -c "test -f ~/.config/mimeapps.list && xdg-mime default rdp.desktop ${line} &" &
+
+         # Deprecated
+         #which gio && su "${user}" -c "test -f ~/.config/mimeapps.list && gio mime ${line} rdp.desktop &" &
+
+      done <<'EOW'
 application/x-rdp
 EOW
+
+         # Update mimetype database
+         which update-mime-database &&
+         {
+            case "${user}" in
+               root) update-mime-database /usr/share/mime;;
+               *) su "${user}" -c "update-mime-database ~${user}/.local/share/mime &" & ;;
+            esac
+         }
+
+   done
 } 1>/dev/null 2>&1 &
-done
 
 # deploy systemd files
 {
@@ -99,6 +113,7 @@ if test "$1" = "configure";
 then
    # Initial installation
    
+   # If systemd then install unit files
    if test "$( ps --no-headers -o comm 1 )" = "systemd";
    then
       install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/monitor-resize.service" || :
@@ -111,4 +126,5 @@ then
 
 fi
 } 1>/dev/null 2>&1 &
+
 exit 0

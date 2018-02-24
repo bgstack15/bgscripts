@@ -1,9 +1,11 @@
-# deb core postinst 2018-01-28
+# deb core postinst 2018-02-23
 {
 if test "$1" = "configure";
 then
    # Initial installation
-   if test "$( ps --no-headers -o comm 1 )" = "systemd";
+
+   # If systemd, install unit files
+   if test "$( ps --no-headers -o comm 1 )" = "systemd" ;
    then
       install -m 0644 -o root -p -t "/lib/systemd/system/" "/usr/share/bgscripts/inc/systemd/dnskeepalive.service" || :
       install -m 0644 -o root -p -t "/lib/systemd/system-preset/" "/usr/share/bgscripts/inc/systemd/80-dnskeepalive.preset" || :

@@ -10,23 +10,3 @@ bgscripts (1.1-31) stable;
   * Separated bgscripts-core from bgscripts. This was to simplify the scriptlets for cli-only systems that don't need rdp or icons or anything of that sort.
 
  -- B Stack <bgstack15@gmail.com>  Wed, 25 Jan 2017 00:00:00 -0500
-
-bgscripts (1.1-30) stable;
-
-  * Added weak dependencies/recommends for packages zenity and freerdp for the rdp.sh application.
-  * Added deb recommends mailutils for the send.sh application.
-  * Changed default options of rdp.sh to include /cert-tofu
-  * Added README.md to the root directory for github visitors.
-  * Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.conf config files.
-
- -- B Stack <bgstack15@gmail.com>  Thu, 19 Jan 2017 00:00:00 -0500
-
-bgscripts (1.1-29) stable;
-
-  * Fixed the symlink /usr/bin/rdp to point to the new location.
-  * Fixed bgscripts.bashrc to point to new location for thisos and thisflavor dependency checks, and also the altproxy checks.
-  * Fixed rpm spec and deb control scripts to use the new location.
-  * Updated the ./pack script to support a changelog in the spec file.
-
- -- B Stack <bgstack15@gmail.com>  Tue, 17 Jan 2017 00:00:00 -0500
-
