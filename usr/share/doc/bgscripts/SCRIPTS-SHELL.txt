@@ -98,6 +98,15 @@ systemctl start dnskeeplive && systemctl enable dnskeepalive
 /usr/share/bgscripts/dnskeepalive.sh -1 -c /etc/dnskeepalivecustom.conf
 
 ######################################################
+### enumerate-users.sh
+This script lists all users it can find on the system, based on /etc/passwd and sssd. Alternatively it will list the homedirs for all those users.
+It is used primarily in rpm scriptlets or deb maintainer scripts to perform actions for each user, such as update the mimetype info.
+
+Examples:
+
+for user in $( /usr/share/bgscripts/enumerate-users.sh ) ;
+
+######################################################
 ### fl.sh
 Wrapper for 'find | xargs ls -dl'
 

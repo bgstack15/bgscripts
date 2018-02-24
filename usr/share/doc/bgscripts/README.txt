@@ -373,3 +373,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 * Fri Feb 23 2018 B Stack <bgstack15@gmail.com> 1.3-3
 - Clean the rpm %changelog
+- Add enumerate-users.sh

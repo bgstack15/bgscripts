@@ -9,7 +9,7 @@
 #    2017-11-03 Turned updateval into a library named uvlib
 #    2017-12-04 attemping a rewrite to work more thoroughly
 # Usage:
-#   modconf.py /etc/rc.conf set ntpd_enable YES
+#    modconf.py -v /etc/rc.conf set ntpd_enable YES
 # Reference:
 #    import lib regardless of py2 and py3 status https://stackoverflow.com/questions/67631/how-to-import-a-module-givne-the-full-path#67692
 # Improve:
