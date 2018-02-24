@@ -8,8 +8,9 @@ test -z "${package}" && package="$( basename "$( pwd )" | sed -r -e "s/-[0-9.\-]
 
 ### for rpm
 find * -type d -regextype grep \
-   \( -regex 'usr\/share\/${package}.*' -o -regex 'etc\/${package}.*' \) \
+   \( -regex "usr\/share\/${package}.*" -o -regex "etc\/${package}.*" \) \
    ! -regex '.*gui.*' \
+   | sort \
    | sed -e 's/^/%dir \//;'
 find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
    ! -type d -regextype grep \
@@ -19,16 +20,18 @@ find * -mindepth 1 ! -name "${package}.spec.$$.swp" \
    ! -regex '.*get-files$' \
    ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \
    ! -regex '.*monitor-resize.*' \
+   | sort \
    | sed -r -e '
 s/^/\//;
 s/(.*\.txt|\/usr\/share\/doc\/.*)/%doc %attr(444, -, -) \1/
 s/(.*bin.*)/%verify(link) \1/;
-s/(.*)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/;
 s/(.*\.conf)/%config %attr(666, -, -) \1/;
 s/(\/usr)?\/lib\/systemd\/system\/(.*)/%{_unitdir}\/\2/;
 s/(\/usr)?\/lib\/systemd\/system-preset\/(.*)/%{_presetdir}\/\2/;
 s/(.*\/sudoers\.d\/.*)/%attr(440, root, root) \1/;
 '
+# Sometimes it needs this line and sometimes it does not.
+#s/(.*)\.py$/\1\.py\n\1\.pyc\n\1\.pyo/;
 
       ;;
    deb)
@@ -43,7 +46,8 @@ find . -mindepth 1 ! -name "${package}.spec\.$$\.swp" \
    ! -regex '.*\/gui\/.*' \
    ! -regex '.*get-files$' \
    ! -regex '.*rdp\.conf$' ! -regex '.*\/bin\/rdp$' \
-   -printf '%P\0'
+   -printf '%P\n' \
+   | sort | tr '\n' '\0'
 
       ;;
    *)
