@@ -370,3 +370,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  work/list-vnc-sessions.sh shows current Xvnc sessions so you find yours to reconnect
 -  work/sslscanner.sh summarizes the certs you get back from s_client -connect
 -  work/userinfo.sh succintly reports user access capabilities on this host
+
+* Fri Feb 23 2018 B Stack <bgstack15@gmail.com> 1.3-3
+- Clean the rpm %changelog

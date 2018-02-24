@@ -2,7 +2,7 @@
 Summary:	bgscripts gui components
 Name:		bgscripts
 Version:	1.3
-Release:	2
+Release:	3
 License:	CC BY-SA 4.0
 Group:		Applications/System
 Source:		bgscripts.tgz
@@ -523,102 +523,5 @@ exit 0
 %verify(link) /usr/bin/dli
 
 %changelog
-* Sun Jan 28 2018 B Stack <bgstack15@gmail.com> 1.3-2
-- Updated content. See doc/README.txt.
-
-* Sat Jan  6 2018 B Stack <bgstack15@gmail.com> 1.3-1
-- Updated content. See doc/README.txt.
-
-* Tue Nov 14 2017 B Stack <bgstack15@gmail.com> 1.3-0
-- Updated content. See doc/README.txt.
-
-* Sat Oct 14 2017 B Stack <bgstack15@gmail.com> 1.2-19
-- Updated content. See doc/README.txt.
-
-* Sun Sep 17 2017 B Stack <bgstack15@gmail.com> 1.2-18
-- Updated content. See doc/README.txt.
-
-* Tue Aug 22 2017 B Stack <bgstack15@gmail.com> 1.2-17
-- Updated content. See doc/README.txt.
-
-* Fri Jul 21 2017 B Stack <bgstack15@gmail.com> 1.2-16
-- Updated content. See doc/README.txt.
-
-* Tue Jul 11 2017 B Stack <bgstack15@gmail.com> 1.2-15
-- Fix /etc/sudoers.d/ files to be chmod 0440
-- Updated content. See docs/README.txt.
-
-* Wed Jun 28 2017 B Stack <bgstack15@gmail.com> 1.2-14
-- Updated content. See docs/README.txt.
-
-* Mon Jun 12 2017 B Stack <bgstack15@gmail.com> 1.2-13
-- Updated content. See docs/README.txt.
-
-* Thu Jun  8 2017 B Stack <bgstack15@gmail.com> 1.2-12
-- Updated content. See docs/README.txt.
-
-* Wed May  3 2017 B Stack <bgstack15@gmail.com> 1.2-11
-- Updated content. See docs/README.txt.
-
-* Sat Apr 29 2017 B Stack <bgstack15@gmail.com> 1.2-10
-- Updated content. See docs/README.txt.
-
-* Thu Apr 20 2017 B Stack <bgstack15@gmail.com> 1.2-9
-- Updated content. See docs/README.txt.
-- Rearranged rdp symlink and conf to main package.
-- Added systemd tasks for dnskeepalive, a new feature.
-
-* Mon Apr  3 2017 B Stack <bgstack15@gmail.com> 1.2-8
-- Updated content. See docs/README.txt
-
-* Fri Mar 24 2017 B Stack <bgstack15@gmail.com> 1.2-7
-- Redesigned package to put bgscripts-gui elements in /usr/share/bgscripts/gui/
-- Updated content. See docs/README.txt
-
-* Sat Mar 18 2017 B Stack <bgstack15@gmail.com> 1.2-6
-- Updated content. See docs/README.txt
-
-* Thu Mar 16 2017 B Stack <bgstack15@gmail.com> 1.2-5
-- Updated package requirements and dependencies for the right subpackages.
-- Updated description of which scripts are the most important.
-- Updated content. See docs/README.txt
-
-* Sat Mar 11 2017 B Stack <bgstack15@gmail.com> 1.2-4
-- Updated content. See docs/README.txt
-
-* Sat Mar  4 2017 B Stack <bgstack15@gmail.com> 1.2-2
-- Updated content. See docs/README.txt
-
-* Sat Mar  4 2017 B Stack <bgstack15@gmail.com> 1.2-1
-- Removed all example.com elements
-
-* Thu Feb  2 2017 B Stack <bgstack15@gmail.com> 1.1-33
-- Added %config for rdp.conf
-- Removed "Provides: bgscripts" from core subpackage.
-
-* Mon Jan 30 2017 B Stack <bgstack15@gmail.com> 1.1-32
-- Fixed summary for the package and sub-package. 
-- Fixed long descriptions of the package and sub-package.
-
-* Wed Jan 25 2017 B Stack <bgstack15@gmail.com> 1.1-31
-- Removed the old /usr/bgscripts location.
-- Added to the sudoers.d file the env_keep proxy settings.
-- Removed the /README.md file from the package.
-- Added the update-desktop-database command to the %postun
-- Fixed "thisuser/thistheme" this nomenclature for loops in scriptlets.
-- Fixed From: field in send.sh.
-- Fixed rdp.sh debug and error messages to be more helpful and specific.
-- Separated bgscripts-core from bgscripts. This was to simplify the scriptlets for cli-only systems that don't need rdp or icons or anything of that sort.
-
-* Thu Jan 19 2017 B Stack <bgstack15@gmail.com> 1.1-30
-- Added weak dependencies/recommends for packages zenity and freerdp for the rdp.sh application.
-- Added deb recommends mailutils for the send.sh application.
-- Changed default options of rdp.sh to include /cert-tofu
-- Added README.md to the root directory for github visitors.
-- Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.conf config files.
-
-* Tue Jan 17 2017 B Stack <bgstack15@gmail.com> 1.1-29
-- Fixed the symlink /usr/bin/rdp to point to the new location.
-- Fixed bgscripts.bashrc to point to new location for thisos and thisflavor dependency checks, and also the altproxy checks.
-- Fixed rpm spec and deb control scripts to use the new location.
-- Updated the ./pack script to support a changelog in the spec file.
+* Fri Feb 23 2018 B Stack <bgstack15@gmail.com> 1.3-3
+- Update content. See doc/README.txt.

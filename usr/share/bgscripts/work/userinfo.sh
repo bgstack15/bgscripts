@@ -109,7 +109,7 @@ f_can_sss() {
 
          1)
             # check simple_allow_users string
-            echo "${sss_limit}" | grep -qE "AllowUsers\s+.*\<${user}\>" && can_sss=1
+            echo "${sss_limit}" | grep -qE "simple_allow_users\s+.*\<${user}\>" && can_sss=1
 
             # check simple_allow_groups string
             if ! test ${can_sss} -eq 1;

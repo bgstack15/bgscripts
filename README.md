@@ -6,7 +6,7 @@ For the description of the package itself, view usr/share/bgscripts/docs/README.
 ### Building
 The recommended way to build an rpm is:
 
-    thisver=1.3-2
+    thisver=1.3-3
     mkdir ~/rpmbuild
     pushd ~/rpmbuild; mkdir -p SOURCES RPMS SPECS BUILD BUILDROOT; popd
     mkdir -p ~/rpmbuild/SOURCES/bgscripts-${thisver}
@@ -18,7 +18,7 @@ The generated rpm will be in ~/rpmbuild/RPMS/noarch
 
 The recommended way to build a deb is:
 
-    thisver=1.3-2
+    thisver=1.3-3
     mkdir ~/deb
     cd ~/deb
     git clone https://github.com/bgstack15/bgscripts bgscripts-${thisver}
