@@ -5,7 +5,7 @@ de2157ad9535d19531d35e257f0ce275  usr/share/bgscripts/build/debian-bgscripts-cor
 84bc3da1b3e33a18e8d5e1bdd7a18d7a  usr/share/bgscripts/build/debian-bgscripts-core/compat
 90b0c8b53fcd20b2e54ac22d871eda2d  usr/share/bgscripts/build/debian-bgscripts-core/conffiles
 ee6236fba60494d87b683c9c787db0af  usr/share/bgscripts/build/debian-bgscripts-core/control
-6f5e7758bc795801fc1c82d3a07cf85d  usr/share/bgscripts/build/debian-bgscripts-core/md5sums
+03d46adc1acf34a263bc5d85d70a9da6  usr/share/bgscripts/build/debian-bgscripts-core/md5sums
 558f0595716158712fe2fd576273b58b  usr/share/bgscripts/build/debian-bgscripts-core/postinst
 cc86085172fa0715e01d84d82ceef16e  usr/share/bgscripts/build/debian-bgscripts-core/postrm
 d41d8cd98f00b204e9800998ecf8427e  usr/share/bgscripts/build/debian-bgscripts-core/preinst
