@@ -1,8 +1,6 @@
-doc/README.txt
+doc/README.md
 doc/version.txt
 build/bgscripts.spec
 build/debian-bgscripts/control
 build/debian-bgscripts-core/control
 framework.sh
-doc/packaging.txt
-../../../README.md

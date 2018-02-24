@@ -1,31 +1,101 @@
-File: usr/share/bgscripts/docs/README.txt
-Package: bgscripts
-Author: bgstack15
-Startdate: 2016-05-31
-Title: Readme file for bgscripts
-Purpose: All packages should come with a readme
-Usage: Read it.
-Reference: README.txt
-Improve:
-Document: Below this line
+# Readme for bgscripts package
+Bgscripts is the name of a project that consists of multiple packages.
+* Bgscripts-core is the set of command line utilities to facilitate system administration and power usage.
+* Bgscripts is the gui components.
 
-### WELCOME
-The bgscripts and bgscripts-core packages are designed to bring the bgstack15 working environment to a server. Many scripts (shell and python3) are provided, as well as a complete bashrc.
+The suite includes many scripts (shell and python3), as well as a complete bashrc.
 
-To use the bgscripts.bashrc in your terminal, use this command:
-. bp
+## Further documentation
+* Details of shell scripts [usr/share/doc/bgscripts/SCRIPTS-SHELL.txt](usr/share/doc/bgscripts/SCRIPTS-SHELL.txt)
+* Details of python scripts [usr/share/doc/bgscripts/SCRIPTS-PYTHON.txt](usr/share/doc/bgscripts/SCRIPTS-PYTHON.txt)
+* Description and usage of bgscripts.bashrc [usr/share/doc/bgscripts/BGSCRIPTS-BASHRC.txt](usr/share/doc/bgscripts/BGSCRIPTS-BASHRC.txt)
+* Framework.sh library and associated files [usr/share/doc/bgscripts/FRAMEWORK.txt](usr/share/doc/bgscripts/FRAMEWORK.txt)
 
-### OTHER README FILES
-For descriptions of each individual script in this package, please read /usr/share/doc/bgscripts/SCRIPTS.txt.
+## OS-specific notes
+**Ubuntu**
+On ubuntu, the mailutils package provides sendmail, which send.sh needs to operate properly.
 
-For the description of the framework.sh library and associate files, read /usr/share/doc/bgscripts/FRAMEWORK.txt.
+**FreeBSD**
+The FreeBSD installation mechanism is just manual extraction from the tarball. I don't have enough experience with FreeBSD's ports system to integrate my package yet.
+All the shell scripts are designed to work on FreeBSD, and with the Bourne shell.
 
-For notes on the bgscripts.bashrc and its sub-files, read /usr/share/doc/bgscripts/BGSCRIPTS-BASHRC.txt.
+## Metadata
 
-### OS-SPECIFIC NOTES
-On Ubuntu, the mailutils package provides sendmail, which send.sh needs to operate properly.
+    File: /usr/share/doc/bgscripts/README.md
+    Author: bgstack15
+    Startdate: 2016-05-31
+    Title: Readme file for bgscripts
+    Package: bgscripts
+    Purpose: All packages should come with a readme
+    History:
+       2018-02-23 Converted to markdown
+    Usage: Read it.
+    Reference: README.txt
+    Improve:
+    Document: The whole document
 
-### REFERENCE
+# What does this package do?
+This package is a collection of the scripts and functions I find most useful. Some of these scripts are useful on the command line, and some are used exclusively by other scripts or during building packages.
+
+Bgscripts is a build dependency for pretty much any other package I build. A list of what I've packaged up is available on my [github page](https://github.com/bgstack15?tab=repositories). This package also serves as an example to myself for how to handle certain repetitive tasks in maintainer scriptlets (rpm and deb), such as deploying desktop files, icon, mimetypes, and systemd unit files.
+
+# Using bgscripts package
+The flagship piece is the bashrc. To use the bgscripts.bashrc in your terminal, use this command:
+
+    . bp
+
+Inspect the file to see what all it provides. It is useful to know it also loads in /usr/share/bgscripts/bashrc.d/OSNAME.bashrc.
+
+# Building bgscripts
+As the package is split into two packages, the pack utility will generate both the bgscripts rpm and bgscripts-core.rpm (or .deb filenames).
+
+## Building rpms
+
+    package=bgscripts
+    thisver=1.3-3
+    mkdir -p ~/rpmbuild/{SOURCES,RPMS,SPECS,BUILD,BUILDROOT}
+    cd ~/rpmbuild/SOURCES
+    git clone https://github.com/bgstack15/bgscripts "${package}-${thisver}"
+    cd "${package}-${thisver}"
+    usr/share/bgscripts/build/pack rpm
+The generated rpms will be in `~/rpmbuild/RPMS/noarch`.
+
+## Building debs
+
+    package=bgscripts
+    thisver=1.3-3
+    mkdir ~/deb ; cd ~/deb
+    git clone https://github.com/bgstack15/bgscripts "${package}-${thisver}"
+    cd "${package}-${thisver}"
+    usr/share/bgscripts/build/pack deb
+The generated debs will be in `~/deb`.
+
+## Installing from a downloaded tarball
+These instructions are almost sufficient for FreeBSD. You will need to update the bindir and datadir values at the beginning. If you use FreeBSD, you know what these should be.
+
+    package=bgscripts
+    thisver=1.3-3
+    bindir=/usr/bin
+    datadir=/usr/share
+    pkgfile="${package}-${thisver}".master.tgz
+    wget --quiet "http://albion320.no-ip.biz/smith122/repo/tar/${package}/${pkgfile}" -O ~/"${pkgfile}"
+    #tar -C ~/ -zxf ~/"${pkgfile}" # GNU
+    ( cd ~/; gunzip ${pkgfile}; tar -xf ${pkgfile%%.tgz}.tar ; ) # FreeBSD
+    /bin/rm -rf ${datadir}/bgscripts; mkdir -p "${datadir}/${package}"
+    /bin/mv -f ~/"${package}-${thisver}${datadir}/${package}"/* ${datadir}/${package}
+    for word in title beep bup ctee fl lecho newscript plecho rdp send bounce; do ln -sf ../share/${package}/${word}.sh ${bindir}/${word}; done; ln -sf ../share/${package}/bgscripts.bashrc ${bindir}/bp
+    for word in dli updateval; do ln -sf ../share/${package}/${word}.py ${bindir}/${word}; done
+    /bin/rm -rf ~/"${package}-${thisver}"*
+
+# Maintaining this package
+
+## On the rpmbuild server
+For a new version release, you can easily modify the files that need to have the version number bumped.
+
+    cd ~/rpmbuild/SOURCES/bgscripts-1.3-3/usr/share/bgscripts
+    vi $( cat build/files-for-versioning.txt )
+
+# References
 Ftemplate config file removing comments
 https://groups.google.com/forum/#!topic/comp.unix.shell/9IgFkVkOe5o
 http://sed.sourceforge.net/grabbag/scripts/remccoms3.sed
@@ -52,7 +122,7 @@ Terminal title https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-fr
 Beep in terminal https://askubuntu.com/questions/19906/beep-in-shell-script-not-working
 https://unix.stackexchange.com/questions/71064/automate-modprobe-command-at-boot-time-on-fedora#71069
 
-### CHANGELOG
+# Changelog
 bgscripts 1.1-9
 bgscripts.bashrc includes ls --color=auto for all ls aliases.
 framework had its thisos, thisflavor, and thisflavorversion values updated
@@ -134,7 +204,7 @@ Added update-repo and autocomplete for rhel and debian bashrc.d files
 2016-12-13 bgscripts-1.1-24
 Fixed the yum/dnf update-repo command
 Added cdmnt bash completion
-Added rdp.sh and associated desktop file and mimetype (*.rdp)
+Added rdp.sh and associated desktop file and mimetype (\*.rdp)
 Disabled the initial cd /mnt/scripts
 
 2016-12-15 bgscripts-1.1-25
@@ -297,7 +367,7 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  Updated help text to include conffile.
 - Moved host-bup.conf to example directory.
 - Fixed package so it actually does desktop-file-install of resize if spice-vdagent is present.
-- Fixed package so it uses %{_presetdir}.
+- Fixed package so it uses %{\_presetdir}.
 - Added bgscripts-version.txt file.
 - Fixed newscript to use $( which vi ) and also for chmod.
 - Fixed get-files so it includes the cd debdir stuff
@@ -375,3 +445,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Clean the rpm %changelog
 - Add enumerate-users.sh
 - Update the maintainer scriptlets to current best practices
+- Update the documentation
