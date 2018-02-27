@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 # File: /usr/share/bgscripts/py/pwhashgen.py
 # Author: bgstack15@gmail.com
 # Startdate: 2017-11-06

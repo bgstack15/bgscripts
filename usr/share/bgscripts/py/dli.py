@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 # File: /usr/share/bgscripts/py/dli.py
 # Author: bgstack15@gmail.com
 # Startdate: 2016-12-08 10:31

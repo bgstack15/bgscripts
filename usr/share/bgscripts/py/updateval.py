@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
 # File: /usr/share/bgscripts/py/updatevalue.py
 # Author: bgstack15@gmail.com
 # Startdate: 2016-10-11 15:59

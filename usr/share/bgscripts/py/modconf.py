@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
 # File: /usr/share/bgscripts/py/modconf.py
 # Author: bgstack15@gmail.com
 # Startdate: 2017-11-06

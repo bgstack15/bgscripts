@@ -17,7 +17,7 @@ Provides:	mimehandler(application/x-rdp)
 
 %package core
 Summary:       bgscripts core components
-Requires(pre): /usr/bin/python3
+#Requires(pre): /usr/bin/python3
 Requires:   	bash-completion
 BuildRequires: systemd
 Obsoletes:     %{name} < 1.1-31
