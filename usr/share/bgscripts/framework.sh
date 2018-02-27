@@ -5,7 +5,7 @@
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
 # Package: bgscripts 1.3-3
-# History: fv2017-11-11a=fi2017-11-11a
+# History: fv2017-11-11m=fi2017-11-11m
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
 #    2016-07-12a fixed thisos and thisflavor; added thisflavorversion
@@ -22,11 +22,12 @@
 #    2017-06-08a Added tweak to get_conf
 #    2017-10-14a Added convert_to_seq function
 #    2017-11-11a Added FreeBSD support
+#    2017-11-11m Stripped down for custom OL7 package version 1p3p3
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
 #    convert_to_seq https://gist.github.com/bgstack15/99a4bcf6618294986de33e94b4e65746
 # Improve: 
-fversion="2017-11-11a"
+fversion="2017-11-11m"
 
 # DEFINE FUNCTIONS
 
@@ -213,24 +214,6 @@ convert_to_seq() {
    {
       printf "${@}" | xargs -n1 -d',' | tr '-' ' ' | awk 'NF == 2 { system("/bin/seq "$1" "$2); } NF != 2 { print $1; }' | xargs
    } 2>/dev/null
-}
-
-fsudo() {
-   if test "${myfsudo}" = ""; # so just run first time. Added 2015-07-10
-   then
-      setval 1 myfsudo myfsudoopts <<EOFSUDO
-/usr/local/bin/sudo
-/usr/bin/sudo
-/bin/sudo
-./sudo
-EOFSUDO
-   fi
-   if test -x ${myfsudo};
-   then
-      ${myfsudo} "$@"
-   else
-      ferror "$scriptfile: fsudo couldn't find sudo. Adjust framework.sh"
-   fi
 }
 
 fwhich() {

@@ -35,7 +35,7 @@ Also included is "bp" which is a symlink to bgscripts.bashrc
 %global _python_bytecompile_errors_terminate_build 0
 
 %description
-bgscripts is the gui components of the bgscripts suite, including rdp.sh.
+Not a valid package. Please ignore.
 
 %prep
 %setup
@@ -59,255 +59,14 @@ rm -rf %{buildroot}
 
 %post
 # rpm post 2018-02-23
-# Deploy icons
-which xdg-icon-resource 1>%{devtty} 2>&1 &&
-{
-
-   # Deploy default application icons
-   for theme in hicolor locolor Numix-Circle Lubuntu ;
-   do
-
-      shape=square
-      case "${theme}" in Numix-Circle) shape=circle;; Lubuntu) shape=Lubuntu;; esac
-
-      # Deploy scalable application icons
-      cp -p %{_datadir}/%{name}/gui/icons/apps/rdp-${shape}.svg %{_datadir}/icons/${theme}/scalable/apps/rdp.svg
-
-      # Deploy size application icons
-      for size in 16 24 32 48 64 ;
-      do
-         xdg-icon-resource install --context apps --size "${size}" --theme "${theme}" --novendor --noupdate %{_datadir}/%{name}/gui/icons/apps/rdp-${shape}-${size}.png rdp &
-      done
-   done
-
-   # Deploy custom application icons
-   # custom: Numix-Circle apps 48 uses svg
-   cp -p %{_datadir}/%{name}/gui/icons/apps/rdp-circle.svg %{_datadir}/icons/Numix-Circle/48/apps/rdp.svg
-   ## custom: Lubuntu has a different directory structure and may not work in the normal way.
-   #for size in 16 24 32 48 64 ; do cp -p "%{_datadir}/%{name}/gui/icons/apps/rdp-Lubuntu-${size}.png" "${_datadir}/icons/Lubuntu/apps/${size}/rdp.png"; done
-
-   # Deploy default mimetype icons
-   for theme in hicolor Numix Lubuntu elementary-xfce ;
-   do
-
-      # Deploy scalable mimetype icons
-      cp -p %{_datadir}/%{name}/gui/icons/mimetypes/application-x-rdp-${theme}.svg %{_datadir}/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
-
-      # Deploy size mimetype icons
-      for size in 16 24 32 48 64 ;
-      do
-         xdg-icon-resource install --context mimetypes --size "${size}" --theme "${theme}" --novendor --noupdate %{_datadir}/%{name}/gui/icons/mimetypes/application-x-rdp-${theme}-${size}.png application-x-rdp &
-      done
-
-   done
-
-   # Deploy custom mimetype icons
-   # custom: Numix
-   cp -p %{_datadir}/%{name}/gui/icons/mimetypes/application-x-rdp-Numix.svg %{_datadir}/icons/Numix/48/mimetypes/application-x-rdp.svg
-
-   # Update icon caches
-   xdg-icon-resource forceupdate &
-   for word in hicolor locolor Numix-Circle Numix Lubuntu elementary-xfce ;
-   do
-      touch --no-create %{_datadir}/icons/${word}
-      gtk-update-icon-cache %{_datadir}/icons/${word} &
-   done
-
-} 1>%{devtty} 2>&1 &
-
-# Deploy desktop files
-{
-
-   # rdp application
-   desktop-file-install --rebuild-mime-info-cache %{_datadir}/%{name}/gui/rdp.desktop
-
-   # resize utility
-   if { which virt-what && test -n "$( virt-what )"; } || test -f /usr/bin/spice-vdagent ;
-   then
-      desktop-file-install %{_datadir}/%{name}/gui/resize.desktop
-   fi
-
-} 1>%{devtty} 2>&1 &
-
-# Mimetypes and default applications
-which xdg-mime 1>%{devtty} 2>&1 &&
-{
-   for user in $( %{_datadir}/%{name}/enumerate-users.sh ) ;
-   do
-   
-      # Skip non-user objects
-      ! getent passwd "${user}" && continue
-
-      # Add new mimetypes
-      su "${user}" -c "xdg-mime install %{_datadir}/%{name}/gui/x-rdp.xml &" &
-
-      while read line ;
-      do
-         echo "${user} ${line}"
-
-         # Assign mimetype a default application
-         su "${user}" -c "test -f ~/.config/mimeapps.list && xdg-mime default rdp.desktop ${line} &" &
-        
-         # Deprecated
-         #which gio && su "${user}" -c "test -f ~/.config/mimeapps.list && gio mime ${line} rdp.desktop &" &
-
-      done <<'EOW'
-application/x-rdp
-EOW
-
-      # Update mimetype database
-      which update-mime-database &&
-      {
-         case "${user}" in
-            root) update-mime-database %{_datadir}/mime & ;;
-            *) su "${user}" -c "update-mime-database ~${user}/.local/share/mime &" & ;;
-         esac
-      }
-
-   done
-} 1>%{devtty} 2>&1 &
-
-# Deploy systemd files
-{
-if test "$1" -ge 1 ;
-then
-   # Initial installation
-
-   # If systemd, install unit files
-   if test "$( ps --no-headers -o comm 1 )" = "systemd";
-   then
-      install -m 0644 -o root -p -t "%{_unitdir}" "%{_datadir}/%{name}/inc/systemd/monitor-resize.service" || :
-      install -m 0644 -o root -p -t "%{_presetdir}" "%{_datadir}/%{name}/inc/systemd/80-monitor-resize.preset" || :
-      __thisfunction() {
-         systemctl daemon-reload; systemctl --no-reload preset monitor-resize.service;
-      }
-      __thisfunction &
-   fi
-
-fi
-} 1>%{devtty} 2>&1 &
-
 exit 0
 
 %preun
 # rpm preun 2018-02-23
-{
-if test "$1" = "0";
-then
-   # Total uninstall
-
-   # Remove systemd files
-   systemctl --no-reload disable --now monitor-resize.service || :
-   rm -f %{_unitdir}/monitor-resize.service || :
-   rm -f %{_presetdir}/80-monitor-resize.preset || :
-
-   # Mimetypes and default applications
-   which xdg-mime &&
-   {
-      for user in $( %{_datadir}/%{name}/build/enumerate-users.sh ) ;
-      do
-
-         # Skip non-user objects
-         ! getent passwd "${user}" && continue
-
-         # Remove mimetypes
-         su "${user}" -c "xdg-mime uninstall %{_datadir}/%{name}/gui/x-rdp.xml &" &
-
-         # Unassign default applications
-         # xdg-mime default undo is not implemented
-         # gio uninstall is not implemented
-
-         # Update mimetype database
-         which update-mime-database &&
-         {
-            case "${user}" in
-               root) update-mime-database %{_datadir}/mime & ;;
-               *) su "${user}" -c "update-mime-database ~${user}/.local/share/mime &" & ;;
-            esac
-         }
-
-      done
-   }
-
-   # Remove desktop files
-   rm -f %{_datadir}/applications/rdp.desktop %{_datadir}/applications/resize.desktop
-   which update-desktop-database && update-desktop-database -q %{_datadir}/applications &
-   
-   # Remove icons
-   which xdg-icon-resource &&
-   {
-
-      # Remove default application icons
-      for theme in hicolor locolor Numix-Circle Lubuntu ;
-      do
-
-         # Remove scalable application icons
-         rm -f %{_datadir}/icons/${theme}/scalable/apps/rdp.svg
-
-         # Remove size application icons
-         for size in 16 24 32 48 64 ;
-         do
-            xdg-icon-resource uninstall --context apps --size "${size}" --theme "${theme}" --noupdate rdp &
-         done
-
-      done
-
-      # Remove custom application icons
-      # custom: Numix-Circle apps 48 uses svg
-      rm -f %{_datadir}/icons/Numix-Circle/48/apps/rdp.svg
-      # custom: Lubuntu
-      #for size in 16 24 32 48 64 ; do rm -f "%{_datadir}/icons/Lubuntu/apps/${size}/rdp.png"; done
-
-      # Remove default mimetype icons
-      for theme in hicolor Numix Lubuntu elementary-xfce ;
-      do
-
-         # Remove scalable mimetype icons
-         rm -f %{_datadir}/icons/${theme}/scalable/mimetypes/application-x-rdp.svg
-
-         # Remove size mimetype icons
-         for size in 16 24 32 48 64 ;
-         do
-            xdg-icon-resource uninstall --context mimetypes --size "${size}" --theme "${theme}" --noupdate application-x-rdp &
-         done
-
-      done
-
-      # Remove custom mimetype icons
-      # custom: Numix
-      rm -f %{_datadir}/icons/Numix/48/mimetypes/application-x-rdp.svg
-
-      # Update icon caches
-      xdg-icon-resource forceupdate &
-      for word in hicolor locolor Numix-Circle Numix Lubuntu elementary-xfce ;
-      do
-         touch --no-create %{_datadir}/icons/${word}
-         gtk-update-icon-cache %{_datadir}/icons/${word} &
-      done
-
-   }
-
-fi
-} 1>%{devtty} 2>&1 &
-
 exit 0
 
 %postun
 # rpm postun 2018-02-23
-{
-if test "$1" = "0";
-then
-   # Total uninstall
-   :
-fi
-
-if test "$1" -ge 1 ;
-then
-   # Package upgrade, not uninstall
-   systemctl try-restart monitor-resize.service || :
-fi
-} 1>%{devtty} 2>&1
-
 exit 0
 
 %post core
@@ -321,17 +80,7 @@ exit 0
 if test "$1" -ge 1 ;
 then
    # Initial installation
-
-   # If systemd, install unit files
-   if test "$( ps --no-headers -o comm 1 )" = "systemd" ;
-   then
-      install -m 0644 -o root -p -t "%{_unitdir}" "%{_datadir}/%{name}/inc/systemd/dnskeepalive.service" || :
-      install -m 0644 -o root -p -t "%{_presetdir}" "%{_datadir}/%{name}/inc/systemd/80-dnskeepalive.preset" || :
-      __thisfunction() {
-         systemctl daemon-reload; systemctl --no-reload preset dnskeepalive.service;
-      }
-      __thisfunction &
-   fi
+   :
 
 fi
 } 1>%{devtty} 2>&1
@@ -347,11 +96,7 @@ exit 0
 if test "$1" -eq 0 ;
 then
    # Total uninstall
-
-   # Remove systemd files
-   systemctl --no-reload disable --now dnskeepalive.service || :
-   rm -f %{_unitdir}/dnskeepalive.service || :
-   rm -f %{_presetdir}/80-dnskeepalive.preset || :
+   :
 
 fi
 } 1>%{devtty} 2>&1
@@ -364,7 +109,7 @@ exit 0
 if test "$1" -ge 1 ;
 then
    # Package upgrade, not uninstall
-   systemctl try-restart dnskeepalive.service || :
+   :
 fi
 } 1>%{devtty} 2>&1
 

@@ -15,7 +15,7 @@ test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 &&
 type="";
 
 case "${thisflavor}" in
-   redhat|rhel|centos|fedora|korora) type=rpm;;
+   redhat|rhel|centos|fedora|korora|ol) type=rpm;;
    debian|ubuntu) type=dpkg;;
    GENERIC) type=freebsd;;
    *) type=targz;;
@@ -24,7 +24,7 @@ esac
 echo " $@ " | grep -qiE -- "help|usage|\s-h\s|\s-\?" 1>/dev/null 2>&1 && {
    # display help and exit
    less -F <<EOF
-pack utility version 2018-02-24a-bgscripts
+pack utility version 2018-02-24m-bgscripts
 usage: pack [ rpm | deb | tar | scrub ] [ --debug | -d {0-10} ]
 Provides a single command for building a package. This script is customized to each package.
 optional arguments:
@@ -74,6 +74,8 @@ cp -p "${rpmbuilddir}/SOURCES/${packagespecfile}" "${rpmbuilddir}/SPECS"
 mkdir -p "${rpmbuilddir}/RPMS/noarch"; cd "${rpmbuilddir}/RPMS/noarch"
 rpmbuild -bb "${rpmbuilddir}/SPECS/${package}.spec"
 rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/" "${rpmbuilddir}/SOURCES/${package}.tgz"
+# special for OL7 version
+rm -rf "${rpmbuilddir}/RPMS/noarch/${package}-${version}.noarch.rpm"
 
       ;;
    dpkg)
@@ -81,44 +83,7 @@ rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/" "${rpmbuilddir}/SOUR
 ########## PACKAGING for debian family
 # You need package dpkg-dev to build packages.
 # if you copy-paste this, be sure to define package, version
-debdir=~/deb
-sub1="core"
-debiandirmain="${package}-${version}/usr/share/${package}/build/debian-${package}"
-debiandirsub1="${package}-${version}/usr/share/${package}/build/debian-${package}-${sub1}"
-# get-sources needs the spec file
-#packagespecfile="${package}-${version}/usr/share/${package}/build/${package}.spec"
-#sed -i -r -e '/@INSERT_SOURCES/,/@NO_MORE_SOURCES/{/^SOURCE/d}' "${debdir}/${package}-${version}/usr/share/${package}/build/debian-${package}/rules"
-#. "${debdir}/${package}-${version}/usr/share/${package}/build/get-sources"
-cd "${debdir}/${package}-${version}"
-"${debdir}/${package}-${version}/usr/share/${package}/build/get-files" deb | xargs -d'\0' md5sum > "${debdir}/${debiandirmain}/md5sums"
-"${debdir}/${package}-${version}/usr/share/${package}/build/get-files-${sub1}" deb | xargs -d'\0' md5sum > "${debdir}/${debiandirsub1}/md5sums"
-
-# sub1
-rm -rf "${debdir}/${package}-${version}/DEBIAN" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN"
-cp -pf "${debdir}/${debiandirsub1}"/* "${debdir}/${package}-${version}/DEBIAN/"
-mkdir "${debdir}/${package}" 2>/dev/null; rm -rf "${debdir}/${package}_${shortversion}.orig.tar.gz"
-tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}_${shortversion}.orig.tar.gz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN 
-#$( find "${debdir}/${package}-${version}" -mindepth 1 -type d ! -regex '.*\/.git.*' -printf '%P\n' )
-tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}_${shortversion}.orig.tar.gz"
-#pushd "${debdir}/${package}"
-#"DEBIAN/rules"
-fakeroot dpkg-deb -b "${debdir}/${package}"
-#popd
-mv -f "${debdir}/${package}.deb" "${debdir}/${package}-${sub1}-${version}.deb"
-rm -rf "${debdir}/${package}_${version}.orig.tar.gz" "${debdir}/${package}"
-
-# main
-rm -rf "${debdir}/${package}-${version}/DEBIAN" 2>/dev/null; mkdir -p "${debdir}/${package}-${version}/DEBIAN/"
-cp -pf "${debdir}/${debiandirmain}"/* "${debdir}/${package}-${version}/DEBIAN/"
-mkdir "${debdir}/${package}" 2>/dev/null; rm -rf "${debdir}/${package}_${shortversion}.orig.tar.gz"
-tar -zc --exclude='.git*' --exclude='README.md' -f "${debdir}/${package}_${shortversion}.orig.tar.gz" -C "${debdir}/${package}-${version}" $( awk '{print $2}' "${debdir}/${package}-${version}/DEBIAN/md5sums" ) DEBIAN # $( find "${debdir}/${package}-${version}" -mindepth 1 -type d ! -regex '.*\/.git.*' -printf '%P\n' )
-tar -zx -C "${debdir}/${package}" -f "${debdir}/${package}_${shortversion}.orig.tar.gz"
-#pushd "${debdir}/${package}"
-#"DEBIAN/rules"
-fakeroot dpkg-deb -b "${debdir}/${package}"
-#popd
-mv -f "${debdir}/${package}.deb" "${debdir}/${package}-${version}.deb"
-rm -rf "${debdir}/${package}_${shortversion}.orig.tar.gz" "${debdir:-~/deb}/${package}" "${debdir}/${package}-${version}/DEBIAN"
+ferror "This version of bgscripts does not provide .deb packaging. Aborted." && exit 1
 
       ;;
    targz)

@@ -8,9 +8,9 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-11-11a; framework.sh 2017-11-11a
+# Reference: ftemplate.sh 2017-11-11m; framework.sh 2017-11-11m
 # Improve:
-fiversion="2017-11-11a"
+fiversion="2017-11-11m"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {

@@ -31,12 +31,13 @@
 #    2017-11-11 Added FreeBSD support. Moved bounce bash autocompletion out of OS-specific sections into main bashrc.
 #    2018-01-06 Update htmlize and lsd. Add xdg-what
 #    2018-02-23 Fix htmlize and lsd again
+#    2018-02-27 Stripped down to custom OL7 barebones for version 1p3p3
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh
 #    permtitle https://bgstack15.wordpress.com/2017/05/29/edit-terminal-title-from-the-command-line/
 # Improve:
-pversion="2018-02-23a"
+pversion="2018-02-23m"
 __dot_sourced=1; readlink -f $0 2>/dev/null | grep -qiE "\/usr\/.*share\/bgscripts\/bgscripts\.bashrc" && __dot_sourced=0
 echo " $@ " | grep -qiE -- "\s--fcheck\s" 1>/dev/null 2>&1 && echo "${pversion}" | sed 's/[^0-9]//g;' && { test "${__dot_sourced}" = "0" && exit || return; }
 
@@ -203,30 +204,6 @@ xdg-what() {
 }
 
 # BASH AUTOCOMPLETION
-# for bounce.sh
-_bounce_autocomplete() {
-   local cur prev words cword;
-   _init_completion || return
-   _tmpfile1="$( mktemp )"
-   case "${prev}" in
-      -n|--network)
-         _available_interfaces; echo "${COMPREPLY[@]}" > "${_tmpfile1}"
-         ;;
-      -s|--service)
-         _services; echo "${COMPREPLY[@]}" >> "${_tmpfile1}"
-         ;;
-      -m|--mount)
-         awk '$3 ~ /cifs|nfs/{print $2}' /etc/fstab >> "${_tmpfile1}"
-         ;;
-      *)
-         printf -- "-m\n-n\n-s\n--network\n--service\n--mount" >> "${_tmpfile1}"
-         ;;
-   esac
-   COMPREPLY=($( compgen -W "$( cat ${_tmpfile1} )" -- "$cur" ))
-   command rm -rf "${_tmpfile1}" 1>/dev/null 2>&1
-   return 0
-} &&
-complete -F _bounce_autocomplete bounce
 
 _pack() {
         # Bash autocompletion for the pack command. This finds the different build goals available in the current pack file.

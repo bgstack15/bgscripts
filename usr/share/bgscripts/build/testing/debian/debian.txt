@@ -1,6 +1,0 @@
-# notes for using debuild instead of the little, tiny dpkg-dev.
-cd ~/deb
-tar -zcf bgscripts_1.1.orig.tar.gz -C bgscripts-1.1-29/ etc usr
-cd bgscripts-1.1-29
-debuild -i -b # -i skips .git, -b does just binary deb.
-
