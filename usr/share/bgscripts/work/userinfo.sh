@@ -6,11 +6,13 @@
 # Title: Script that Displays User Info
 # Purpose: Displays specific metrics this environment would like to query
 # History:
+#    2018-03-06 added the chage info
 # Usage:
 # Reference:
 #    id -Gnz https://stackoverflow.com/questions/14059916/is-there-a-command-to-list-all-unix-group-names/29615866#29615866
+#    chageinfo.sh
 # Improve:
-#    silence the greps when file does not exist
+#    Provide a -o --oneline output option
 # Document:
 
 # FUNCTIONS
@@ -26,6 +28,25 @@ fail() {
 
 f_user() {
    printf "%s: %s\n" "user" "${1}"
+}
+
+f_chage() {
+   word="${1}"
+   local delim=','
+   local chage_output="$( chage -l "${word}" 2>/dev/null )"
+   if test -n "${chage_output}" ;
+   then
+      chage_output="$( echo "${chage_output}" | awk -F':' 'a=0; (NR<=4 && $2 !~ /never/) {a=1;} a==1 {cmd="/bin/date -d \""$2"\" +%Y-%m-%d";system(cmd);} a==0 {print $2}' | tr '\n' "${delim}" | tr -d '[[:space:]]' | sed -r -e 's/,$//;' ; printf '\n' )"
+   fi
+
+   if test -n "${chage_output}" ;
+   then
+      printf "%s: %s\n" "chage" "${chage_output}"
+      return 0
+   else
+      printf "%s: %s\n" "chage" "na"
+      return 1
+   fi
 }
 
 f_getent() {
@@ -164,6 +185,7 @@ test "$( id -u 2>/dev/null )" -eq 0 || fail 1 "${0} must be run as root. Aborted
    # LEARN AND PRINT INFO
    f_user "${user}"
    f_getent
+   f_chage "${user}"
    f_getent_type
    f_can_ssh
    f_can_sss
