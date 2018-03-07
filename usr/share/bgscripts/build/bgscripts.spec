@@ -371,6 +371,11 @@ fi
 exit 0
 
 %files
+%dir /usr/share/bgscripts/build/debian-bgscripts
+%dir /usr/share/bgscripts/gui
+%dir /usr/share/bgscripts/gui/icons
+%dir /usr/share/bgscripts/gui/icons/apps
+%dir /usr/share/bgscripts/gui/icons/mimetypes
 %config %attr(666, -, -) /etc/bgscripts/monitor-resize.conf
 %config %attr(666, -, -) /etc/bgscripts/rdp.conf
 %verify(link) /usr/bin/rdp

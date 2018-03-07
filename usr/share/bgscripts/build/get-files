@@ -16,7 +16,7 @@ find . -type d -regextype grep \
       -regex ".*/debian-${package}$" \
    \) \
    | sort \
-   | sed -e 's/^\\///;' -e 's/^/%dir \//;'
+   | sed -e 's/^\.\///;' -e 's/^/%dir \//;'
 find . -mindepth 1 \
    ! -type d -regextype grep \
    ! -regex ".*/\..*\.swp$" \
