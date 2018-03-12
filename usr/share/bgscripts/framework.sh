@@ -4,7 +4,7 @@
 # Startdate: 2014-06-02 15:22
 # Title: Framework for Common Elements in My Scripts
 # Purpose: Library of common script elements
-# Package: bgscripts 1.3-3
+# Package: bgscripts 1.3-4
 # History: fv2017-11-11m=fi2017-11-11m
 #    2016-02-26a updated and shortened functions!
 #    2016-05-25a added thisip and ip address validation
