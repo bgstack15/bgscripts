@@ -11,6 +11,7 @@
 #    2017-05-24 Commented out the htmlize misc error
 #    2017-06-28 Updated the help text to include -f from
 #    2017-11-11a Added FreeBSD location support
+#    2018-03-13a Fix <pre> insertion and defaultemail substitution
 # Usage: 
 # Reference: ftemplate.sh 2017-01-11a; framework.sh 2017-01-11a
 #    using a linux sendmail-hook wrapper script: http://stackoverflow.com/questions/2591755/how-send-html-mail-using-linux-command-line
@@ -18,7 +19,7 @@
 #    replaced sendmail-hook wrapper with new method: http://unix.stackexchange.com/questions/15405/how-do-i-send-html-email-using-linux-mail-command
 # Improve:
 fiversion="2017-01-17a"
-sendversion="2017-11-11a"
+sendversion="2018-03-13a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -71,7 +72,7 @@ parse_flaglessvals() {
       fi
    done
    displayedemaillist="$( echo "${_emaillist}" | sed 's/^ //;' )"
-   emaillist="$( echo "${displayedemaillist}" | sed -r -e "s^${defaultemail}^^g;" -e 's/ +/ /g;' ) ${defaultemail}"
+   emaillist="$( echo "${displayedemaillist}" | sed -r -e "s^${defaultemail:NOTHINGTOREMOVEHERE}^^g;" -e 's/ +/ /g;' ) ${defaultemail}"
 }
 
 assemble_content() {
@@ -112,7 +113,7 @@ htmlize() {
    # takes stdin and transforms it based on htmltype value
    case "${htmltype}" in
       1)
-         echo "<html><body><pre>"
+         printf "<html><body><pre>"
          sed -r -e 's/</\^lt;/g;' -e 's/>/\^gt;/g;' -e 's/\&/\^amp;/g;' | sed -r -e 's/\^(lt|amp|gt)/\&\1/g;'
          echo "</pre></body></html>"
          headers="
