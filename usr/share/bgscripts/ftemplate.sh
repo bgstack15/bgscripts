@@ -8,9 +8,9 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-11-11a; framework.sh 2017-11-11a
+# Reference: ftemplate.sh 2018-04-19a; framework.sh 2017-11-11a
 # Improve:
-fiversion="2017-11-11a"
+fiversion="2018-04-19a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
@@ -37,8 +37,15 @@ ENDUSAGE
 
 clean_SCRIPTTRIM() {
    # use at end of entire script if you need to clean up tmpfiles
-   #rm -f ${tmpfile} 1>/dev/null 2>&1
-   :
+   # rm -f "${tmpfile1}" "${tmpfile2}" 2>/dev/null
+
+   # Delayed cleanup
+   if test -z "${FETCH_NO_CLEAN}" ;
+   then
+      nohup /bin/bash <<EOF 1>/dev/null 2>&1 &
+sleep "${SCRIPTTRIM_CLEANUP_SEC:-300}" ; /bin/rm -r "${SCRIPTTRIM_TMPDIR:-NOTHINGTODELETE}" 1>/dev/null 2>&1 ;
+EOF
+   fi
 }
 
 CTRLC() {
@@ -98,6 +105,9 @@ define_if_new interestedparties "bgstack15@gmail.com"
 # SIMPLECONF
 define_if_new default_conffile "/etc/SCRIPTTRIM/SCRIPTTRIM.conf"
 define_if_new defuser_conffile ~/.config/SCRIPTTRIM/SCRIPTTRIM.conf
+define_if_new SCRIPTTRIM_TMPDIR "$( mktemp -d )"
+#tmpfile1="$( TMPDIR="${SCRIPTTRIM_TMPDIR}" mktemp )"
+#tmpfile2="$( TMPDIR="${SCRIPTTRIM_TMPDIR}" mktemp )"
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
@@ -201,7 +211,7 @@ validateparams - "$@"
 # SET TRAPS
 #trap "CTRLC" 2
 #trap "CTRLZ" 18
-#trap "clean_SCRIPTTRIM" 0
+trap "__ec=$? ; clean_SCRIPTTRIM ; trap '' 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; exit ${__ec} ;" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
 ## DEBUG SIMPLECONF
 #debuglev 5 && {
