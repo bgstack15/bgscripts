@@ -457,3 +457,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  fix framework-check logic to warn of obsolete versions
 -  ftemplate: add delayed clean_up
 - userinfo: fix /bin/id call to work on older coreutils (RHEL6)
+- cladu: update report and email options and content
