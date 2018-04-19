@@ -27,14 +27,17 @@ version ${claduversion}
  -V version Show script version number.
  -g groups  Add the AD user to the local groups of the local user. Default is to skip this action.
  --ng       Do not perform the -g action
- -r report  Generate report in each user homedir.
+ -r --report  Generate report in each user homedir.
  --nr       Do not perform the -r action
+ -e x@y.z   Send summary report to specified email addresses (comma-delimited). Default is ${CLADU_EMAIL_ADDRESS}.
 Environment variables:
 Parameters override environment variables
 CLADU_USERINFO_SCRIPT=/usr/share/bgscripts/work/userinfo.sh
 CLADU_USER_REPORT    any truthy value will perform the -r action. Default is YES.
 CLADU_USER_REPORT_FILENAME=converted.txt    File to save report to in each homedir
 CLADU_GROUPS  any non-null value will perform the -g action.
+CLADU_EMAIL   any truthy value will perform the -e action
+CLADU_EMAIL_ADDRESS   destination emails (comma-delimited)
 Return values:
  0 Normal
  1 Help or version info displayed
@@ -179,6 +182,8 @@ parseFlag() {
       "ng" | "nogroup" | "no-group" | "no-groups" | "nogroups" ) unset CLADU_GROUPS;;
       "r" | "report" | "reports" | "userreport" | "userreports" | "user-report" | "user-reports" ) CLADU_USER_REPORT="YES";;
       "nr" | "noreport" | "no-report" | "noreports" | "no-reports" | "nouserreport" | "no-userreport" | "nouserreports" | "no-userreports" | "nouser-report" | "no-user-report" | "nouser-reports" | "no-user-reports" ) unset CLADU_USER_REPORT;;
+      "e" ) CLADU_EMAIL="YES" ; getval; test -n "${tempval}" && CLADU_EMAIL_ADDRESS="${tempval}" ;;
+      "ne" | "noemail" | "nosummary" | "no-email" | "no-summary" ) unset CLADU_EMAIL ;;
    esac
    
    debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: ${flag} = ${tempval}" || ferror "flag: ${flag}"; }
@@ -215,7 +220,8 @@ tmpfile="$( mktemp )"
 test -z "${CLADU_USERINFO_SCRIPT}" && CLADU_USERINFO_SCRIPT=/usr/share/bgscripts/work/userinfo.sh
 test -z "${CLADU_USER_REPORT_FILENAME}" && CLADU_USER_REPORT_FILENAME=converted.txt
 test -z "${CLADU_USER_REPORT}" && CLADU_USER_REPORT="YES"
-define_if_new interestedparties "bgstack15@gmail.com"
+test -z "${CLADU_EMAIL}" && CLADU_EMAIL="YES"
+define_if_new CLADU_EMAIL_ADDRESS "bgstack15@gmail.com"
 # SIMPLECONF
 define_if_new default_conffile "/etc/cladu/cladu.conf"
 define_if_new defuser_conffile ~/.config/cladu/cladu.conf
@@ -293,11 +299,11 @@ validateparams - "$@"
 trap "clean_cladu" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
 ## DEBUG SIMPLECONF
-#debuglev 5 && {
-#   ferror "Using values"
-#   # used values: EX_(OPT1|OPT2|VERBOSE)
-#   set | grep -iE "^EX_" 1>&2
-#}
+debuglev 5 && {
+   ferror "Using values"
+   # used values: EX_(OPT1|OPT2|VERBOSE)
+   set | grep -iE "^CLADU_" 1>&2
+}
 
 # MAIN LOOP
 {
@@ -318,13 +324,19 @@ trap "clean_cladu" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
 } | tee -a ${logfile}
 
-# PREPARE SUBJECT LINE
-succeeded="$( grep -cE "SUCCESS" "${tmpfile}" 2>/dev/null )"
-skipped="$( grep -cE "SKIPPED" "${tmpfile}" 2>/dev/null )"
-failed="$( grep -cE "FAILED" "${tmpfile}" 2>/dev/null )"
-this_subject="CLADU: ${server}, ${succeeded} converted"
-test ${skipped} -gt 0 && this_subject="${this_subject}, ${skipped} skipped"
-test ${failed} -gt 0 && this_subject="${this_subject}, ${failed} failed"
-# EMAIL LOGFILE
+if fistruthy "${CLADU_EMAIL}" ;
+then
+   # PREPARE SUBJECT LINE
+   succeeded="$( grep -cE "SUCCESS" "${tmpfile}" 2>/dev/null )"
+   skipped="$( grep -cE "SKIPPED" "${tmpfile}" 2>/dev/null )"
+   failed="$( grep -cE "FAILED" "${tmpfile}" 2>/dev/null )"
+   this_subject="CLADU: ${server}, ${succeeded} converted"
+   test ${skipped} -gt 0 && this_subject="${this_subject}, ${skipped} skipped"
+   test ${failed} -gt 0 && this_subject="${this_subject}, ${failed} failed"
 
-${sendsh} -f "bgstack15@gmail.com" ${sendopts} "${this_subject}" ${logfile} ${interestedparties}
+   # PREPARE CLADU_EMAIL_ADDRESS
+   CLADU_EMAIL_ADDRESS="$( echo "${CLADU_EMAIL_ADDRESS}" | tr ',' ' ' )"
+
+   # EMAIL LOGFILE
+   ${sendsh} -f "${USER}@${server}" "${this_subject}" ${logfile} ${CLADU_EMAIL_ADDRESS}
+fi
