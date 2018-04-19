@@ -10,7 +10,7 @@
 # Usage: 
 # Reference: ftemplate.sh 2018-04-19a; framework.sh 2017-11-11a
 # Improve:
-fiversion="2018-04-19a"
+fiversion="2018-04-19b"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
@@ -76,13 +76,14 @@ parseFlag() {
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if test -e ${flocation} && test "$( sh ${flocation} --fcheck 2>/dev/null )" -ge 20171111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+f_needed=20171111
+while read flocation ; do if test -e ${flocation} ; then __thisfver="$( sh ${flocation} --fcheck 2>/dev/null )" ; if test ${__thisfver} -ge ${f_needed} ; then frameworkscript="${flocation}" ; break; else printf "Obsolete: %s %s\n" "${flocation}" "${__this_fver}" 1>&2 ; fi ; fi ; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
-~/bin/bgscripts/framework.sh
-~/bin/framework.sh
-~/bgscripts/framework.sh
-~/framework.sh
+$HOME/bin/bgscripts/framework.sh
+$HOME/bin/framework.sh
+$HOME/bgscripts/framework.sh
+$HOME/framework.sh
 /usr/local/bin/bgscripts/framework.sh
 /usr/local/bin/framework.sh
 /usr/bin/bgscripts/framework.sh
