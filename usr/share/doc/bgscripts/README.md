@@ -452,4 +452,8 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - Fix send.sh pre tag insertion and defaultemail substitution
 
 * Thu Apr 19 2018 B Stack <bgstack15@gmail.com> 1.3-5
--
+- Fix all framework-check logic to use test -e
+- ftemplate:
+-  fix framework-check logic to warn of obsolete versions
+-  ftemplate: add delayed clean_up
+- userinfo: fix /bin/id call to work on older coreutils (RHEL6)
