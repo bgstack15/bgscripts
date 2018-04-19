@@ -60,10 +60,12 @@ remove_user() {
    # CONFIRM USER EXISTS AS LOCAL USER
    echo "${tuinfo}" | grep -qE "getent_type:.*files" || { echo "${tu} Skipped: not found as local user" ; return 1 ; }
    local tu_local="$( getent passwd -s files "${tu}" )"
+   local tluid="$( echo "${tu_local}" | awk -F':' '{print $3}' )"
 
    # CONFIRM USER EXISTS AS DOMAIN USER
    echo "${tuinfo}" | grep -qE "getent_type:.*sss" || { echo "${tu} Failed: not found as domain user" ; return 2 ; }
-   local tu_domain="$( getent passwd -s files "${tu}" )"
+   local tu_domain="$( getent passwd -s sss "${tu}" )"
+   local tduid="$( echo "${tu_domain}" | awk -F':' '{print $3}' )"
 
    # LEARN HOMEDIRS
    local tu_lhomedir="$( echo "${tu_local}" | cut -d':' -f6 )"
@@ -90,7 +92,7 @@ remove_user() {
    # REPORT STATUS
    case "${result}" in
       0)
-         local message="${tu} Succeeded."
+         local message="${tu} Succeeded: uid ${tluid} to ${tduid}."
 
          # LIST LOCAL GROUPS OF OLD LOCAL USER
          # if there were local groups to react to
@@ -112,7 +114,7 @@ remove_user() {
          echo "${tu} Failed: user currently logged in" ; return 2
          ;;
       *) 
-         echo "${tu} Failed: userdel returned code ${result}." ; return 2
+         echo "${tu} Failed: userdel returned code ${result}. Please update ${scriptfile} with new error code option." ; return 2
          ;;
    esac
 
@@ -141,7 +143,7 @@ remove_user() {
       touch "${tf}" ; chown "${tu}.${tu_dgroup}" "${tf}" ; chmod 0640 "${tf}"
       {
          date -u "+%FT%TZ"
-         echo "User ${tu} converted to AD account on host $( hostname -s )."
+         echo "User ${tu} (${tluid}) converted to AD account (${tduid}) on host ${server}."
          echo "Previous local groups: ${tu_these_local_groups}"
       } > "${tf}"
    fi
