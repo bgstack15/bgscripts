@@ -32,7 +32,7 @@ version ${claduversion}
 Environment variables:
 Parameters override environment variables
 CLADU_USERINFO_SCRIPT=/usr/share/bgscripts/work/userinfo.sh
-CLADU_USER_REPORT    any non-null value will perform the -r action.
+CLADU_USER_REPORT    any truthy value will perform the -r action. Default is YES.
 CLADU_USER_REPORT_FILENAME=converted.txt    File to save report to in each homedir
 CLADU_GROUPS  any non-null value will perform the -g action.
 Return values:
@@ -132,7 +132,7 @@ remove_user() {
    find "${tu_dhomedir}" -exec chown "${tu}.${tu_dgroup}" {} +
    
    # GENERATE REPORT FOR USER
-   if test -n "${CLADU_USER_REPORT}" ;
+   if fistruthy "${CLADU_USER_REPORT}" ;
    then
       local tf="${tu_dhomedir}/${CLADU_USER_REPORT_FILENAME}"
       touch "${tf}" ; chown "${tu}.${tu_dgroup}" "${tf}" ; chmod 0640 "${tf}"
@@ -214,6 +214,7 @@ logfile="$( mktemp )"
 tmpfile="$( mktemp )"
 test -z "${CLADU_USERINFO_SCRIPT}" && CLADU_USERINFO_SCRIPT=/usr/share/bgscripts/work/userinfo.sh
 test -z "${CLADU_USER_REPORT_FILENAME}" && CLADU_USER_REPORT_FILENAME=converted.txt
+test -z "${CLADU_USER_REPORT}" && CLADU_USER_REPORT="YES"
 define_if_new interestedparties "bgstack15@gmail.com"
 # SIMPLECONF
 define_if_new default_conffile "/etc/cladu/cladu.conf"
