@@ -110,7 +110,7 @@ function parseFlag {
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if [[ -x $flocation ]] && [[ $( $flocation --fcheck ) -ge 20151123 ]]; then frameworkscript=$flocation; break; fi; done <<EOFLOCATIONS
+while read flocation; do if [[ -x $flocation ]] && [[ $( $flocation --fcheck 2>/dev/null -ge 20151123 ]]; then frameworkscript=$flocation; break; fi; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
 /usr/local/share/bgscripts/framework.sh
