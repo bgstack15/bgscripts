@@ -8,13 +8,13 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2017-11-11m; framework.sh 2017-11-11m
+# Reference: ftemplate.sh 2018-05-15m; framework.sh 2017-11-11m
 # Improve:
-fiversion="2017-11-11m"
+fiversion="2018-05-15m"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
-   less -F >&2 <<ENDUSAGE
+   ${PAGER:-/usr/bin/less -F} >&2 <<ENDUSAGE
 usage: SCRIPTNAME [-duV] [-c conffile]
 version ${SCRIPTTRIMversion}
  -d debug   Show debugging info, including parsed variables.
@@ -37,8 +37,15 @@ ENDUSAGE
 
 clean_SCRIPTTRIM() {
    # use at end of entire script if you need to clean up tmpfiles
-   #rm -f ${tmpfile} 1>/dev/null 2>&1
-   :
+   # rm -f "${tmpfile1}" "${tmpfile2}" 2>/dev/null
+
+   # Delayed cleanup
+   if test -z "${FETCH_NO_CLEAN}" ;
+   then
+      nohup /bin/bash <<EOF 1>/dev/null 2>&1 &
+sleep "${SCRIPTTRIM_CLEANUP_SEC:-300}" ; /bin/rm -r "${SCRIPTTRIM_TMPDIR:-NOTHINGTODELETE}" 1>/dev/null 2>&1 ;
+EOF
+   fi
 }
 
 CTRLC() {
@@ -69,13 +76,14 @@ parseFlag() {
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20171111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+f_needed=20171111
+while read flocation ; do if test -e ${flocation} ; then __thisfver="$( sh ${flocation} --fcheck 2>/dev/null )" ; if test ${__thisfver} -ge ${f_needed} ; then frameworkscript="${flocation}" ; break; else printf "Obsolete: %s %s\n" "${flocation}" "${__this_fver}" 1>&2 ; fi ; fi ; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
-~/bin/bgscripts/framework.sh
-~/bin/framework.sh
-~/bgscripts/framework.sh
-~/framework.sh
+$HOME/bin/bgscripts/framework.sh
+$HOME/bin/framework.sh
+$HOME/bgscripts/framework.sh
+$HOME/framework.sh
 /usr/local/bin/bgscripts/framework.sh
 /usr/local/bin/framework.sh
 /usr/bin/bgscripts/framework.sh
@@ -98,6 +106,9 @@ define_if_new interestedparties "bgstack15@gmail.com"
 # SIMPLECONF
 define_if_new default_conffile "/etc/SCRIPTTRIM/SCRIPTTRIM.conf"
 define_if_new defuser_conffile ~/.config/SCRIPTTRIM/SCRIPTTRIM.conf
+define_if_new SCRIPTTRIM_TMPDIR "$( mktemp -d )"
+#tmpfile1="$( TMPDIR="${SCRIPTTRIM_TMPDIR}" mktemp )"
+#tmpfile2="$( TMPDIR="${SCRIPTTRIM_TMPDIR}" mktemp )"
 
 # REACT TO OPERATING SYSTEM TYPE
 case $( uname -s ) in
@@ -201,7 +212,7 @@ validateparams - "$@"
 # SET TRAPS
 #trap "CTRLC" 2
 #trap "CTRLZ" 18
-#trap "clean_SCRIPTTRIM" 0
+trap "__ec=$? ; clean_SCRIPTTRIM ; trap '' 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; exit ${__ec} ;" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
 ## DEBUG SIMPLECONF
 #debuglev 5 && {

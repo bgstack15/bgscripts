@@ -198,18 +198,20 @@ This is a template. Feel free to modify/delete any portions to suit your needs. 
 
 It calls framework in a dynamic way:
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20170608; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+f_needed=20171111
+while read flocation ; do if test -e ${flocation} ; then __thisfver="$( sh ${flocation} --fcheck 2>/dev/null )" ; if test ${__thisfver} -ge ${f_needed} ; then frameworkscript="${flocation}" ; break; else printf "Obsolete: %s %s\n" "${flocation}" "${__this_fver}" 1>&2 ; fi ; fi ; done <<EOFLOCATIONS
 ./framework.sh
 ${scriptdir}/framework.sh
-~/bin/bgscripts/framework.sh
-~/bin/framework.sh
-~/bgscripts/framework.sh
-~/framework.sh
+$HOME/bin/bgscripts/framework.sh
+$HOME/bin/framework.sh
+$HOME/bgscripts/framework.sh
+$HOME/framework.sh
 /usr/local/bin/bgscripts/framework.sh
 /usr/local/bin/framework.sh
 /usr/bin/bgscripts/framework.sh
 /usr/bin/framework.sh
 /bin/bgscripts/framework.sh
+/usr/local/share/bgscripts/framework.sh
 /usr/share/bgscripts/framework.sh
 EOFLOCATIONS
 test -z "${frameworkscript}" && echo "$0: framework not found. Aborted." 1>&2 && exit 4

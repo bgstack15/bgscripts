@@ -7,6 +7,7 @@
 # Purpose: To facilitate removing local users in favor of domain users
 # Package: bgscripts-core
 # History: 
+#    2018-05-15 fixed the ${sendopts} as well as ownership of the user mail spool file
 # Usage: 
 # Reference: ftemplate.sh 2017-11-11m; framework.sh 2017-11-11m
 # Improve:
@@ -27,14 +28,17 @@ version ${claduversion}
  -V version Show script version number.
  -g groups  Add the AD user to the local groups of the local user. Default is to skip this action.
  --ng       Do not perform the -g action
- -r report  Generate report in each user homedir.
+ -r --report  Generate report in each user homedir.
  --nr       Do not perform the -r action
+ -e x@y.z   Send summary report to specified email addresses (comma-delimited). Default is ${CLADU_EMAIL_ADDRESS}.
 Environment variables:
 Parameters override environment variables
 CLADU_USERINFO_SCRIPT=/usr/share/bgscripts/work/userinfo.sh
-CLADU_USER_REPORT    any non-null value will perform the -r action.
+CLADU_USER_REPORT    any truthy value will perform the -r action. Default is YES.
 CLADU_USER_REPORT_FILENAME=converted.txt    File to save report to in each homedir
 CLADU_GROUPS  any non-null value will perform the -g action.
+CLADU_EMAIL   any truthy value will perform the -e action
+CLADU_EMAIL_ADDRESS   destination emails (comma-delimited)
 Return values:
  0 Normal
  1 Help or version info displayed
@@ -57,10 +61,12 @@ remove_user() {
    # CONFIRM USER EXISTS AS LOCAL USER
    echo "${tuinfo}" | grep -qE "getent_type:.*files" || { echo "${tu} Skipped: not found as local user" ; return 1 ; }
    local tu_local="$( getent passwd -s files "${tu}" )"
+   local tluid="$( echo "${tu_local}" | awk -F':' '{print $3}' )"
 
    # CONFIRM USER EXISTS AS DOMAIN USER
    echo "${tuinfo}" | grep -qE "getent_type:.*sss" || { echo "${tu} Failed: not found as domain user" ; return 2 ; }
-   local tu_domain="$( getent passwd -s files "${tu}" )"
+   local tu_domain="$( getent passwd -s sss "${tu}" )"
+   local tduid="$( echo "${tu_domain}" | awk -F':' '{print $3}' )"
 
    # LEARN HOMEDIRS
    local tu_lhomedir="$( echo "${tu_local}" | cut -d':' -f6 )"
@@ -87,7 +93,7 @@ remove_user() {
    # REPORT STATUS
    case "${result}" in
       0)
-         local message="${tu} Succeeded."
+         local message="${tu} Succeeded: uid ${tluid} to ${tduid}."
 
          # LIST LOCAL GROUPS OF OLD LOCAL USER
          # if there were local groups to react to
@@ -109,7 +115,7 @@ remove_user() {
          echo "${tu} Failed: user currently logged in" ; return 2
          ;;
       *) 
-         echo "${tu} Failed: userdel returned code ${result}." ; return 2
+         echo "${tu} Failed: userdel returned code ${result}. Please update ${scriptfile} with new error code option." ; return 2
          ;;
    esac
 
@@ -129,16 +135,17 @@ remove_user() {
    fi
 
    # CHANGE OWNERSHIP OF FILES
-   find "${tu_dhomedir}" -exec chown "${tu}.${tu_dgroup}" {} +
+   find "${tu_dhomedir}" -exec chown "${tu}.${tu_dgroup}" {} + 2>/dev/null
+   find /var/spool/mail -mindepth 1 -user -exec chown "${tu}.${tu_dgroup}" {} + 2>/dev/null
    
    # GENERATE REPORT FOR USER
-   if test -n "${CLADU_USER_REPORT}" ;
+   if fistruthy "${CLADU_USER_REPORT}" ;
    then
       local tf="${tu_dhomedir}/${CLADU_USER_REPORT_FILENAME}"
       touch "${tf}" ; chown "${tu}.${tu_dgroup}" "${tf}" ; chmod 0640 "${tf}"
       {
          date -u "+%FT%TZ"
-         echo "User ${tu} converted to AD account on host $( hostname -s )."
+         echo "User ${tu} (${tluid}) converted to AD account (${tduid}) on host ${server}."
          echo "Previous local groups: ${tu_these_local_groups}"
       } > "${tf}"
    fi
@@ -179,13 +186,15 @@ parseFlag() {
       "ng" | "nogroup" | "no-group" | "no-groups" | "nogroups" ) unset CLADU_GROUPS;;
       "r" | "report" | "reports" | "userreport" | "userreports" | "user-report" | "user-reports" ) CLADU_USER_REPORT="YES";;
       "nr" | "noreport" | "no-report" | "noreports" | "no-reports" | "nouserreport" | "no-userreport" | "nouserreports" | "no-userreports" | "nouser-report" | "no-user-report" | "nouser-reports" | "no-user-reports" ) unset CLADU_USER_REPORT;;
+      "e" ) CLADU_EMAIL="YES" ; getval; test -n "${tempval}" && CLADU_EMAIL_ADDRESS="${tempval}" ;;
+      "ne" | "noemail" | "nosummary" | "no-email" | "no-summary" ) unset CLADU_EMAIL ;;
    esac
    
    debuglev 10 && { test ${hasval} -eq 1 && ferror "flag: ${flag} = ${tempval}" || ferror "flag: ${flag}"; }
 }
 
 # DETERMINE LOCATION OF FRAMEWORK
-while read flocation; do if test -x ${flocation} && test "$( ${flocation} --fcheck )" -ge 20171111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
+while read flocation; do if test -e ${flocation} && test "$( sh ${flocation} --fcheck 2>/dev/null )" -ge 20171111; then frameworkscript="${flocation}"; break; fi; done <<EOFLOCATIONS
 ./framework.sh
 /tmp/framework.sh
 ${scriptdir}/framework.sh
@@ -214,7 +223,9 @@ logfile="$( mktemp )"
 tmpfile="$( mktemp )"
 test -z "${CLADU_USERINFO_SCRIPT}" && CLADU_USERINFO_SCRIPT=/usr/share/bgscripts/work/userinfo.sh
 test -z "${CLADU_USER_REPORT_FILENAME}" && CLADU_USER_REPORT_FILENAME=converted.txt
-define_if_new interestedparties "bgstack15@gmail.com"
+test -z "${CLADU_USER_REPORT}" && CLADU_USER_REPORT="YES"
+test -z "${CLADU_EMAIL}" && CLADU_EMAIL="YES"
+define_if_new CLADU_EMAIL_ADDRESS "bgstack15@gmail.com"
 # SIMPLECONF
 define_if_new default_conffile "/etc/cladu/cladu.conf"
 define_if_new defuser_conffile ~/.config/cladu/cladu.conf
@@ -292,11 +303,11 @@ validateparams - "$@"
 trap "clean_cladu" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
 ## DEBUG SIMPLECONF
-#debuglev 5 && {
-#   ferror "Using values"
-#   # used values: EX_(OPT1|OPT2|VERBOSE)
-#   set | grep -iE "^EX_" 1>&2
-#}
+debuglev 5 && {
+   ferror "Using values"
+   # used values: EX_(OPT1|OPT2|VERBOSE)
+   set | grep -iE "^CLADU_" 1>&2
+}
 
 # MAIN LOOP
 {
@@ -317,13 +328,19 @@ trap "clean_cladu" 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
 } | tee -a ${logfile}
 
-# PREPARE SUBJECT LINE
-succeeded="$( grep -cE "SUCCESS" "${tmpfile}" 2>/dev/null )"
-skipped="$( grep -cE "SKIPPED" "${tmpfile}" 2>/dev/null )"
-failed="$( grep -cE "FAILED" "${tmpfile}" 2>/dev/null )"
-this_subject="CLADU: ${server}, ${succeeded} converted"
-test ${skipped} -gt 0 && this_subject="${this_subject}, ${skipped} skipped"
-test ${failed} -gt 0 && this_subject="${this_subject}, ${failed} failed"
-# EMAIL LOGFILE
+if fistruthy "${CLADU_EMAIL}" ;
+then
+   # PREPARE SUBJECT LINE
+   succeeded="$( grep -cE "SUCCESS" "${tmpfile}" 2>/dev/null )"
+   skipped="$( grep -cE "SKIPPED" "${tmpfile}" 2>/dev/null )"
+   failed="$( grep -cE "FAILED" "${tmpfile}" 2>/dev/null )"
+   this_subject="CLADU: ${server}, ${succeeded} converted"
+   test ${skipped} -gt 0 && this_subject="${this_subject}, ${skipped} skipped"
+   test ${failed} -gt 0 && this_subject="${this_subject}, ${failed} failed"
 
-${sendsh} -f "bgstack15@gmail.com" ${sendopts} "${this_subject}" ${logfile} ${interestedparties}
+   # PREPARE CLADU_EMAIL_ADDRESS
+   CLADU_EMAIL_ADDRESS="$( echo "${CLADU_EMAIL_ADDRESS}" | tr ',' ' ' )"
+
+   # EMAIL LOGFILE
+   ${sendsh} -f "${USER}@${server}" ${sendopts} "${this_subject}" ${logfile} ${CLADU_EMAIL_ADDRESS}
+fi

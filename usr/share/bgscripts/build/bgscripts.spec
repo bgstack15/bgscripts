@@ -2,7 +2,7 @@
 Summary:	   bgscripts gui components
 Name:		   bgscripts
 Version:	   1.3
-Release:	   4
+Release:	   6
 License:	   CC BY-SA 4.0
 Group:      Applications/System
 Source:     bgscripts.tgz
@@ -113,7 +113,79 @@ fi
 
 exit 0
 
-%files
+%files core
+%dir /usr/share/bgscripts
+%dir /usr/share/bgscripts/bashrc.d
+%dir /usr/share/bgscripts/build
+%dir /usr/share/bgscripts/py
+%dir /usr/share/bgscripts/work
+%verify(link) /usr/bin/beep
+%verify(link) /usr/bin/bp
+%verify(link) /usr/bin/bup
+%verify(link) /usr/bin/ctee
+%verify(link) /usr/bin/dli
+%verify(link) /usr/bin/fl
+%verify(link) /usr/bin/lecho
+%verify(link) /usr/bin/newscript
+%verify(link) /usr/bin/plecho
+%verify(link) /usr/bin/send
+%verify(link) /usr/bin/title
+%verify(link) /usr/bin/toucher
+%verify(link) /usr/bin/updateval
+/usr/share/bgscripts/bashrc.d/centos.bashrc
+/usr/share/bgscripts/bashrc.d/debian.bashrc
+/usr/share/bgscripts/bashrc.d/devuan.bashrc
+/usr/share/bgscripts/bashrc.d/fedora.bashrc
+/usr/share/bgscripts/bashrc.d/GENERIC.bashrc
+/usr/share/bgscripts/bashrc.d/korora.bashrc
+/usr/share/bgscripts/bashrc.d/ol.bashrc
+/usr/share/bgscripts/bashrc.d/rhel.bashrc
+/usr/share/bgscripts/bashrc.d/ubuntu.bashrc
+/usr/share/bgscripts/beep.sh
+/usr/share/bgscripts/bgscripts.bashrc
+/usr/share/bgscripts/build/bgscripts.spec
+%doc %attr(444, -, -) /usr/share/bgscripts/build/files-for-versioning.txt
+/usr/share/bgscripts/build/get-files-core
+/usr/share/bgscripts/build/pack
+/usr/share/bgscripts/bup.sh
+/usr/share/bgscripts/ctee.sh
+/usr/share/bgscripts/doc
+/usr/share/bgscripts/enumerate-users.sh
+/usr/share/bgscripts/fl.sh
+/usr/share/bgscripts/framework.sh
+/usr/share/bgscripts/ftemplate.sh
+/usr/share/bgscripts/lecho.sh
+/usr/share/bgscripts/newscript.sh
+/usr/share/bgscripts/plecho.sh
+/usr/share/bgscripts/py/bgs.py
+/usr/share/bgscripts/py/dli.py
+/usr/share/bgscripts/py/modconf.py
+/usr/share/bgscripts/py/pwhashgen.py
+/usr/share/bgscripts/py/scrub.py
+/usr/share/bgscripts/py/switchpyver.sh
+/usr/share/bgscripts/py/updateval.py
+/usr/share/bgscripts/py/uvlib.py
+/usr/share/bgscripts/py/uvlib.py2
+/usr/share/bgscripts/py/uvlib.py3
+/usr/share/bgscripts/send.sh
+/usr/share/bgscripts/sizer.sh
+/usr/share/bgscripts/title.sh
+/usr/share/bgscripts/toucher.sh
+/usr/share/bgscripts/work/cladu.sh
+/usr/share/bgscripts/work/list-active-repos.sh
+/usr/share/bgscripts/work/list-vnc-sessions.sh
+/usr/share/bgscripts/work/sslscanner.sh
+/usr/share/bgscripts/work/userinfo.sh
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/BGSCRIPTS-BASHRC.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/FRAMEWORK.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/README.md
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/SCRIPTS-PYTHON.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/SCRIPTS-SHELL.txt
+%doc %attr(444, -, -) /usr/share/doc/bgscripts/version.txt
+
+%changelog
+* Thu Apr 19 2018 B Stack <bgstack15@gmail.com> 1.3-6
+- Update content. See doc/README.txt.
 
 %files core
 %dir /usr/share/bgscripts
@@ -173,6 +245,8 @@ exit 0
 /usr/share/bgscripts/sizer.sh
 /usr/share/bgscripts/title.sh
 /usr/share/bgscripts/toucher.sh
+/usr/share/bgscripts/work/allow-group.sh
+/usr/share/bgscripts/work/cladu.sh
 /usr/share/bgscripts/work/list-active-repos.sh
 /usr/share/bgscripts/work/list-vnc-sessions.sh
 /usr/share/bgscripts/work/sslscanner.sh
@@ -185,5 +259,5 @@ exit 0
 %doc %attr(444, -, -) /usr/share/doc/bgscripts/version.txt
 
 %changelog
-* Mon Mar 12 2018 B Stack <bgstack15@gmail.com> 1.3-4
+* Thu Apr 19 2018 B Stack <bgstack15@gmail.com> 1.3-6
 - Update content. See doc/README.txt.

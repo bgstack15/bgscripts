@@ -10,6 +10,7 @@
 # Usage:
 # Reference:
 #    id -Gnz https://stackoverflow.com/questions/14059916/is-there-a-command-to-list-all-unix-group-names/29615866#29615866
+#    id with awk original research
 #    chageinfo.sh
 # Improve:
 #    Provide a -o --oneline output option
@@ -36,7 +37,7 @@ f_chage() {
    local chage_output="$( chage -l "${word}" 2>/dev/null )"
    if test -n "${chage_output}" ;
    then
-      chage_output="$( echo "${chage_output}" | awk -F':' 'a=0; (NR<=4 && $2 !~ /never/) {a=1;} a==1 {cmd="/bin/date -d \""$2"\" +%Y-%m-%d";system(cmd);} a==0 {print $2}' | tr '\n' "${delim}" | tr -d '[[:space:]]' | sed -r -e 's/,$//;' ; printf '\n' )"
+      chage_output="$( echo "${chage_output}" | awk -F':' 'a=0; (NR<=4 && $2 !~ /never|must/) {a=1;} a==1 {cmd="/bin/date -d \""$2"\" +%Y-%m-%d";system(cmd);} a==0 {print $2}' | sed -r -e '/must/s/.*/expired/;' | tr '\n' "${delim}" | tr -d '[[:space:]]' | sed -r -e 's/,$//;' ; printf '\n' )"
    fi
 
    if test -n "${chage_output}" ;
@@ -88,7 +89,8 @@ f_can_ssh() {
          # check allowgroup string
          if ! test ${can_ssh} -eq 1;
          then
-            id -Gnz "${user}" 2>/dev/null | tr '\0' '\n' | sed -r -e 's/^/\\\</;' -e 's/$/\\\>/;' > "${tmpfile1}"
+            #id -Gnz "${user}" 2>/dev/null | tr '\0' '\n' | sed -r -e 's/^/\\\</;' -e 's/$/\\\>/;' > "${tmpfile1}"
+            id -G "${user}" 2>/dev/null | xargs getent group 2>/dev/null | awk -F':' '{print $1}' > "${tmpfile1}"
             echo "${ssh_limit}" | grep -E "AllowGroups\s+.*" | grep -qf "${tmpfile1}" && can_ssh=1
          fi
          ;;
@@ -135,7 +137,8 @@ f_can_sss() {
             # check simple_allow_groups string
             if ! test ${can_sss} -eq 1;
             then
-               id -Gnz "${user}" 2>/dev/null | tr '\0' '\n' | sed -r -e 's/^/\\\</;' -e 's/$/\\\>/;' > "${tmpfile1}"
+               #id -Gnz "${user}" 2>/dev/null | tr '\0' '\n' | sed -r -e 's/^/\\\</;' -e 's/$/\\\>/;' > "${tmpfile1}"
+               id -G "${user}" 2>/dev/null | xargs getent group 2>/dev/null | awk -F':' '{print $1}' > "${tmpfile1}"
                echo "${sss_limit}" | grep -E "simple_allow_groups\s+.*" | grep -q -f "${tmpfile1}" && can_sss=1
             fi
             ;;
