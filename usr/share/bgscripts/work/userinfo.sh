@@ -37,7 +37,7 @@ f_chage() {
    local chage_output="$( chage -l "${word}" 2>/dev/null )"
    if test -n "${chage_output}" ;
    then
-      chage_output="$( echo "${chage_output}" | awk -F':' 'a=0; (NR<=4 && $2 !~ /never/) {a=1;} a==1 {cmd="/bin/date -d \""$2"\" +%Y-%m-%d";system(cmd);} a==0 {print $2}' | tr '\n' "${delim}" | tr -d '[[:space:]]' | sed -r -e 's/,$//;' ; printf '\n' )"
+      chage_output="$( echo "${chage_output}" | awk -F':' 'a=0; (NR<=4 && $2 !~ /never|must/) {a=1;} a==1 {cmd="/bin/date -d \""$2"\" +%Y-%m-%d";system(cmd);} a==0 {print $2}' | sed -r -e '/must/s/.*/expired/;' | tr '\n' "${delim}" | tr -d '[[:space:]]' | sed -r -e 's/,$//;' ; printf '\n' )"
    fi
 
    if test -n "${chage_output}" ;
