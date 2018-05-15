@@ -8,13 +8,13 @@
 # Package: 
 # History: 
 # Usage: 
-# Reference: ftemplate.sh 2018-04-19a; framework.sh 2017-11-11a
+# Reference: ftemplate.sh 2018-05-15a; framework.sh 2017-11-11a
 # Improve:
-fiversion="2018-04-19b"
+fiversion="2018-05-15a"
 SCRIPTTRIMversion="INSERTDATEa"
 
 usage() {
-   less -F >&2 <<ENDUSAGE
+   ${PAGER:-/usr/bin/less -F} >&2 <<ENDUSAGE
 usage: SCRIPTNAME [-duV] [-c conffile]
 version ${SCRIPTTRIMversion}
  -d debug   Show debugging info, including parsed variables.

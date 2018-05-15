@@ -461,3 +461,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 
 * Tue May 15 2018 B Stack <bgstack15@gmail.com> 1.3-6
 - userinfo: fix error "date: invalid date 'pw expired; must be changed'"
+- ftemplate: update usage() to use $PAGER if set
