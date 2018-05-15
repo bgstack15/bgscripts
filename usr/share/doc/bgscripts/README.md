@@ -466,3 +466,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - cladu.sh
 -  fix ${sendopts} so emails are sent correctly.
 -  add ownership change to the user mail spool file
+- list-vnc-sessions.sh: add display size and color depth to output

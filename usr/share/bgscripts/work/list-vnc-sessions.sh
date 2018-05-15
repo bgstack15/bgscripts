@@ -6,6 +6,7 @@
 # Title: Script that Lists the Active VNC Sessions
 # Purpose: To find the tcp port number of my previous session so I can reconnect
 # History:
+#    2018-05-11 add items: size and depth
 # Usage:
 # Reference:
 #    all original efforts
@@ -28,4 +29,13 @@ netstat_file="$( TMPDIR="${tmpdir}" mktemp )"
 # FETCH PRIVILEGED OUTPUT
 sudo netstat -tlpn > "${netstat_file}"
 
-{ echo "user pid Xdisplay port"; { ps -ef | awk '/Xvnc :[[:digit:]]+/ {print $1,$2,$9}' | while read tu tpid tvnc; do awk -v "tpid=${tpid}" '$0 ~ tpid {print $4;}' "${netstat_file}" | sed -r -e 's/^.*://;' -e "s/^/${tu} ${tpid} ${tvnc} /;" ; done ; } | sort -k3 ; } | column -c4 -t
+
+{
+   echo "user pid Xdisplay size depth port";
+   {
+      ps -eo "user:30,pid,command" | awk '/Xvnc :[[:digit:]]+/ {print;}' | grep -oE '^[A-Za-z_\-]+\s+\w+|Xvnc\s*:[0-9]+|geometry\s*[0-9x]*|depth\s*[0-9]*' | awk 'NR%4{printf "%s ",$0;next;} 1' | sed -r -e 's/Xvnc |geometry |depth //g;' | \
+         while read tu tpid andtherest; do awk -v "tpid=${tpid}" '$0 ~ tpid {print $4;}' "${netstat_file}" | sed -r -e 's/^.*://;' -e "s/^/${tu} ${tpid} ${andtherest} /;" ; done
+   } | sort -k3 ;
+} | column -c4 -t
+
+/bin/true
