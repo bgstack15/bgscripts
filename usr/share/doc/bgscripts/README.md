@@ -52,7 +52,7 @@ As the package is split into two packages, the pack utility will generate both t
 ## Building rpms
 
     package=bgscripts
-    thisver=1.3-5
+    thisver=1.3-6
     mkdir -p ~/rpmbuild/{SOURCES,RPMS,SPECS,BUILD,BUILDROOT}
     cd ~/rpmbuild/SOURCES
     git clone https://github.com/bgstack15/bgscripts "${package}-${thisver}"
@@ -63,7 +63,7 @@ The generated rpms will be in `~/rpmbuild/RPMS/noarch`.
 ## Building debs
 
     package=bgscripts
-    thisver=1.3-5
+    thisver=1.3-6
     mkdir ~/deb ; cd ~/deb
     git clone https://github.com/bgstack15/bgscripts "${package}-${thisver}"
     cd "${package}-${thisver}"
@@ -74,7 +74,7 @@ The generated debs will be in `~/deb`.
 These instructions are almost sufficient for FreeBSD. You will need to update the bindir and datadir values at the beginning. If you use FreeBSD, you know what these should be.
 
     package=bgscripts
-    thisver=1.3-5
+    thisver=1.3-6
     bindir=/usr/bin
     datadir=/usr/share
     pkgfile="${package}-${thisver}".master.tgz
@@ -92,7 +92,7 @@ These instructions are almost sufficient for FreeBSD. You will need to update th
 ## On the rpmbuild server
 For a new version release, you can easily modify the files that need to have the version number bumped.
 
-    cd ~/rpmbuild/SOURCES/bgscripts-1.3-5/usr/share/bgscripts
+    cd ~/rpmbuild/SOURCES/bgscripts-1.3-6/usr/share/bgscripts
     vi $( cat build/files-for-versioning.txt )
 
 # References
@@ -458,3 +458,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 -  ftemplate: add delayed clean_up
 - userinfo: fix /bin/id call to work on older coreutils (RHEL6)
 - cladu: update report and email options and content
+
+* Tue May 15 2018 B Stack <bgstack15@gmail.com> 1.3-6
+- 
