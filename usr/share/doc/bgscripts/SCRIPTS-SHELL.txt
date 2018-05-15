@@ -345,6 +345,39 @@ Example:
 ./userinfo.sh bgstack15
 user: bgstack15
 getent: YES
+chage: expired,expired,expired,2018-05-15,7,90,7
 getent_type: sss
 can_ssh: YES
 can_sss: YES
+
+######################################################
+### work/allow-group.sh
+Allow-group makes it a single command to configure sshd and sssd to allow a named group. All sorts of options exist for this script, either as parameters or as environment variables or entries in a config file.
+
+usage: allow-group.sh [-duV] [-v|-s] [-a|--noapply] [-c conffile] [--sshd_config sshd_config] [--sssd_conf sssd.conf] [--all] [--ssh] [--sssd] <--allow|--deny> group1 [ group2 ... ]
+version ${allowgroupversion}
+ -d debug   Show debugging info, including parsed variables.
+ -u usage   Show this usage block.
+ -V version Show script version number.
+ -v verbose|noverbose|silent Set AG_VERBOSE
+ -a apply|noapply  Set AG_APPLY
+ -c conf    Read in this config file.
+ --all|noall    Aliases of "--ssh --sssd" and "--nossh --nosssd"
+ --ssh|nossh    Update sshd config
+ --sssd|nosssd  Update sssd config
+ --allow|deny   Add or remove the group from the permissions list.
+ --sshd_config  Set AG_SSHD_CONFIG_FILE
+ --sssd_conf    Set AG_SSSD_CONF_FILE
+Environment variables (parameters override environment variables)
+AG_ACTION=allow|deny If allow, add group to affected files. If deny, remove group.
+AG_SSHD_CONFIG_FILE  Default is /etc/ssh/sshd_config
+AG_SSSD_CONF_FILE    Default is /etc/sssd/sssd.conf
+AG_SSH        If truthy, affect sshd. Default is yes.
+AG_SSSD       If truthy, affect sssd. Default is yes.
+AG_APPLY      If truthy, save changes and reload daemons. Default is yes.
+AG_VERBOSE    Show the "allow" lines from the config files, regardless of changes that might be made
+AG_MODCONF    Location of modconf.py dependency
+
+Examples:
+
+/usr/share/bgscripts/work/allow-group.sh --sssd --sshd --allow linux_admins nginx_dev
