@@ -7,6 +7,7 @@
 # Purpose: To facilitate removing local users in favor of domain users
 # Package: bgscripts-core
 # History: 
+#    2018-05-15 fixed the ${sendopts} as well as ownership of the user mail spool file
 # Usage: 
 # Reference: ftemplate.sh 2017-11-11m; framework.sh 2017-11-11m
 # Improve:
@@ -134,7 +135,8 @@ remove_user() {
    fi
 
    # CHANGE OWNERSHIP OF FILES
-   find "${tu_dhomedir}" -exec chown "${tu}.${tu_dgroup}" {} +
+   find "${tu_dhomedir}" -exec chown "${tu}.${tu_dgroup}" {} + 2>/dev/null
+   find /var/spool/mail -mindepth 1 -user -exec chown "${tu}.${tu_dgroup}" {} + 2>/dev/null
    
    # GENERATE REPORT FOR USER
    if fistruthy "${CLADU_USER_REPORT}" ;
