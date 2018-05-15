@@ -463,3 +463,4 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - userinfo: fix error "date: invalid date 'pw expired; must be changed'"
 - ftemplate: update usage() to use $PAGER if set
 - Add allow-group.sh
+- Fix cladu.sh: add ${sendopts} so emails are sent correctly.

@@ -340,5 +340,5 @@ then
    CLADU_EMAIL_ADDRESS="$( echo "${CLADU_EMAIL_ADDRESS}" | tr ',' ' ' )"
 
    # EMAIL LOGFILE
-   ${sendsh} -f "${USER}@${server}" "${this_subject}" ${logfile} ${CLADU_EMAIL_ADDRESS}
+   ${sendsh} -f "${USER}@${server}" ${sendopts} "${this_subject}" ${logfile} ${CLADU_EMAIL_ADDRESS}
 fi
