@@ -74,7 +74,7 @@ cp -p "${rpmbuilddir}/SOURCES/${packagespecfile}" "${rpmbuilddir}/SPECS"
 mkdir -p "${rpmbuilddir}/RPMS/noarch"; cd "${rpmbuilddir}/RPMS/noarch"
 rpmbuild -bb "${rpmbuilddir}/SPECS/${package}.spec"
 rm -rf "${rpmbuilddir}/SOURCES/${package}-${shortversion}/" "${rpmbuilddir}/SOURCES/${package}.tgz"
-# special for OL7 version
+# custom version for work
 rm -rf "${rpmbuilddir}/RPMS/noarch/${package}-${version}.noarch.rpm"
 
       ;;

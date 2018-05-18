@@ -31,7 +31,7 @@
 #    2017-11-11 Added FreeBSD support. Moved bounce bash autocompletion out of OS-specific sections into main bashrc.
 #    2018-01-06 Update htmlize and lsd. Add xdg-what
 #    2018-02-23 Fix htmlize and lsd again
-#    2018-02-27 Stripped down to custom OL7 barebones for version 1p3p3
+#    2018-02-27 Stripped down to custom version for work
 # Usage:
 # Reference: https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #    https://github.com/bgstack15/deployscripts/blob/master/s1_setname.sh

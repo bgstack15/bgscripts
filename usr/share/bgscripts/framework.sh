@@ -22,7 +22,7 @@
 #    2017-06-08a Added tweak to get_conf
 #    2017-10-14a Added convert_to_seq function
 #    2017-11-11a Added FreeBSD support
-#    2017-11-11m Stripped down for custom OL7 package version 1p3p3
+#    2017-11-11m Stripped down to custom version for work
 # Usage: dot-source this script in ftemplate.sh used by newscript.sh
 # Reference: 
 #    convert_to_seq https://gist.github.com/bgstack15/99a4bcf6618294986de33e94b4e65746
