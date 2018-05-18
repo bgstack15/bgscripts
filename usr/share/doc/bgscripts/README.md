@@ -469,3 +469,6 @@ Modified rdp.sh to accept /etc/bgscripts/rdp.conf and ~/.config/bgscripts/rdp.co
 - list-vnc-sessions.sh: add display size and color depth to output
 
 * Fri May 18 2018 B Stack <bgstack15@gmail.com> 1.3-7
+- cladu.sh
+-  fix mail spool file ownership
+-  add check to ensure new uid is different from old uid

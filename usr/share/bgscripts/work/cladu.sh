@@ -8,6 +8,7 @@
 # Package: bgscripts-core
 # History: 
 #    2018-05-15 fixed the ${sendopts} as well as ownership of the user mail spool file
+#    2018-05-18 add check for same uid, which occurs when sssd caches local users and is not showing domain user correctly
 # Usage: 
 # Reference: ftemplate.sh 2017-11-11m; framework.sh 2017-11-11m
 # Improve:
@@ -17,7 +18,7 @@
 #    userinfo.sh
 #    send.sh (optional)
 fiversion="2017-11-11m"
-claduversion="2018-03-09a"
+claduversion="2018-05-18a"
 
 usage() {
    less -F >&2 <<ENDUSAGE
@@ -67,6 +68,9 @@ remove_user() {
    echo "${tuinfo}" | grep -qE "getent_type:.*sss" || { echo "${tu} Failed: not found as domain user" ; return 2 ; }
    local tu_domain="$( getent passwd -s sss "${tu}" )"
    local tduid="$( echo "${tu_domain}" | awk -F':' '{print $3}' )"
+
+   # CONFIRM DOMAIN USER IS NOT SAME UID AS LOCAL USER
+   test "${tluid}" = "${tduid}" && echo "${tu} Failed: domain user has the same uid as the local user. Check sssd" ; return 3 ; }
 
    # LEARN HOMEDIRS
    local tu_lhomedir="$( echo "${tu_local}" | cut -d':' -f6 )"
@@ -136,7 +140,7 @@ remove_user() {
 
    # CHANGE OWNERSHIP OF FILES
    find "${tu_dhomedir}" -exec chown "${tu}.${tu_dgroup}" {} + 2>/dev/null
-   find /var/spool/mail -mindepth 1 -user -exec chown "${tu}.${tu_dgroup}" {} + 2>/dev/null
+   find /var/spool/mail -mindepth 1 -user "${tluid}" -exec chown "${tu}.${tu_dgroup}" {} + 2>/dev/null
    
    # GENERATE REPORT FOR USER
    if fistruthy "${CLADU_USER_REPORT}" ;
