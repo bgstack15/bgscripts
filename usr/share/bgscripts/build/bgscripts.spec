@@ -2,7 +2,7 @@
 Summary:	   bgscripts gui components
 Name:		   bgscripts
 Version:	   1.3
-Release:	   6
+Release:	   7
 License:	   CC BY-SA 4.0
 Group:      Applications/System
 Source:     bgscripts.tgz
@@ -546,6 +546,7 @@ exit 0
 /usr/share/bgscripts/sizer.sh
 /usr/share/bgscripts/title.sh
 /usr/share/bgscripts/toucher.sh
+/usr/share/bgscripts/work/allow-group.sh
 /usr/share/bgscripts/work/cladu.sh
 /usr/share/bgscripts/work/list-active-repos.sh
 /usr/share/bgscripts/work/list-vnc-sessions.sh
@@ -559,5 +560,5 @@ exit 0
 %doc %attr(444, -, -) /usr/share/doc/bgscripts/version.txt
 
 %changelog
-* Thu Apr 19 2018 B Stack <bgstack15@gmail.com> 1.3-6
+* May 18 2018 B Stack <bgstack15@gmail.com> 1.3-7
 - Update content. See doc/README.txt.
