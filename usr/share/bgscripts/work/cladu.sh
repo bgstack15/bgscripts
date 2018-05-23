@@ -70,7 +70,7 @@ remove_user() {
    local tduid="$( echo "${tu_domain}" | awk -F':' '{print $3}' )"
 
    # CONFIRM DOMAIN USER IS NOT SAME UID AS LOCAL USER
-   test "${tluid}" = "${tduid}" && echo "${tu} Failed: domain user has the same uid as the local user. Check sssd" ; return 3 ; }
+   test "${tluid}" = "${tduid}" && { echo "${tu} Failed: domain user has the same uid as the local user. Check sssd" ; return 3 ; }
 
    # LEARN HOMEDIRS
    local tu_lhomedir="$( echo "${tu_local}" | cut -d':' -f6 )"
