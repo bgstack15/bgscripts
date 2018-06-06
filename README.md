@@ -1,1 +1,1 @@
-usr/share/doc/bgscripts/README.md
+#movingtogitlab [https://gitlab.com/bgstack15/bgscripts](https://gitlab.com/bgstack15/bgscripts)
